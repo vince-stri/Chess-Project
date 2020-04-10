@@ -4,8 +4,13 @@ import model.*;
 import model.Character;
 
 public class InputController {
-    public int getCharacterMove(Character character, Coordinates coordinates, Army army) {
-    	return 0;
+	
+    public Character getCharacterToMove(Army army) {
+    	return army.getCharacter(2);
+    }
+    
+    public Cell getRecquiredCell(Board board) {
+    	return board.getACell(2, 2, 0);
     }
 
 }

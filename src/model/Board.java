@@ -17,6 +17,8 @@ public class Board {
 				this.cellsNb = cellsSideNb * cellsSideNb;				
 			break;
 		}
+    	
+    	cells = new Cell[cellsNb];
     }
 
     public Cell getACell(int x, int y, int z) {
@@ -28,15 +30,14 @@ public class Board {
     	return null;
     }
 
-    public boolean isCellAvailable(Coordinates coordinates, Character character) {
-    	return false;
+    public boolean isCellAvailable(Cell cell) {
+    	return cell != null;
     }
 
     /* The board is created line after line inside the array. */
     public int setUpBoard() {
     	switch (shape) {
 			default: // CLASSIC
-				cells = new Cell[cellsNb];
 				Coordinates coord;
 				int mod, div;
 				for(int i = 0; i < cellsNb; i++) {

@@ -9,14 +9,22 @@ public class Cell {
     public Character character;
 
     public boolean isCellEmpty() {
-    	return false;
+    	return character == null;
     }
 
     public Character getCharacter() {
-    	return null;
+    	return character;
     }
 
     public Cell(CellType cellType, Coordinates coordinates) {
+    	this.cellType = cellType;
+    	this.coordinates = coordinates;
+    }
+    
+    public Cell(CellType cellType, Coordinates coordinates, Character character) {
+    	this.cellType = cellType;
+    	this.coordinates = coordinates;
+    	this.character = character;
     }
 
     public void setCharacter(Character character) {
@@ -28,6 +36,17 @@ public class Cell {
     
     public boolean isLocatedHere(int x, int y, int z) {
     	return coordinates.equals(x, y, z);
+    }
+    
+    public String toString() {
+    	String str = "";
+    	switch (cellType) {
+			default:
+				str = "Classic cell at ";
+			break;
+		}
+    	
+    	return str + coordinates;
     }
 
 }

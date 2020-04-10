@@ -26,15 +26,32 @@ public class Army {
     	return 0;
     }
 
-    public int removeCharacter(int removedCharacter) {
+    public int removeCharacter(Character character) {
+    	int index = seekIndexFighter(character);
+    	if(index == -1) {
+    		return 1;   		
+    	}
+
+    	fighters[index] = fighters[fightersNb - 1];
+    	fightersNb--;
     	return 0;
     }
 
+    public int seekIndexFighter(Character character) {
+    	for(int i = 0; i < fightersNb; i++) {
+    		if(character == fighters[i]) {
+    			return i;
+    		}
+    	}
+    	return -1;
+    }
+    
     public boolean isArmyEmpty() {
     	return false;
     }
 
-    public int moveCharacter(Character movingCharacter, Coordinates coord) {
+    public int moveCharacter(Character movingCharacter, Cell cell) {
+    	movingCharacter.goTo(cell);
     	return 0;
     }
 
@@ -49,14 +66,27 @@ public class Army {
     	Cell charCell[] = {board.getACell(0, 1, 0), board.getACell(1, 1, 0), board.getACell(2, 1, 0), board.getACell(3, 1, 0), 
     			board.getACell(4, 1, 0), board.getACell(5, 1, 0), board.getACell(6, 1, 0), board.getACell(7, 1, 0), 
     			board.getACell(0, 0, 0), board.getACell(1, 0, 0), board.getACell(2, 0, 0), board.getACell(3, 0, 0), 
-    			board.getACell(4, 0, 0), board.getACell(5, 0, 0), board.getACell(6, 0, 0), board.getACell(7, 0, 0), };
+    			board.getACell(4, 0, 0), board.getACell(5, 0, 0), board.getACell(6, 0, 0), board.getACell(7, 0, 0) };
+    	
     	for(int i = 0; i < maxFightersNb; i++) {
-    		fighters[i] = new Character(100, charNames[i], charTypes[i], charCell[i]);
+    		fighters[i] = new Character(100, charNames[i], charTypes[i], charCell[i], this, 0);
     	}
     }
 
     public List<Character> getAliveCharacters() {
     	return null;
+    }
+    
+    public Character getCharacter(int arrayIndex) {
+    	if(arrayIndex > -1 && arrayIndex < maxFightersNb) {
+    		return fighters[arrayIndex];
+    	} else {
+    		return null;
+    	}
+    }
+    
+    public String toString() {
+    	return name;
     }
 
 }

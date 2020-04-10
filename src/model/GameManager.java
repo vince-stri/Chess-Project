@@ -1,7 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
 import controller.*;
 
 public class GameManager {
@@ -13,7 +11,7 @@ public class GameManager {
     private int armiesNb;
     private int maxFightersNb;
     private Army armies[];
-    private List<InputController> input = new ArrayList<InputController> ();
+    private InputController input = new InputController();
     
     
     public GameManager(BoardShape boardShape, int armiesNb, int maxFightersNb) {
@@ -27,12 +25,20 @@ public class GameManager {
     	board = new Board(BoardShape.CLASSIC, 8);
     	board.setUpBoard();
     	
-    	armies[0] = new Army(board, "LightSide", maxFightersNb);
-    	armies[1] = new Army(board, "DarkSide", maxFightersNb);
+    	armies[0] = new Army(board, "DarkSide", maxFightersNb);
+    	//armies[1] = new Army(board, "DarkSide", maxFightersNb);
     	//TO-DO: implement save
     }
 
-    public void playARound(Army playingArmy) {
+	public void playARound(Army playingArmy) {
+    	Character chara = null;
+    	Cell cell = null;
+    	do {
+    		chara = input.getCharacterToMove(playingArmy);
+    		cell = input.getRecquiredCell(board);
+    	} while(board.isCellAvailable(cell));
+    	
+    	playingArmy.moveCharacter(chara, cell);
     }
 
     public int changeState() {
@@ -40,6 +46,10 @@ public class GameManager {
     }
 
     public void setArmyToPlayer() {
+    }
+    
+    public Army[] getArmies() {
+    	return armies;
     }
 
 }
