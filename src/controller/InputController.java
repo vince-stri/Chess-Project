@@ -1,7 +1,8 @@
 package controller;
 
 import model.*;
-import model.Character;
+import model.board.Board;
+import model.character.Character;
 
 public class InputController {
 	
@@ -10,7 +11,7 @@ public class InputController {
     }
     
     public Cell getRecquiredCell(Board board) {
-    	return board.getACell(2, 2, 0);
+    	return board.getACell(new Coordinates(0, 2));
     }
 
 }

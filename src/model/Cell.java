@@ -1,14 +1,13 @@
 package model;
 
+import model.character.Character;
 
 public class Cell {
     private CellType cellType;
+    private Coordinates coordinates;
+    private Character character;
 
-    public Coordinates coordinates;
-
-    public Character character;
-
-    public boolean isCellEmpty() {
+    public boolean isEmpty() {
     	return character == null;
     }
 
@@ -28,14 +27,11 @@ public class Cell {
     }
 
     public void setCharacter(Character character) {
-    }
-
-    public Cell getCell() {
-    	return null;
+    	this.character = character;
     }
     
-    public boolean isLocatedHere(int x, int y, int z) {
-    	return coordinates.equals(x, y, z);
+    public boolean isLocatedHere(Coordinates coord) {
+    	return coordinates.equals(coord);
     }
     
     public String toString() {
@@ -45,7 +41,6 @@ public class Cell {
 				str = "Classic cell at ";
 			break;
 		}
-    	
     	return str + coordinates;
     }
 

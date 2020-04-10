@@ -1,8 +1,10 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.List;
-import com.modeliosoft.modelio.javadesigner.annotations.objid;
+//import java.util.List;
+
+import model.board.Board;
+import model.character.Character;
 
 public class Army {
 	
@@ -10,79 +12,41 @@ public class Army {
     private int fightersNb;
     private int maxFightersNb;
 
-    public Character fighters[];
     public Board board;
+    public ArrayList<Character> fightersAlive = new ArrayList<Character>();
     
-    /* temporary hard coded team components */
-    public String charNames[] = {"Stormtroopeer_1", "Stormtroopeer_2", "Stormtroopeer_3",
-    		"Stormtroopeer_4", "Stormtroopeer_5", "Stormtroopeer_6", "Stormtroopeer_7", "Stormtroopeer_8", "Darth Maul", "Count Dooku",
-    		"Kylo Ren", "Snoke", "Booba Fett", "Captain Grievous", "Darth Vader", "Emperor Palpatine"};
-    public CharacterType charTypes[] = {CharacterType.PAWN, CharacterType.PAWN, CharacterType.PAWN, CharacterType.PAWN, CharacterType.PAWN,
-    		CharacterType.PAWN, CharacterType.PAWN, CharacterType.PAWN, CharacterType.ROOK, CharacterType.ROOK, CharacterType.BISHOP,
-    		CharacterType.BISHOP, CharacterType.KNIGHT, CharacterType.KNIGHT, CharacterType.QUEEN, CharacterType.KING};
-    
+    public Army(Board board, String name, int fightersNb) {
+    	this.board = board;
+    	this.name = name;
+    	this.fightersNb = fightersNb;
+    }
 
     public int addCharacter(Character newCharacter) {
+    	fightersAlive.add(newCharacter);
+    	fightersNb++;
     	return 0;
     }
 
-    public int removeCharacter(Character character) {
-    	int index = seekIndexFighter(character);
-    	if(index == -1) {
-    		return 1;   		
-    	}
-
-    	fighters[index] = fighters[fightersNb - 1];
-    	fightersNb--;
-    	return 0;
-    }
-
-    public int seekIndexFighter(Character character) {
-    	for(int i = 0; i < fightersNb; i++) {
-    		if(character == fighters[i]) {
-    			return i;
-    		}
-    	}
-    	return -1;
+    public int rmCharacter(Character character) {
+    	if(fightersAlive.contains(character)) {
+    		character.getCell().setCharacter(null);
+    		fightersAlive.remove(character);
+    		fightersNb--;
+    		return 1;
+    	} return 0;
     }
     
-    public boolean isArmyEmpty() {
-    	return false;
+    public boolean isEmpty() {
+    	return fightersAlive.isEmpty();
     }
 
     public int moveCharacter(Character movingCharacter, Cell cell) {
     	movingCharacter.goTo(cell);
     	return 0;
     }
-
-    public Army(Board board, String name, int maxFightersNb) {
-    	this.board = board;
-    	this.name = name;
-    	this.maxFightersNb = maxFightersNb;
-    	this.fightersNb = maxFightersNb;
-    	fighters = new Character[maxFightersNb];
-    	 
-    	/* temporary hard coded team components */
-    	Cell charCell[] = {board.getACell(0, 1, 0), board.getACell(1, 1, 0), board.getACell(2, 1, 0), board.getACell(3, 1, 0), 
-    			board.getACell(4, 1, 0), board.getACell(5, 1, 0), board.getACell(6, 1, 0), board.getACell(7, 1, 0), 
-    			board.getACell(0, 0, 0), board.getACell(1, 0, 0), board.getACell(2, 0, 0), board.getACell(3, 0, 0), 
-    			board.getACell(4, 0, 0), board.getACell(5, 0, 0), board.getACell(6, 0, 0), board.getACell(7, 0, 0) };
-    	
-    	for(int i = 0; i < maxFightersNb; i++) {
-    		fighters[i] = new Character(100, charNames[i], charTypes[i], charCell[i], this, 0);
-    	}
-    }
-
-    public List<Character> getAliveCharacters() {
-    	return null;
-    }
     
     public Character getCharacter(int arrayIndex) {
-    	if(arrayIndex > -1 && arrayIndex < maxFightersNb) {
-    		return fighters[arrayIndex];
-    	} else {
-    		return null;
-    	}
+    	return fightersAlive.get(arrayIndex);
     }
     
     public String toString() {

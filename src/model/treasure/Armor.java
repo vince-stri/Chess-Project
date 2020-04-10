@@ -1,7 +1,8 @@
-package model;
+package model.treasure;
 
+import model.character.Character;
 
-public class Spell extends Treasure {
+public class Armor extends Treasure {
 
 	@Override
 	public void equipTreasure(Character character) {

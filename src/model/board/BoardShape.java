@@ -1,8 +1,7 @@
-package model;
-
+package model.board;
 
 public enum BoardShape {
-	CLASSIC,
+	CHESS,
 	THREE_D,
 	HEXAGONAL;
 }
