@@ -4,9 +4,10 @@ import controller.*;
 import model.board.Board;
 import model.character.Character;
 import model.character.CharacterType;
+import view.Journal;
 import model.board.BoardShape;
 import model.board.Cell;
-import model.board.ChessBoard;
+import model.board.BoardChess;
 
 public class GameManager {
 	
@@ -27,7 +28,7 @@ public class GameManager {
     public void setUpBattle() {
     	switch (boardShape) {
 			default:
-				board = new ChessBoard();
+				board = new BoardChess();
 				armies = ArmyComponents.generateChessBoardArmies(board);
 			break;
 		}
@@ -41,12 +42,15 @@ public class GameManager {
     			boolean lightSideAlive = true;
     			int i = 1;
     			Army playingArmy = armies[i];
-    			do {
+    			//do {
     				playARound(playingArmy);
     				darkSideAlive = !armies[0].isEmpty();
     				darkSideAlive = !armies[1].isEmpty();
-    				playingArmy = armies[++i % 2];
-    			} while(darkSideAlive && lightSideAlive);
+    				playingArmy = armies[i = ((i + 1) % 2)];
+    				Journal.displayText("" + i);
+    				Journal.displayText(armies[0].dumpArmy());
+    				Journal.displayText(armies[1].dumpArmy());
+    			//} while(darkSideAlive && lightSideAlive);
 			break;
 		}
     }
@@ -54,12 +58,20 @@ public class GameManager {
 	private void playARound(Army playingArmy) {
     	Character chara = null;
     	Cell cell = null;
+    	int ret;
+    	boolean hasToPlayAgain;
     	do {
-    		chara = input.getCharacterToMove(playingArmy);
-    		cell = input.getRecquiredCell(board);
-    	} while(cell == null);
-    	
-    	playingArmy.moveCharacter(chara, cell);
+    		hasToPlayAgain = false;
+    		do {
+	    		chara = input.getCharacterToMove(playingArmy);
+	    		cell = input.getRecquiredCell(board);
+	    	} while(cell == null);
+    		ret = playingArmy.moveCharacter(chara, cell); 
+    		if(ret == 0) {
+    			Journal.displayText("You cannot go on a cell where an ally is.");
+    			hasToPlayAgain = true;
+    		}
+    	} while(hasToPlayAgain);
     }
 
     public int changeState() {

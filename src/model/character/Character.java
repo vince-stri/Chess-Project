@@ -8,6 +8,7 @@ import model.Coordinates;
 import model.Fight;
 import model.board.Cell;
 import model.treasure.Treasure;
+import view.Journal;
 
 public class Character {
 	
@@ -16,6 +17,7 @@ public class Character {
     private int damagePoints;
     private int armor;
     private int maxArmor;
+    private int rewardsNb;
     private CharacterType type;
     private String name;
     private Cell cell;
@@ -23,9 +25,8 @@ public class Character {
     private Coordinates[] moves;
     
     public List<Treasure> treasures = new ArrayList<Treasure> ();
-    public List<Coordinates> coordinates = new ArrayList<Coordinates> (); // ?
     
-    public Character(int maxHP, String name, Cell cell, Army army, int maxArmor, CharacterType type) {
+    public Character(int maxHP, String name, Cell cell, Army army, int maxArmor, CharacterType type, int damagePoints) {
     	this.maxHP = maxHP;
     	this.healthPoints = maxHP;
     	this.name = name;
@@ -33,7 +34,9 @@ public class Character {
     	this.army = army;
     	this.maxArmor = maxArmor;
     	this.armor = 0;
+    	this.rewardsNb = 0;
     	this.type = type;
+    	this.damagePoints = damagePoints;
     }
     
     private void goToCell(Cell destination) {
@@ -41,8 +44,8 @@ public class Character {
     	this.cell = destination;
     }
     
-    public int goTo(Cell destination) {
-    	if(!destination.isEmpty()) {
+    public int goTo(Cell destination, boolean haveToFight) {
+    	if(haveToFight) {
     		Character challenged = destination.getCharacter();
     		Fight fight = new Fight(this, challenged);
     		if(fight.startFight()) {
@@ -77,6 +80,7 @@ public class Character {
     }
 
     public boolean takeDamages(int damages) {
+    	Journal.displayText(" DAMAGES " + damages);
     	if(armor > damages) {
     		armor -= damages;
     		return false;
@@ -94,6 +98,10 @@ public class Character {
     }
 
     public void addHP(int hp) {
+    	healthPoints += hp;
+    	if(healthPoints > maxHP) {
+    		healthPoints = maxHP;
+    	}
     }
 
     public void addArmor(int armor) {
@@ -104,6 +112,7 @@ public class Character {
     }
 
     public void addDamage(int damages) {
+    	this.damagePoints += damages;
     }
 
     public void kill() {
@@ -132,6 +141,10 @@ public class Character {
     
     public String dumpCharacter() {
     	return "I'm " + name + "fighting for the " + army + " army and I'm located at " + cell.getCoordinates();
+    }
+    
+    public int getHealthPoints() {
+    	return healthPoints;
     }
 
 }

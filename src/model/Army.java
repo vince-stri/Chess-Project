@@ -42,8 +42,16 @@ public class Army {
     }
 
     public int moveCharacter(Character movingCharacter, Cell cell) {
-    	movingCharacter.goTo(cell);
-    	return 0;
+    	final int addRetValue = 1;
+    	if(cell.isEmpty()) {
+    		return movingCharacter.goTo(cell, false) + addRetValue;
+    	} else {
+    		if(cell.getCharacter().getArmy() != movingCharacter.getArmy()) {
+    			return movingCharacter.goTo(cell, true) + addRetValue;
+    		} else {
+    			return 0;
+    		}
+    	}
     }
     
     public Character getCharacter(int arrayIndex) {

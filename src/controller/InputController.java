@@ -4,6 +4,7 @@ import model.*;
 import model.board.Board;
 import model.board.Cell;
 import model.character.Character;
+import view.Journal;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -13,8 +14,8 @@ public class InputController {
 	Scanner myScanner = new Scanner(System.in);
 	
     public Character getCharacterToMove(Army army) {
-    	System.out.println(army.dumpArmy());
-    	System.out.println("\nPlease, select the character you want to move by giving the number printed between [] on its line:");
+    	Journal.displayText(army.dumpArmy());
+    	Journal.displayText("\nPlease, select the character you want to move by giving the number printed between [] on its line:");
     	boolean isInteger, isCorrect;
     	int index = 0;
     	Character chara = null;
@@ -24,7 +25,7 @@ public class InputController {
     			index = myScanner.nextInt();	
 			} catch (InputMismatchException e) {
 				isInteger = false;
-				System.out.println("Would you select a NUMBER please:");
+				Journal.displayText("Would you select a NUMBER please:");
 			} finally {
 				myScanner.nextLine();			
 			}
@@ -33,7 +34,7 @@ public class InputController {
     			chara = army.getCharacter(index);
     			if(chara == null) {
     				isCorrect = false;
-    				System.out.println("Would you select a number CORRESPONDING to one of the propositions above?");
+    				Journal.displayText("Would you select a number CORRESPONDING to one of the propositions above?");
     			} else {
     				isCorrect = true;
     			}
@@ -41,12 +42,58 @@ public class InputController {
     			isCorrect = false;
     		}
     	} while(!isCorrect);
-    	System.out.println("oui ?");
     	return chara;
     }
     
     public Cell getRecquiredCell(Board board) {
-    	return board.getACell(new Coordinates(0, 2));
+    	switch (board.getBoardShape()) {
+    		default:
+    			Journal.displayText("Please, select the cell where you want to move on your character:\n\tx:");
+    			int x = 0, y = 0;
+    			boolean isInteger, isCorrect;
+    			/* get x */
+    			do {
+    				isInteger = true;
+    				isCorrect = true;
+    				try {
+    					x = myScanner.nextInt();	
+    				} catch (InputMismatchException e) {
+    					isInteger = false;
+    					isCorrect = false;
+    					Journal.displayText("Would you select a NUMBER please:");
+    				} finally {
+    					myScanner.nextLine();			
+    				}
+    				if(isInteger) {
+    					if(x < 0 || x >= board.getWidthsNb()) {
+    						Journal.displayText("Would you select a VALID x-coordinate belonging to [0," + board.getWidthsNb() + "[:");
+    						isCorrect = false;
+    					}
+    				}
+    			} while(!isCorrect);
+    			/* get y */
+    			Journal.displayText("\ty:");
+    			do {
+    				isInteger = true;
+    				isCorrect = true;
+    				try {
+    					y = myScanner.nextInt();	
+    				} catch (InputMismatchException e) {
+    					isInteger = false;
+    					isCorrect = false;
+    					Journal.displayText("Would you select a NUMBER please:");
+    				} finally {
+    					myScanner.nextLine();			
+    				}
+    				if(isInteger) {
+    					if(y < 0 || y >= board.getWidthsNb()) {
+    						Journal.displayText("Would you select a VALID y-coordinate belonging to [0," + board.getWidthsNb() + "[:");
+    						isCorrect = false;
+    					}
+    				}
+    			} while(!isCorrect);
+    			return board.getACell(new Coordinates(x, y));
+		}
     }
 
 }

@@ -5,6 +5,7 @@ import model.treasure.Armor;
 import model.treasure.Spell;
 import model.treasure.Treasure;
 import model.treasure.Weapon;
+import view.Journal;
 
 public class Fight {
     private FightState fightState;
@@ -36,8 +37,8 @@ public class Fight {
     	fightState = FightState.RUNNING;
     	boolean challengerDead = false;
     	boolean challengedDead = false;
-    	while(challengerDead && challengedDead) {
-    		if(dice.roll() > 2) {
+    	while(!challengerDead && !challengedDead) {
+    		if(dice.roll() > 3) { // The challenger has more chance to strike damages
     			challengedDead = challenger.strike(challenged);
     		} else {
     			challengerDead = challenged.strike(challenger);
