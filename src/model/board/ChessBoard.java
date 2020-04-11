@@ -1,7 +1,5 @@
 package model.board;
 
-import model.Cell;
-import model.CellType;
 import model.Coordinates;
 
 public class ChessBoard extends Board {
@@ -14,7 +12,7 @@ public class ChessBoard extends Board {
 		this.cells = new Cell[sideCellsNb][sideCellsNb];
 
 		for(int i = 0; i < sideCellsNb; i++) {
-			for(int j = 0; j < sideCellsNb; i++) {
+			for(int j = 0; j < sideCellsNb; j++) {
 				cells[i][j] = new Cell(CellType.CLASSIC, new Coordinates(i, j));				
 			}
 		}

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Army;
-import model.Cell;
 import model.Coordinates;
 import model.Fight;
+import model.board.Cell;
 import model.treasure.Treasure;
 
 public class Character {
@@ -124,6 +124,14 @@ public class Character {
     
     public Cell getCell() {
     	return cell;
+    }
+    
+    public String getName() {
+    	return name;
+    }
+    
+    public String dumpCharacter() {
+    	return "I'm " + name + "fighting for the " + army + " army and I'm located at " + cell.getCoordinates();
     }
 
 }

@@ -2,8 +2,10 @@ package model;
 
 import java.util.ArrayList;
 //import java.util.List;
+import java.util.Iterator;
 
 import model.board.Board;
+import model.board.Cell;
 import model.character.Character;
 
 public class Army {
@@ -15,10 +17,9 @@ public class Army {
     public Board board;
     public ArrayList<Character> fightersAlive = new ArrayList<Character>();
     
-    public Army(Board board, String name, int fightersNb) {
+    public Army(Board board, String name) {
     	this.board = board;
     	this.name = name;
-    	this.fightersNb = fightersNb;
     }
 
     public int addCharacter(Character newCharacter) {
@@ -46,11 +47,31 @@ public class Army {
     }
     
     public Character getCharacter(int arrayIndex) {
-    	return fightersAlive.get(arrayIndex);
+    	Character chara;
+    	try {
+    		chara = fightersAlive.get(arrayIndex);	
+		} catch (IndexOutOfBoundsException e) {
+			chara = null;
+		}
+    	
+    	return chara;
     }
     
     public String toString() {
     	return name;
+    }
+    
+    public String dumpArmy() {
+    	String str = "The " + name + " army has " + fightersNb + " alive and they are:\n";
+    	Iterator<Character> fightersAliveIterator = fightersAlive.iterator();
+    	for(int i = 0; fightersAliveIterator.hasNext(); i++) {
+    		str += "\t[" + i + "] " + fightersAliveIterator.next().dumpCharacter() + "\n";
+    	}
+    	return str;
+    }
+    
+    public int getFightersNb() {
+    	return fightersNb;
     }
 
 }

@@ -1,6 +1,5 @@
 package model.board;
 
-import model.Cell;
 import model.Coordinates;
 
 public abstract class Board {

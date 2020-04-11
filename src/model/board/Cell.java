@@ -1,5 +1,6 @@
-package model;
+package model.board;
 
+import model.Coordinates;
 import model.character.Character;
 
 public class Cell {
@@ -42,6 +43,10 @@ public class Cell {
 			break;
 		}
     	return str + coordinates;
+    }
+    
+    public Coordinates getCoordinates() {
+    	return coordinates;
     }
 
 }
