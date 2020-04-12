@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 import controller.*;
 import model.board.Board;
 import model.character.Character;
@@ -20,9 +22,10 @@ public class GameManager {
     private InputController input = new InputController();
     
     
-    public GameManager(BoardShape boardShape) {
+    public GameManager(BoardShape boardShape, String nameFileToSave) {
     	this.boardShape = boardShape;
     	this.gameState = GameState.RUNNING;
+    	this.save = new Save(nameFileToSave);
     }
 
     public void setUpBattle() {
@@ -32,7 +35,6 @@ public class GameManager {
 				armies = ArmyComponents.generateChessBoardArmies(board);
 			break;
 		}
-
     }
     
     public void startGame() {
@@ -42,15 +44,17 @@ public class GameManager {
     			boolean lightSideAlive = true;
     			int i = 1;
     			Army playingArmy = armies[i];
-    			//do {
+    			do {
+    				if(input.wantToSave()) {
+    					
+    				}
     				playARound(playingArmy);
     				darkSideAlive = !armies[0].isEmpty();
     				darkSideAlive = !armies[1].isEmpty();
     				playingArmy = armies[i = ((i + 1) % 2)];
-    				Journal.displayText("" + i);
     				Journal.displayText(armies[0].dumpArmy());
     				Journal.displayText(armies[1].dumpArmy());
-    			//} while(darkSideAlive && lightSideAlive);
+    			} while(darkSideAlive && lightSideAlive);
 			break;
 		}
     }
@@ -77,5 +81,27 @@ public class GameManager {
     public int changeState() {
     	return 0;
     }
+    
+    public void save() {
+    	ArrayList<Object> list = new ArrayList<Object>();
+    	list.add(board);
+    	list.add(armies);
+    	System.out.println("" + save.save(list));
+    }
+    
+    public void load() {
+    	ArrayList<Object> list = save.load();
+    	board = (Board) list.get(0);
+    	armies = (Army[]) list.get(1);
+    }
+    
+    public void test_dump() {
+    	if(armies != null) {
+    		System.out.println(armies[0].dumpArmy());
+    	} else {
+    		System.out.println("you noob");
+    	}
+    }
+    
 
 }

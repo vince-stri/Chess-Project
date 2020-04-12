@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 //import java.util.List;
 import java.util.Iterator;
@@ -8,13 +9,13 @@ import model.board.Board;
 import model.board.Cell;
 import model.character.Character;
 
-public class Army {
+public class Army implements Serializable {
 	
     private String name;
     private int fightersNb;
     private int maxFightersNb;
 
-    public Board board;
+    public transient Board board;
     public ArrayList<Character> fightersAlive = new ArrayList<Character>();
     
     public Army(Board board, String name) {
@@ -80,6 +81,10 @@ public class Army {
     
     public int getFightersNb() {
     	return fightersNb;
+    }
+    
+    public void setBoard(Board board) {
+    	this.board = board;
     }
 
 }

@@ -1,5 +1,6 @@
 package model.character;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import model.board.Cell;
 import model.treasure.Treasure;
 import view.Journal;
 
-public class Character {
+public class Character implements Serializable{
 	
     private int healthPoints;
     private int maxHP;
@@ -20,9 +21,9 @@ public class Character {
     private int rewardsNb;
     private CharacterType type;
     private String name;
-    private Cell cell;
-    private Army army;
     private Coordinates[] moves;
+    private transient Cell cell;
+    private transient Army army;
     
     public List<Treasure> treasures = new ArrayList<Treasure> ();
     
@@ -140,7 +141,7 @@ public class Character {
     }
     
     public String dumpCharacter() {
-    	return "I'm " + name + "fighting for the " + army + " army and I'm located at " + cell.getCoordinates();
+    	return "I'm " + name + "fighting for the " + army + " army and I'm located at ";// + cell.getCoordinates();
     }
     
     public int getHealthPoints() {

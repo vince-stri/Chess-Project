@@ -95,5 +95,20 @@ public class InputController {
     			return board.getACell(new Coordinates(x, y));
 		}
     }
+    
+    public boolean wantToSave() {
+    	String str;
+    	boolean error;
+    	do {
+    		error = false;
+			Journal.displayText("Would you stop your game here and come back later? [y or n]");
+    		str = myScanner.nextLine();
+    		if(str != "y" || str != "n") {
+    			error = true;
+    			Journal.displayText("Would you enter a CORRECT character?");
+    		}
+    	} while(error);
+    	return str == "y";
+    }
 
 }

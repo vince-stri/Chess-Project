@@ -6,7 +6,6 @@ public class BoardChess extends Board {
 	
     private Cell cells[][] = null;
 	private int sideWidthsNb;
-	private BoardShape boardShape;
 	
 	public BoardChess() {
 		super(BoardShape.CHESS);

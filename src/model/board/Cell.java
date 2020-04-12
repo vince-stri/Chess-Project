@@ -1,12 +1,14 @@
 package model.board;
 
+import java.io.Serializable;
+
 import model.Coordinates;
 import model.character.Character;
 
-public class Cell {
+public class Cell implements Serializable {
     private CellType cellType;
     private Coordinates coordinates;
-    private Character character;
+    private transient Character character;
 
     public boolean isEmpty() {
     	return character == null;
