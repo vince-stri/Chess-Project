@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Coordinates implements Serializable {
     private int x;
     private int y;

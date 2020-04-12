@@ -103,12 +103,47 @@ public class InputController {
     		error = false;
 			Journal.displayText("Would you stop your game here and come back later? [y or n]");
     		str = myScanner.nextLine();
-    		if(str != "y" || str != "n") {
+    		if(!str.equals("y") && !str.equals("n")) {
     			error = true;
     			Journal.displayText("Would you enter a CORRECT character?");
     		}
     	} while(error);
-    	return str == "y";
+    	return str.equals("y");
+    }
+    
+    public boolean wantToRecoverFile() {
+    	String str;
+    	boolean error;
+    	do {
+    		error = false;
+			Journal.displayText("The save file doesn't exist.\\nWould you like to recover it? (if not a new game will be started) [y or n]");
+    		str = myScanner.nextLine();
+    		if(!str.equals("y") && !str.equals("n")) {
+    			error = true;
+    			Journal.displayText("Would you enter a CORRECT character?");
+    		}
+    	} while(error);
+    	return str.equals("y");
+    }
+    
+    public boolean wantANewGame() {
+    	String str;
+    	boolean error;
+    	do {
+    		error = false;
+			Journal.displayText("Would you like to start a new game or to continue a previous one? [s or c]");
+    		str = myScanner.nextLine();
+    		if(!str.equals("s") && !str.equals("c")) {
+    			error = true;
+    			Journal.displayText("Would you enter a CORRECT character?");
+    		}
+    	} while(error);
+    	return str.equals("s");
+    }
+    
+    public String getAPath() {
+    	Journal.displayText("Please, indicate a path:");
+    	return myScanner.nextLine();
     }
 
 }

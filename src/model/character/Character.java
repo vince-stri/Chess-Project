@@ -7,10 +7,12 @@ import java.util.List;
 import model.Army;
 import model.Coordinates;
 import model.Fight;
+import model.board.Board;
 import model.board.Cell;
 import model.treasure.Treasure;
 import view.Journal;
 
+@SuppressWarnings("serial")
 public class Character implements Serializable{
 	
     private int healthPoints;
@@ -18,31 +20,31 @@ public class Character implements Serializable{
     private int damagePoints;
     private int armor;
     private int maxArmor;
-    private int rewardsNb;
-    private CharacterType type;
+    @SuppressWarnings("unused")
+	private CharacterType type;
     private String name;
-    private Coordinates[] moves;
-    private transient Cell cell;
+    @SuppressWarnings("unused")
+	private Coordinates[] moves;
+    private Coordinates coords;
     private transient Army army;
     
     public List<Treasure> treasures = new ArrayList<Treasure> ();
     
-    public Character(int maxHP, String name, Cell cell, Army army, int maxArmor, CharacterType type, int damagePoints) {
+    public Character(int maxHP, String name, Coordinates coords, Army army, int maxArmor, CharacterType type, int damagePoints) {
     	this.maxHP = maxHP;
     	this.healthPoints = maxHP;
     	this.name = name;
-    	this.cell = cell;
     	this.army = army;
     	this.maxArmor = maxArmor;
     	this.armor = 0;
-    	this.rewardsNb = 0;
     	this.type = type;
     	this.damagePoints = damagePoints;
+    	this.coords = coords;
     }
     
     private void goToCell(Cell destination) {
     	destination.setCharacter(this);
-    	this.cell = destination;
+    	this.coords = destination.getCoordinates();
     }
     
     public int goTo(Cell destination, boolean haveToFight) {
@@ -128,12 +130,16 @@ public class Character implements Serializable{
     	return army;
     }
     
+    public void setArmy(Army army) {
+    	this.army = army;
+    }
+    
     public String toString() {
     	return name + " from " + army;
     }
     
-    public Cell getCell() {
-    	return cell;
+    public Cell getCell(Board board) {
+    	return board.getACell(coords);
     }
     
     public String getName() {
@@ -141,11 +147,15 @@ public class Character implements Serializable{
     }
     
     public String dumpCharacter() {
-    	return "I'm " + name + "fighting for the " + army + " army and I'm located at ";// + cell.getCoordinates();
+    	return "I'm " + name + " fighting for the " + army + " army and I'm located at " + getCoordinates();
     }
     
     public int getHealthPoints() {
     	return healthPoints;
+    }
+    
+    public Coordinates getCoordinates() {
+    	return coords;
     }
 
 }

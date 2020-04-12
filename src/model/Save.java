@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
-import model.board.Board;
 import model.board.BoardChess;
 import view.Journal; 
 
@@ -119,6 +117,17 @@ public class Save {
 		    			return null;
 		    		}
 				break;
+				case "class java.lang.Integer":
+					try {
+						listToLoad.add((Integer)inFile.readObject());
+		    		} catch (ClassNotFoundException e) {
+		    			Journal.displayTextError(e.getMessage());
+		    			return null;
+		    		} catch (IOException e) {
+		    			Journal.displayTextError(e.getMessage());
+		    			return null;
+		    		}
+				break;
 				default:
 					return null;
 			}
@@ -146,21 +155,41 @@ public class Save {
     	return 0;
     }
     
-    public int openFile() {
+    private int openFile() {
     	try {
     		file = new File(pathFile);
 			inFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
 		} catch(NullPointerException e) {
-			Journal.displayTextError(e.getMessage() + 5);
+			Journal.displayTextError(e.getMessage());
 			return 5; 
 		}catch(FileNotFoundException e) { 
-			Journal.displayTextError(e.getMessage() + 6);
+			Journal.displayTextError(e.getMessage());
 			return 6; 
 		} catch(SecurityException e) {
-			Journal.displayTextError(e.getMessage() + 7);
+			Journal.displayTextError(e.getMessage());
 			return 7; 
 		} catch(IOException e) {
-			Journal.displayTextError(e.getMessage() + 8);
+			Journal.displayTextError(e.getMessage());
+			return 8;
+		}
+    	return 0;
+    }
+    
+    public int openFile(String newPath) {
+    	try {
+    		file = new File(newPath);
+			inFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
+		} catch(NullPointerException e) {
+			Journal.displayTextError(e.getMessage());
+			return 5; 
+		}catch(FileNotFoundException e) { 
+			Journal.displayTextError(e.getMessage());
+			return 6; 
+		} catch(SecurityException e) {
+			Journal.displayTextError(e.getMessage());
+			return 7; 
+		} catch(IOException e) {
+			Journal.displayTextError(e.getMessage());
 			return 8;
 		}
     	return 0;

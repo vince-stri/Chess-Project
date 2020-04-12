@@ -1,7 +1,10 @@
 package model.board;
 
+import model.Army;
 import model.Coordinates;
+import model.character.Character;
 
+@SuppressWarnings("serial")
 public class BoardChess extends Board {
 	
     private Cell cells[][] = null;
@@ -33,6 +36,15 @@ public class BoardChess extends Board {
 	
 	public BoardShape getBoardShape() {
 		return boardShape;
+	}
+	
+	public void loadCharacters(Army[] armies) {
+		Character chara;
+		for(int i = 0; i < armies.length; i++) {
+			for(int j = 0; (chara = armies[i].getCharacter(j)) != null; j++) {
+				chara.getCell(this).setCharacter(chara);
+			}
+		}
 	}
 	
 

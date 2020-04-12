@@ -3,7 +3,8 @@ package model.treasure;
 import model.character.Character;
 
 public abstract class Treasure {
-    private TreasureType treasureType;
+    @SuppressWarnings("unused")
+	private TreasureType treasureType;
 
     protected Treasure(TreasureType treasureType) {
     	this.treasureType = treasureType;

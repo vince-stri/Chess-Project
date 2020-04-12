@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import controller.*;
 import model.board.Board;
 import model.character.Character;
-import model.character.CharacterType;
 import view.Journal;
 import model.board.BoardShape;
 import model.board.Cell;
@@ -14,7 +13,7 @@ import model.board.BoardChess;
 public class GameManager {
 	
 	private int armiesNb;
-    private GameState gameState;
+	private int round;
     private BoardShape boardShape;
     private Board board;
     private Save save;
@@ -24,11 +23,12 @@ public class GameManager {
     
     public GameManager(BoardShape boardShape, String nameFileToSave) {
     	this.boardShape = boardShape;
-    	this.gameState = GameState.RUNNING;
     	this.save = new Save(nameFileToSave);
+    	armiesNb = 2;
     }
 
-    public void setUpBattle() {
+    private void setUpBattle() {
+    	round = 0;
     	switch (boardShape) {
 			default:
 				board = new BoardChess();
@@ -40,21 +40,28 @@ public class GameManager {
     public void startGame() {
     	switch (boardShape) {
     		default:
-    			boolean darkSideAlive = true;
-    			boolean lightSideAlive = true;
-    			int i = 1;
-    			Army playingArmy = armies[i];
+    			boolean darkSideAlive = !armies[0].isEmpty();
+    			boolean lightSideAlive = !armies[1].isEmpty();
+    			boolean stopGame = false;
+    			Army playingArmy = armies[(1 + round) % armiesNb];
     			do {
     				if(input.wantToSave()) {
-    					
+    					save();
+    					stopGame = true;
+    				} else {
+	    				playARound(playingArmy);
+	    				darkSideAlive = !armies[0].isEmpty();
+	    				lightSideAlive = !armies[1].isEmpty();
+	    				playingArmy = armies[(1 + round) % armiesNb];
+	    				Journal.displayText(armies[0].dumpArmy());
+	    				Journal.displayText(armies[1].dumpArmy());
     				}
-    				playARound(playingArmy);
-    				darkSideAlive = !armies[0].isEmpty();
-    				darkSideAlive = !armies[1].isEmpty();
-    				playingArmy = armies[i = ((i + 1) % 2)];
-    				Journal.displayText(armies[0].dumpArmy());
-    				Journal.displayText(armies[1].dumpArmy());
-    			} while(darkSideAlive && lightSideAlive);
+    			} while(darkSideAlive && lightSideAlive && !stopGame);
+    			if(darkSideAlive) {
+    				Journal.displayText("The dark side has won.");
+    			} else {
+    				Journal.displayText("The light side has won.");
+    			}
 			break;
 		}
     }
@@ -76,30 +83,52 @@ public class GameManager {
     			hasToPlayAgain = true;
     		}
     	} while(hasToPlayAgain);
-    }
-
-    public int changeState() {
-    	return 0;
+    	round++;
     }
     
     public void save() {
     	ArrayList<Object> list = new ArrayList<Object>();
+    	list.add((Integer) round);
     	list.add(board);
     	list.add(armies);
     	System.out.println("" + save.save(list));
     }
     
-    public void load() {
+    public int load() {
     	ArrayList<Object> list = save.load();
-    	board = (Board) list.get(0);
-    	armies = (Army[]) list.get(1);
+    	if(list == null) {
+    		return 1;
+    	} else {
+    		round = (Integer) list.get(0);
+    		System.out.println(round);
+    		board = (BoardChess) list.get(1);
+    		armies = (Army[]) list.get(2);
+    		list.clear();
+    		
+    		board.loadCharacters(armies);
+    		for(int i = 0; i < armies.length; i++) {
+    			armies[i].reloadCharacter();
+    			armies[i].setBoard(board);
+    		}
+    		return 0;
+    	}
     }
     
-    public void test_dump() {
-    	if(armies != null) {
-    		System.out.println(armies[0].dumpArmy());
+    public void setUpGame() {
+    	if(input.wantANewGame()) {
+    		setUpBattle();
     	} else {
-    		System.out.println("you noob");
+    		while(load() != 0) {
+    			if(input.wantToRecoverFile()) {
+    				String path = input.getAPath();
+    				save.openFile(path);
+    			} else {
+    				setUpBattle();
+    				break;
+    			}
+    		}
+    		Journal.displayText(armies[0].dumpArmy());
+			Journal.displayText(armies[1].dumpArmy());
     	}
     }
     

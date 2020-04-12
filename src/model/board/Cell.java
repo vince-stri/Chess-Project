@@ -5,6 +5,7 @@ import java.io.Serializable;
 import model.Coordinates;
 import model.character.Character;
 
+@SuppressWarnings("serial")
 public class Cell implements Serializable {
     private CellType cellType;
     private Coordinates coordinates;

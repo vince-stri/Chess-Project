@@ -9,11 +9,11 @@ import model.board.Board;
 import model.board.Cell;
 import model.character.Character;
 
+@SuppressWarnings("serial")
 public class Army implements Serializable {
 	
     private String name;
     private int fightersNb;
-    private int maxFightersNb;
 
     public transient Board board;
     public ArrayList<Character> fightersAlive = new ArrayList<Character>();
@@ -31,7 +31,7 @@ public class Army implements Serializable {
 
     public int rmCharacter(Character character) {
     	if(fightersAlive.contains(character)) {
-    		character.getCell().setCharacter(null);
+    		character.getCell(board).setCharacter(null);
     		fightersAlive.remove(character);
     		fightersNb--;
     		return 1;
@@ -85,6 +85,13 @@ public class Army implements Serializable {
     
     public void setBoard(Board board) {
     	this.board = board;
+    }
+    
+    public void reloadCharacter() {
+    	Iterator<Character> fightersAliveIterator = fightersAlive.iterator();
+    	while(fightersAliveIterator.hasNext()) {
+    		fightersAliveIterator.next().setArmy(this);
+    	}
     }
 
 }

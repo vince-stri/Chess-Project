@@ -1,6 +1,5 @@
 package model.treasure;
 
-import model.treasure.TreasureType;
 import model.character.Character;
 
 public class Weapon extends Treasure {
