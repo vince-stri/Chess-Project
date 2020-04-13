@@ -14,6 +14,9 @@ public abstract class Board implements Serializable{
 	
 	public abstract Cell getACell(Coordinates coord);
 	public abstract int getWidthsNb();
-	public abstract BoardShape getBoardShape();
     public abstract void loadCharacters(Army[] armies);
+    
+    public BoardShape getBoardShape() {
+    	return boardShape;
+    }
 }

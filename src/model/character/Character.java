@@ -13,33 +13,30 @@ import model.treasure.Treasure;
 import view.Journal;
 
 @SuppressWarnings("serial")
-public class Character implements Serializable{
+public abstract class Character implements Serializable{
 	
-    private int healthPoints;
-    private int maxHP;
-    private int damagePoints;
-    private int armor;
-    private int maxArmor;
-    @SuppressWarnings("unused")
-	private CharacterType type;
-    private String name;
-    @SuppressWarnings("unused")
-	private Coordinates[] moves;
-    private Coordinates coords;
-    private transient Army army;
+    protected int healthPoints;
+    protected int maxHP;
+    protected int damagePoints;
+    protected int armor;
+    protected int maxArmor;
+    protected Board board;
+    protected String name;
+    protected Coordinates coords;
+    protected transient Army army;
     
     public List<Treasure> treasures = new ArrayList<Treasure> ();
     
-    public Character(int maxHP, String name, Coordinates coords, Army army, int maxArmor, CharacterType type, int damagePoints) {
+    public Character(int maxHP, String name, Coordinates coords, Army army, int maxArmor, int damagePoints, Board board) {
     	this.maxHP = maxHP;
     	this.healthPoints = maxHP;
     	this.name = name;
     	this.army = army;
     	this.maxArmor = maxArmor;
     	this.armor = 0;
-    	this.type = type;
     	this.damagePoints = damagePoints;
     	this.coords = coords;
+    	this.board = board;
     }
     
     private void goToCell(Cell destination) {
@@ -157,5 +154,7 @@ public class Character implements Serializable{
     public Coordinates getCoordinates() {
     	return coords;
     }
+    
+    public abstract boolean isAPossibleMove(Cell destination);
 
 }
