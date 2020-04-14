@@ -4,146 +4,48 @@ import model.*;
 import model.board.Board;
 import model.board.Cell;
 import model.character.Character;
-import view.Journal;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
+/**
+ * Getting inputs abstract class
+ * @version 1.0
+ */
+public abstract class InputController {
 
-public class InputController {
-
-	Scanner myScanner = new Scanner(System.in);
+	/**
+	 * Get a Character from an army
+	 * @param army the army to select the character
+	 * @return the wanted character
+	 */
+	public abstract Character getCharacterToMove(Army army);
 	
-    public Character getCharacterToMove(Army army) {
-    	Journal.displayText(army.dumpArmy());
-    	Journal.displayText("\nPlease, select the character you want to move by giving the number printed between [] on its line:");
-    	boolean isInteger, isCorrect;
-    	int index = 0;
-    	Character chara = null;
-    	do {
-    		isInteger = true;
-    		try {
-    			index = myScanner.nextInt();	
-			} catch (InputMismatchException e) {
-				isInteger = false;
-				Journal.displayText("Would you select a NUMBER please:");
-			} finally {
-				myScanner.nextLine();			
-			}
-    		
-    		if(isInteger) {
-    			chara = army.getCharacter(index);
-    			if(chara == null) {
-    				isCorrect = false;
-    				Journal.displayText("Would you select a number CORRESPONDING to one of the propositions above?");
-    			} else {
-    				isCorrect = true;
-    			}
-    		} else {
-    			isCorrect = false;
-    		}
-    	} while(!isCorrect);
-    	return chara;
-    }
-    
-    public Cell getRecquiredCell(Board board) {
-    	switch (board.getBoardShape()) {
-    		default:
-    			Journal.displayText("Please, select the cell where you want to move on your character:\n\tx:");
-    			int x = 0, y = 0;
-    			boolean isInteger, isCorrect;
-    			/* get x */
-    			do {
-    				isInteger = true;
-    				isCorrect = true;
-    				try {
-    					x = myScanner.nextInt();	
-    				} catch (InputMismatchException e) {
-    					isInteger = false;
-    					isCorrect = false;
-    					Journal.displayText("Would you select a NUMBER please:");
-    				} finally {
-    					myScanner.nextLine();			
-    				}
-    				if(isInteger) {
-    					if(x < 0 || x >= board.getWidthsNb()) {
-    						Journal.displayText("Would you select a VALID x-coordinate belonging to [0," + board.getWidthsNb() + "[:");
-    						isCorrect = false;
-    					}
-    				}
-    			} while(!isCorrect);
-    			/* get y */
-    			Journal.displayText("\ty:");
-    			do {
-    				isInteger = true;
-    				isCorrect = true;
-    				try {
-    					y = myScanner.nextInt();	
-    				} catch (InputMismatchException e) {
-    					isInteger = false;
-    					isCorrect = false;
-    					Journal.displayText("Would you select a NUMBER please:");
-    				} finally {
-    					myScanner.nextLine();			
-    				}
-    				if(isInteger) {
-    					if(y < 0 || y >= board.getWidthsNb()) {
-    						Journal.displayText("Would you select a VALID y-coordinate belonging to [0," + board.getWidthsNb() + "[:");
-    						isCorrect = false;
-    					}
-    				}
-    			} while(!isCorrect);
-    			return board.getACell(new Coordinates(x, y));
-		}
-    }
-    
-    public boolean wantToSave() {
-    	String str;
-    	boolean error;
-    	do {
-    		error = false;
-			Journal.displayText("Would you stop your game here and come back later? [y or n]");
-    		str = myScanner.nextLine();
-    		if(!str.equals("y") && !str.equals("n")) {
-    			error = true;
-    			Journal.displayText("Would you enter a CORRECT character?");
-    		}
-    	} while(error);
-    	return str.equals("y");
-    }
-    
-    public boolean wantToRecoverFile() {
-    	String str;
-    	boolean error;
-    	do {
-    		error = false;
-			Journal.displayText("The save file doesn't exist.\\nWould you like to recover it? (if not a new game will be started) [y or n]");
-    		str = myScanner.nextLine();
-    		if(!str.equals("y") && !str.equals("n")) {
-    			error = true;
-    			Journal.displayText("Would you enter a CORRECT character?");
-    		}
-    	} while(error);
-    	return str.equals("y");
-    }
-    
-    public boolean wantANewGame() {
-    	String str;
-    	boolean error;
-    	do {
-    		error = false;
-			Journal.displayText("Would you like to start a new game or to continue a previous one? [s or c]");
-    		str = myScanner.nextLine();
-    		if(!str.equals("s") && !str.equals("c")) {
-    			error = true;
-    			Journal.displayText("Would you enter a CORRECT character?");
-    		}
-    	} while(error);
-    	return str.equals("s");
-    }
-    
-    public String getAPath() {
-    	Journal.displayText("Please, indicate a path:");
-    	return myScanner.nextLine();
-    }
-
+	/**
+	 * Get a cell from the board
+	 * @param board the board to select the cell
+	 * @return the wanted board
+	 */
+	public abstract Cell getRecquiredCell(Board board);
+	
+	/**
+	 * Check if the player wants to save or not
+	 * @return true if the player wants to save, else otherwise
+	 */
+	public abstract boolean wantToSave();
+	
+	/**
+	 * Check if the player wants to recover the save file
+	 * @return true if the player wants to recover
+	 */
+	public abstract boolean wantToRecoverFile();
+	
+	/**
+	 * Check if the player wants to create a game from scratch or load it from a file
+	 * @return true if the player wants to create a game from scratch
+	 */
+	public abstract boolean wantANewGame();
+	
+	/**
+	 * Get a path
+	 * @return the got path
+	 */
+	public abstract String getAPath();
 }

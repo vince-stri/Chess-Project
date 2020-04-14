@@ -5,18 +5,31 @@ import model.Coordinates;
 import model.board.Board;
 import model.board.Cell;
 
+/**
+ * Class corresponding to a Queen inherited from the Character class
+ * @version 1.0
+ */
 @SuppressWarnings("serial")
 public class Queen extends Character{
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Queen(int maxHP, String name, Coordinates coords, Army army, int maxArmor, int damagePoints, Board board) {
 		super(maxHP, name, coords, army, maxArmor, damagePoints, board);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isAPossibleMove(Cell destination) {
 		switch (board.getBoardShape()) {
 			default:
 			int deltaX, deltaY, absX, absY;
 			Coordinates absolute = destination.getCoordinates();
+			/*
+			 * Implements a combination of the rook and the bishop movements
+			 */
 			deltaX = absolute.getX() - coords.getX();
 			deltaY = absolute.getY() - coords.getY();
 			absX = Math.abs(deltaX);
@@ -48,6 +61,9 @@ public class Queen extends Character{
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public String dumpCharacter( ) {
 		return "I'm " + name + ", I'm a Queen fighting for the " + army + " army and I'm located at " + getCoordinates();
 	}

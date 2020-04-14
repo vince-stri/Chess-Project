@@ -9,8 +9,18 @@ import model.character.Pawn;
 import model.character.Queen;
 import model.character.Rook;
 
+/**
+ * An abstract class that set up all the components of the game according to the type of
+ * game wanted. 
+ * @version 1.0
+ */
 public abstract class ArmyComponents {
 
+	/**
+	 * Generate the armies for a classical chess board game.
+	 * @param board the board where the characters will move
+	 * @return the statically created armies
+	 */
 	public static Army[] generateChessBoardArmies(Board board) {
 		Army armies[] = new Army[2];
 		Character character;

@@ -10,23 +10,61 @@ import model.board.BoardShape;
 import model.board.Cell;
 import model.board.BoardChess;
 
+/**
+ * The game manager class which supervises all the game
+ * @version 1.0
+ */
 public class GameManager {
 	
+	/**
+	 * The number of armies
+	 */
 	private int armiesNb;
+	
+	/**
+	 * The actual round of game
+	 */
 	private int round;
+	
+	/**
+	 * The type of board where the game takes place
+	 */
     private BoardShape boardShape;
+    
+    /**
+     * The board object where the game takes place
+     */
     private Board board;
+    
+    /**
+     * The save object
+     */
     private Save save;
+    
+    /**
+     * The armies playing the game
+     */
     private Army armies[];
-    private InputController input = new InputController();
     
+    /**
+     * The object used to receive inputs from the players
+     */
+    private InputController input = new InputTextualController();
     
+    /**
+     * Constructor of GameManager
+     * @param boardShape the type of board
+     * @param nameFileToSave the path of the save file
+     */
     public GameManager(BoardShape boardShape, String nameFileToSave) {
     	this.boardShape = boardShape;
     	this.save = new Save(nameFileToSave);
     	armiesNb = 2;
     }
 
+    /**
+     * Set up the game components according to the type of game wanted
+     */
     private void setUpBattle() {
     	round = 0;
     	switch (boardShape) {
@@ -37,6 +75,9 @@ public class GameManager {
 		}
     }
     
+    /**
+     * Start the game until one the players wins
+     */
     public void startGame() {
     	switch (boardShape) {
     		default:
@@ -53,6 +94,9 @@ public class GameManager {
 	    				darkSideAlive = !armies[0].isEmpty();
 	    				lightSideAlive = !armies[1].isEmpty();
 	    				playingArmy = armies[(1 + round) % armiesNb];
+	    				/**
+	    				 * display the armies
+	    				 */
 	    				Journal.displayText(armies[0].dumpArmy());
 	    				Journal.displayText(armies[1].dumpArmy());
     				}
@@ -66,6 +110,10 @@ public class GameManager {
 		}
     }
 
+    /**
+     * Play a round of the game
+     * @param playingArmy the army playing the game
+     */
 	private void playARound(Army playingArmy) {
     	Character chara = null;
     	Cell cell = null;
@@ -89,6 +137,9 @@ public class GameManager {
     	round++;
     }
     
+	/**
+	 * Save the game choosing the elements to save 
+	 */
     public void save() {
     	ArrayList<Object> list = new ArrayList<Object>();
     	list.add((Integer) round);
@@ -97,6 +148,10 @@ public class GameManager {
     	System.out.println("" + save.save(list));
     }
     
+    /**
+     * Load the game from a save file
+     * @return the list of objects loaded
+     */
     public int load() {
     	ArrayList<Object> list = save.load();
     	if(list == null) {
@@ -116,6 +171,9 @@ public class GameManager {
     	}
     }
     
+    /**
+     * Start the game from scratch or from a save
+     */
     public void setUpGame() {
     	if(input.wantANewGame()) {
     		setUpBattle();
@@ -129,9 +187,9 @@ public class GameManager {
     				break;
     			}
     		}
-    		Journal.displayText(armies[0].dumpArmy());
-			Journal.displayText(armies[1].dumpArmy());
     	}
+    	Journal.displayText(armies[1].dumpArmy());
+    	Journal.displayText(armies[0].dumpArmy());
     }
     
 
