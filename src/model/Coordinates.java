@@ -19,6 +19,10 @@ public class Coordinates implements Serializable {
     	this.y = y;
     	this.z = z;
     }
+    
+    public boolean equals(Coordinates coords) {
+    	return this.x == coords.getX() && this.y == coords.getY() && this.z == coords.getZ();
+    }
 
     public boolean equals(int x, int y) {
 		return this.x == x && this.y == y; 

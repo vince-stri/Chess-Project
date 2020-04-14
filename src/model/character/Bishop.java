@@ -1,6 +1,7 @@
 package model.character;
 
 import model.Army;
+import java.lang.Math;
 import model.Coordinates;
 import model.board.Board;
 import model.board.Cell;
@@ -15,11 +16,27 @@ public class Bishop extends Character{
 	public boolean isAPossibleMove(Cell destination) {
 		switch (board.getBoardShape()) {
 			default:
-			int deltaX, deltaY;
+			int absX, absY, xSign, ySign;
 			Coordinates absolute = destination.getCoordinates();
-			deltaX = absolute.getX() - coords.getX();
-			deltaY = absolute.getY() - coords.getY();
-			return deltaX == deltaY;
+			xSign = absolute.getX() - coords.getX();
+			ySign = absolute.getY() - coords.getY();
+			absX = Math.abs(xSign);
+			absY = Math.abs(ySign);
+			xSign /= absX;
+			ySign /= absY;
+			if(absX == absY) {
+				for(int i = 1; i < absX; i++) {
+					if(board.getACell(new Coordinates(coords.getX() + (xSign * i), coords.getY() + (ySign * i))).getCharacter() != null) {
+						return false;
+					}
+				} return true;
+			} else {
+				return false;
+			}
 		}
+	}
+	
+	public String dumpCharacter( ) {
+		return "I'm " + name + ", I'm a Bishop fighting for the " + army + " army and I'm located at " + getCoordinates();
 	}
 }

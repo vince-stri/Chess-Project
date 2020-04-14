@@ -3,7 +3,6 @@ package model;
 import model.board.Board;
 import model.character.Bishop;
 import model.character.Character;
-import model.character.CharacterType;
 import model.character.King;
 import model.character.Knight;
 import model.character.Pawn;
@@ -53,31 +52,31 @@ public abstract class ArmyComponents {
 		armies[0].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		
-		character = new Rook(150, "Count Dooku", new Coordinates(0, 7), armies[0], 20, 25, board);
+		character = new Rook(150, "Count Dooku", new Coordinates(7, 0), armies[0], 20, 25, board);
 		armies[0].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		
-		character = new Knight(150, "Darth Maul", new Coordinates(0, 1), armies[0], 40, 40, board);
+		character = new Knight(150, "Darth Maul", new Coordinates(1, 0), armies[0], 40, 40, board);
 		armies[0].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		
-		character = new Knight(150, "Kylo Ren", new Coordinates(0, 6), armies[0], 40, 40, board);
+		character = new Knight(150, "Kylo Ren", new Coordinates(6, 0), armies[0], 40, 40, board);
 		armies[0].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		
-		character = new Bishop(300, "Darth Plagueis", new Coordinates(0, 2), armies[0], 0, 30, board);
+		character = new Bishop(300, "Darth Plagueis", new Coordinates(2, 0), armies[0], 0, 30, board);
 		armies[0].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		
-		character = new Bishop(300, "Snoke", new Coordinates(0, 5), armies[0], 0, 30, board);
+		character = new Bishop(300, "Snoke", new Coordinates(5, 0), armies[0], 0, 30, board);
 		armies[0].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		
-		character = new Queen(300, "Darth Vader", new Coordinates(0, 3), armies[0], 100, 50, board);
+		character = new Queen(300, "Darth Vader", new Coordinates(3, 0), armies[0], 100, 50, board);
 		armies[0].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		
-		character = new King(200, "Dark Plagueis", new Coordinates(0, 4), armies[0], 200, 35, board);
+		character = new King(200, "Dark Plagueis", new Coordinates(4, 0), armies[0], 200, 35, board);
 		armies[0].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		

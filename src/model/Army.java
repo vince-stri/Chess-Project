@@ -43,15 +43,19 @@ public class Army implements Serializable {
     }
 
     public int moveCharacter(Character movingCharacter, Cell cell) {
-    	final int addRetValue = 1;
-    	if(cell.isEmpty()) {
-    		return movingCharacter.goTo(cell, false) + addRetValue;
+    	final int addRetValue = 2;
+    	if(movingCharacter.isAPossibleMove(cell)) {
+	    	if(cell.isEmpty()) {
+	    		return movingCharacter.goTo(cell, false) + addRetValue;
+	    	} else {
+	    		if(cell.getCharacter().getArmy() != movingCharacter.getArmy()) {
+	    			return movingCharacter.goTo(cell, true) + addRetValue;
+	    		} else {
+	    			return 0;
+	    		}
+	    	}
     	} else {
-    		if(cell.getCharacter().getArmy() != movingCharacter.getArmy()) {
-    			return movingCharacter.goTo(cell, true) + addRetValue;
-    		} else {
-    			return 0;
-    		}
+    		return 1;
     	}
     }
     
@@ -89,8 +93,11 @@ public class Army implements Serializable {
     
     public void reloadCharacter() {
     	Iterator<Character> fightersAliveIterator = fightersAlive.iterator();
+    	Character chara;
     	while(fightersAliveIterator.hasNext()) {
-    		fightersAliveIterator.next().setArmy(this);
+    		chara = fightersAliveIterator.next(); 
+    		chara.setArmy(this);
+    		chara.setBoard(board);
     	}
     }
 

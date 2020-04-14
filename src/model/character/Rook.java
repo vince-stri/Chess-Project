@@ -20,8 +20,29 @@ public class Rook extends Character {
 			Coordinates absolute = destination.getCoordinates();
 			deltaX = absolute.getX() - coords.getX();
 			deltaY = absolute.getY() - coords.getY();
-			return deltaX == 0 || deltaY == 0;
+			if(deltaX == 0) {
+				int ySign = deltaY / Math.abs(deltaY);
+				for(int i = 1; i < deltaY; i++) {
+					Coordinates temp = new Coordinates(coords.getX(), coords.getY() + (ySign * i));
+					if(board.getACell(temp).getCharacter() != null) {
+						return false;
+					}
+				} return true;
+			} else if(deltaY == 0) {
+				int xSign = deltaX / Math.abs(deltaX);
+				for(int i = 1; i < deltaX; i++) {
+					if(board.getACell(new Coordinates(xSign * i, coords.getY())).getCharacter() != null) {
+						return false;
+					}
+				} return true;
+			} else {
+				return false;
+			}
 		}
+	}
+	
+	public String dumpCharacter( ) {
+		return "I'm " + name + ", I'm a Rook fighting for the " + army + " army and I'm located at " + getCoordinates();
 	}
 
 }

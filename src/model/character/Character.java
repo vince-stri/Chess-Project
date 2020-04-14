@@ -20,9 +20,9 @@ public abstract class Character implements Serializable{
     protected int damagePoints;
     protected int armor;
     protected int maxArmor;
-    protected Board board;
     protected String name;
     protected Coordinates coords;
+    protected transient Board board;
     protected transient Army army;
     
     public List<Treasure> treasures = new ArrayList<Treasure> ();
@@ -143,9 +143,7 @@ public abstract class Character implements Serializable{
     	return name;
     }
     
-    public String dumpCharacter() {
-    	return "I'm " + name + " fighting for the " + army + " army and I'm located at " + getCoordinates();
-    }
+    public abstract String dumpCharacter();
     
     public int getHealthPoints() {
     	return healthPoints;
@@ -153,6 +151,10 @@ public abstract class Character implements Serializable{
     
     public Coordinates getCoordinates() {
     	return coords;
+    }
+    
+    public void setBoard(Board board) {
+    	this.board = board;
     }
     
     public abstract boolean isAPossibleMove(Cell destination);

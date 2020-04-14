@@ -81,6 +81,9 @@ public class GameManager {
     		if(ret == 0) {
     			Journal.displayText("You cannot go on a cell where an ally is.");
     			hasToPlayAgain = true;
+    		} else if(ret == 1){
+    			Journal.displayText("Such a character cannot move like this.");
+    			hasToPlayAgain = true;
     		}
     	} while(hasToPlayAgain);
     	round++;
@@ -100,15 +103,14 @@ public class GameManager {
     		return 1;
     	} else {
     		round = (Integer) list.get(0);
-    		System.out.println(round);
     		board = (BoardChess) list.get(1);
     		armies = (Army[]) list.get(2);
     		list.clear();
     		
     		board.loadCharacters(armies);
     		for(int i = 0; i < armies.length; i++) {
-    			armies[i].reloadCharacter();
     			armies[i].setBoard(board);
+    			armies[i].reloadCharacter();
     		}
     		return 0;
     	}

@@ -15,14 +15,17 @@ public class King extends Character {
 	@Override
 	public boolean isAPossibleMove(Cell destination) {
 		Coordinates absolute = destination.getCoordinates();
-		return absolute.equals(new Coordinates(coords.getX() + 1, coords.getY()))
-				|| absolute.equals(new Coordinates(coords.getX() + 1, coords.getY() - 1))
-				|| absolute.equals(new Coordinates(coords.getX() + 1, coords.getY() + 1))
-				|| absolute.equals(new Coordinates(coords.getX() - 1, coords.getY() + 1))
-				|| absolute.equals(new Coordinates(coords.getX() - 1, coords.getY() - 1))
-				|| absolute.equals(new Coordinates(coords.getX() - 1, coords.getY()))
-				|| absolute.equals(new Coordinates(coords.getX(), coords.getY() - 1))
-				|| absolute.equals(new Coordinates(coords.getX(), coords.getY() + 1));
+		return absolute.equals(coords.getX() + 1, coords.getY())
+				|| absolute.equals(coords.getX() + 1, coords.getY() - 1)
+				|| absolute.equals(coords.getX() + 1, coords.getY() + 1)
+				|| absolute.equals(coords.getX() - 1, coords.getY() + 1)
+				|| absolute.equals(coords.getX() - 1, coords.getY() - 1)
+				|| absolute.equals(coords.getX() - 1, coords.getY())
+				|| absolute.equals(coords.getX(), coords.getY() - 1)
+				|| absolute.equals(coords.getX(), coords.getY() + 1);
 	}
 
+	public String dumpCharacter( ) {
+		return "I'm " + name + ", I'm the King fighting for the " + army + " army and I'm located at " + getCoordinates();
+	}
 }
