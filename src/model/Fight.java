@@ -9,6 +9,7 @@ import model.treasure.Weapon;
 /**
  * The Fight class to make two characters fight 
  * @version 1.0
+ * @author Hugo BONNET
  */
 public class Fight {
 	

@@ -5,6 +5,7 @@ import model.character.Character;
 /**
  * Class corresponding to an Armor inherited from the Treasure class
  * @version 1.0
+ * @author Hugo BONNET
  */
 public class Armor extends Treasure {
 

@@ -13,6 +13,7 @@ import view.Journal;
 /**
  * Inherited class from InputController interacting with the player through a terminal
  * @version 1.0
+ * @author axel gauthier
  */
 public class InputTextualController extends InputController {
 
@@ -31,37 +32,25 @@ public class InputTextualController extends InputController {
 	/**
 	 * {@inheritDoc}
 	 */
-    public Character getCharacterToMove(Army army) {
-    	Journal.displayText(army.dumpArmy());
-    	Journal.displayText("\nPlease, select the character you want to move by giving the number printed between [] on its line:");
-    	boolean isInteger, isCorrect;
-    	int index = 0;
-    	Character chara = null;
-    	do {
-    		isInteger = true;
-    		try {
-    			index = myScanner.nextInt();	
-			} catch (InputMismatchException e) {
-				isInteger = false;
-				Journal.displayText("Would you select a NUMBER please:");
-			} finally {
-				myScanner.nextLine();			
-			}
-    		
-    		if(isInteger) {
-    			chara = army.getCharacter(index);
-    			if(chara == null) {
-    				isCorrect = false;
-    				Journal.displayText("Would you select a number CORRESPONDING to one of the propositions above?");
-    			} else {
-    				isCorrect = true;
-    			}
-    		} else {
-    			isCorrect = false;
-    		}
-    	} while(!isCorrect);
-    	return chara;
-    }
+	 public Character getCharacterToMove(Army army) {
+	    	Journal.displayText(army.dumpArmy());
+	    	Journal.displayText("\nPlease, select the character you want to move by giving the character printed between [] on its line:");
+	    	boolean isCorrect = true;
+	    	Character chara = null;
+	    	char c;
+	    	do {
+	    		if(!isCorrect) {
+	    			Journal.displayText("Please would you select a correct character!");
+	    		}
+	    		isCorrect = true;
+				c = myScanner.next().charAt(0);
+				if((chara = army.getCharacter(c)) == null) {
+	    			isCorrect = false;
+	    		}
+	    	} while(!isCorrect);
+	    	System.out.println(chara.dumpCharacter());
+	    	return chara;
+	    }
     
     /**
 	 * {@inheritDoc}
@@ -140,7 +129,7 @@ public class InputTextualController extends InputController {
     	boolean error;
     	do {
     		error = false;
-			Journal.displayText("The save file doesn't exist.\\nWould you like to recover it? (if not a new game will be started) [y or n]");
+			Journal.displayText("The save file doesn't exist.\nWould you like to recover it? (if not a new game will be started) [y or n]");
     		str = myScanner.nextLine();
     		if(!str.equals("y") && !str.equals("n")) {
     			error = true;

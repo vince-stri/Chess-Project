@@ -2,6 +2,7 @@ package model.treasure;
 
 /**
  *  Describes the different types of a Treasure
+ *  @author Hugo BONNET
  */
 public enum TreasureType {
 	/**

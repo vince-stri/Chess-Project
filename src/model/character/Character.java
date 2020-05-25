@@ -14,6 +14,7 @@ import view.Journal;
 
 /**
  * It corresponds to the tokens that will be moved on the board during the game.
+ * @author axel gauthier
  * @version 1.0
  */
 @SuppressWarnings("serial")
@@ -54,6 +55,11 @@ public abstract class Character implements Serializable{
     protected Coordinates coords;
     
     /**
+     * The symbol representing the character on a terminal display
+     */
+    private char symbol;
+    
+    /**
      * The board where the character is moving on
      */
     protected transient Board board;
@@ -78,7 +84,7 @@ public abstract class Character implements Serializable{
      * @param damagePoints the damage points
      * @param board the board where the character is playing on
      */
-    public Character(int maxHP, String name, Coordinates coords, Army army, int maxArmor, int damagePoints, Board board) {
+    public Character(int maxHP, String name, Coordinates coords, Army army, int maxArmor, int damagePoints, Board board, char symbol) {
     	this.maxHP = maxHP;
     	this.healthPoints = maxHP;
     	this.name = name;
@@ -88,6 +94,7 @@ public abstract class Character implements Serializable{
     	this.damagePoints = damagePoints;
     	this.coords = coords;
     	this.board = board;
+    	this.symbol = symbol;
     }
     
     /**
@@ -95,6 +102,8 @@ public abstract class Character implements Serializable{
      * @param destination the destination cell
      */
     private void goToCell(Cell destination) {
+    	move();
+    	board.getACell(coords).setCharacter(null);
     	destination.setCharacter(this);
     	this.coords = destination.getCoordinates();
     }
@@ -285,6 +294,14 @@ public abstract class Character implements Serializable{
     }
     
     /**
+     * Getter of symbol
+     * @return the required symbol
+     */
+    public char getSymbol() {
+    	return symbol;
+    }
+    
+    /**
      * Setter of board
      * @param board the board to set
      */
@@ -304,4 +321,9 @@ public abstract class Character implements Serializable{
      * @return the character name, its type, the army which its belongs and its coordinates
      */
     public abstract String dumpCharacter();
+    
+    /**
+     * Move the character
+     */
+    public abstract void move();
 }

@@ -6,6 +6,7 @@ import model.Coordinates;
 
 /**
  * An abstract class to factorize the different potential boards that would be implemented
+ * @author vincent acila
  * @version 1.0
  */
 @SuppressWarnings("serial")

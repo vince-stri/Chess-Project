@@ -6,6 +6,7 @@ import java.io.Serializable;
 /**
  * A class giving coordinates in a discrete 3D space environment 
  * @version 1.0
+ * @author Hugo BONNET
  */
 
 @SuppressWarnings("serial")

@@ -2,6 +2,7 @@ package model.character;
 
 /**
  * Describes the different types of characters existing
+ * @author vincent acila
  */
 public enum CharacterType {
 	/**

@@ -13,6 +13,7 @@ import model.board.BoardChess;
 /**
  * The game manager class which supervises all the game
  * @version 1.0
+ * @author axel gauthier
  */
 public class GameManager {
 	
@@ -97,14 +98,19 @@ public class GameManager {
 	    				/**
 	    				 * display the armies
 	    				 */
+	    				Journal.displayBoard(board);
+	    				/*
 	    				Journal.displayText(armies[0].dumpArmy());
 	    				Journal.displayText(armies[1].dumpArmy());
+	    				*/
     				}
     			} while(darkSideAlive && lightSideAlive && !stopGame);
-    			if(darkSideAlive) {
-    				Journal.displayText("The dark side has won.");
-    			} else {
+    			if(stopGame) {
+    				Journal.displayText("We hope to see you back soon.");
+    			} else if(lightSideAlive){
     				Journal.displayText("The light side has won.");
+    			} else {
+    				Journal.displayText("The dark side has won.");
     			}
 			break;
 		}
@@ -145,7 +151,7 @@ public class GameManager {
     	list.add((Integer) round);
     	list.add(board);
     	list.add(armies);
-    	System.out.println("" + save.save(list));
+    	save.save(list);
     }
     
     /**
@@ -188,8 +194,7 @@ public class GameManager {
     			}
     		}
     	}
-    	Journal.displayText(armies[1].dumpArmy());
-    	Journal.displayText(armies[0].dumpArmy());
+    	Journal.displayBoard(board);
     }
     
 

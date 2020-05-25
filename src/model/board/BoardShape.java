@@ -2,6 +2,7 @@ package model.board;
 
 /**
  * Describes the different types corresponding to a Board.
+ * @author Hugo Bonnet
  */
 public enum BoardShape {
 	/**

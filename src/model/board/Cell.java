@@ -8,6 +8,7 @@ import model.character.Character;
 /**
  * A class corresponding to the cell composing a board.
  * @version 1.0
+ * @author axel gauthier
  */
 @SuppressWarnings("serial")
 public class Cell implements Serializable {

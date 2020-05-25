@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import model.board.BoardChess;
-import sun.swing.FilePane;
 import view.Journal; 
 
 /**
  * Save class to save and load the game
  * @version 1.0
+ * @author axel gauthier
  */
 public class Save {
 	
