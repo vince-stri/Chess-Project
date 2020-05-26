@@ -87,10 +87,6 @@ public class GameManager {
     			boolean stopGame = false;
     			Army playingArmy = armies[(1 + round) % armiesNb];
     			do {
-    				if(input.wantToSave()) {
-    					save();
-    					stopGame = true;
-    				} else {
 	    				playARound(playingArmy);
 	    				darkSideAlive = !armies[0].isEmpty();
 	    				lightSideAlive = !armies[1].isEmpty();
@@ -103,7 +99,10 @@ public class GameManager {
 	    				Journal.displayText(armies[0].dumpArmy());
 	    				Journal.displayText(armies[1].dumpArmy());
 	    				*/
-    				}
+	    				if(input.wantToSave()) {
+	    					save();
+	    					stopGame = true;
+	    				} 
     			} while(darkSideAlive && lightSideAlive && !stopGame);
     			if(stopGame) {
     				Journal.displayText("We hope to see you back soon.");
