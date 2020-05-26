@@ -34,7 +34,9 @@ public abstract class Character implements Serializable{
      */
     protected int damagePoints;
     
-    /**
+    
+
+	/**
      * The current armor points of the character
      */
     protected int armor;
@@ -177,7 +179,7 @@ public abstract class Character implements Serializable{
      * @return true if the character is considered as dead and false if not
      */
     public boolean takeDamages(int damages) {
-    	Journal.displayText(" DAMAGES " + damages);
+    	//Journal.displayText(" DAMAGES " + damages);
     	if(armor > damages) {
     		armor -= damages;
     		return false;
@@ -292,6 +294,13 @@ public abstract class Character implements Serializable{
     public Coordinates getCoordinates() {
     	return coords;
     }
+    /**
+     * Getter to damagePoints
+     * @return the required damage
+     */
+    public int getDamagePoints() {
+		return damagePoints;
+	}
     
     /**
      * Getter of symbol
