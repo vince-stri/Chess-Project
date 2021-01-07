@@ -8,6 +8,7 @@ import model.character.Character;
 /**
  * Getting inputs abstract class
  * @version 1.0
+ * @author axel gauthier
  */
 public abstract class InputController {
 

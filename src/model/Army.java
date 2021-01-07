@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 /**
  * Class regrouping all the characters belonging to one side of the game
+ * @author axel gauthier
  */
 @SuppressWarnings("serial")
 public class Army implements Serializable {
@@ -118,6 +119,15 @@ public class Army implements Serializable {
     	return chara;
     }
     
+    public Character getCharacter(char c) {
+    	int i = 0;
+    	for(Character elem : fightersAlive) {
+    		if(elem.getSymbol() == c) {
+    			return getCharacter(i);
+    		} i++;
+    	} return null;
+    }
+    
     /**
      * Override of the toString method
      * @return the name of the army
@@ -134,8 +144,10 @@ public class Army implements Serializable {
     public String dumpArmy() {
     	String str = "The " + name + " army has " + fightersNb + " alive and they are:\n";
     	Iterator<Character> fightersAliveIterator = fightersAlive.iterator();
-    	for(int i = 0; fightersAliveIterator.hasNext(); i++) {
-    		str += "\t[" + i + "] " + fightersAliveIterator.next().dumpCharacter() + "\n";
+    	Character chara;
+    	while(fightersAliveIterator.hasNext()) {
+    		chara = fightersAliveIterator.next();
+    		str += "\t[" + chara.getSymbol() + "] " + chara.dumpCharacter() + "\n";
     	}
     	return str;
     }

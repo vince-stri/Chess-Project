@@ -5,6 +5,7 @@ import java.util.Random;
 /**
  * A role-play class to generate random numbers
  * @version 1.0
+ * @author Hugo Bonnet
  */
 public class Dice {
 	

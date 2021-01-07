@@ -7,6 +7,7 @@ import model.board.Board;
 
 /**
  * Class corresponding to a Pawn inherited from the Character class
+ * @author axel gauthier
  * @version 1.0
  */
 @SuppressWarnings("serial")
@@ -19,8 +20,8 @@ public class Pawn extends Character {
 	 * {@inheritDoc}
 	 * @param direction the direction where the pawn is supposed to go
 	 */
-	public Pawn(int maxHP, String name, Coordinates coords, Army army, int maxArmor, int damagePoints, Board board, Coordinates direction) {
-		super(maxHP, name, coords, army, maxArmor, damagePoints, board);
+	public Pawn(int maxHP, String name, Coordinates coords, Army army, int maxArmor, int damagePoints, Board board, Coordinates direction, char symbol) {
+		super(maxHP, name, coords, army, maxArmor, damagePoints, board, symbol);
 		
 		this.direction = direction;
 	}
@@ -41,11 +42,8 @@ public class Pawn extends Character {
 					/*
 					 * In this case it can move two cells forward and it's not its first move anymore
 					 */
-					firstMove = false;
 					return true;
 				}
-				
-				firstMove = false;
 				
 				/*
 				 * Verify if the pawn moves just in front of it
@@ -81,5 +79,11 @@ public class Pawn extends Character {
 	 */
 	public String dumpCharacter( ) {
 		return "I'm " + name + ", I'm a Pawn fighting for the " + army + " army and I'm located at " + getCoordinates();
+	}
+	
+	public void move() {
+		if(firstMove) {
+			firstMove = false;
+		}
 	}
 }

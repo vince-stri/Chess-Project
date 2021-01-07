@@ -8,6 +8,7 @@ import model.board.Cell;
 
 /**
  * Class corresponding to a Bishop inherited from the Character class
+ * @author vincent acila
  * @version 1.0
  */
 @SuppressWarnings("serial")
@@ -16,8 +17,8 @@ public class Bishop extends Character{
 	/**
 	 * {@inheritDoc}
 	 */
-	public Bishop(int maxHP, String name, Coordinates coords, Army army, int maxArmor, int damagePoints, Board board) {
-		super(maxHP, name, coords, army, maxArmor, damagePoints, board);
+	public Bishop(int maxHP, String name, Coordinates coords, Army army, int maxArmor, int damagePoints, Board board, char symbol) {
+		super(maxHP, name, coords, army, maxArmor, damagePoints, board, symbol);
 	}
 
 	/**
@@ -72,5 +73,8 @@ public class Bishop extends Character{
 	 */
 	public String dumpCharacter( ) {
 		return "I'm " + name + ", I'm a Bishop fighting for the " + army + " army and I'm located at " + getCoordinates();
+	}
+	
+	public void move() {
 	}
 }

@@ -4,6 +4,7 @@ import model.character.Character;
 
 /**
  * Abstract class defining effects that will be given to a Character
+ * @author hugo bonnet
  * @version 1.0
  */
 public abstract class Treasure {

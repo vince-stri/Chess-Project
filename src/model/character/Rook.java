@@ -8,6 +8,7 @@ import model.board.Board;
 /**
  * Class corresponding to a Rook inherited from the Character class
  * @version 1.0
+ * @author vincent acila
  */
 @SuppressWarnings("serial")
 public class Rook extends Character {
@@ -15,8 +16,8 @@ public class Rook extends Character {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Rook(int maxHP, String name, Coordinates coords, Army army, int maxArmor, int damagePoints, Board board) {
-		super(maxHP, name, coords, army, maxArmor, damagePoints, board);
+	public Rook(int maxHP, String name, Coordinates coords, Army army, int maxArmor, int damagePoints, Board board, char symbol) {
+		super(maxHP, name, coords, army, maxArmor, damagePoints, board, symbol);
 	}
 
 	/**
@@ -69,6 +70,9 @@ public class Rook extends Character {
 	 */
 	public String dumpCharacter( ) {
 		return "I'm " + name + ", I'm a Rook fighting for the " + army + " army and I'm located at " + getCoordinates();
+	}
+	
+	public void move() {
 	}
 
 }
