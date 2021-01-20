@@ -4,10 +4,12 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import model.Client;
+
 public class mainTest {
 	public static void main(String[] args) throws RemoteException, SQLException {
-		Server_implt servgame = new Server_implt();
+		ServerImpl servgame = new ServerImpl();
 		//Connection con = servgame.connect_db();
-		servgame.login("vinvin", "mdpvinvin");
+		servgame.register("usertest","passwordtest");
 	}
 }

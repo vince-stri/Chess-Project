@@ -8,10 +8,12 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.io.*;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.UUID;
 
-public class Server_implt implements Iserver{
+import model.Client;
+
+
+public class ServerImpl implements Iserver{
 	
 	public Connection connect_db() {
 		Connection con = null;
@@ -40,13 +42,14 @@ public class Server_implt implements Iserver{
 		return con;
 	}
 	
-	private String gen_token(int id) throws SQLException {
+	private String gen_token(Client client) throws SQLException {
 		String token = UUID.randomUUID().toString();
 		token = token.replace("-", "");
 		System.out.println("Your connection token is " + token);
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
-		String query = "UPDATE account SET user_token='"+token+"' WHERE ida="+id+";";
+		client.setToken(token);
+		String query = "UPDATE account SET user_token='"+token+"' WHERE ida="+client.getIdAccount()+";";
 		System.out.println("Query : " + query);
 		if (stmt.executeUpdate(query)==1) {
 			System.out.println("Token updated in database");
@@ -54,13 +57,15 @@ public class Server_implt implements Iserver{
 		else { 
 			System.out.println("An error has occured updating user's token");
 		}
+		stmt.close();
+		db.close();
 		return token;
 	}
 	
-	private void del_token(int id) throws SQLException {
+	private void del_token(Client client) throws SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
-		String query = "UPDATE account SET user_token='0' WHERE ida="+id+";";
+		String query = "UPDATE account SET user_token='0' WHERE ida="+client.getIdAccount()+";";
 		System.out.println("Query : " + query);
 		if (stmt.executeUpdate(query)==1) {
 			System.out.println("Token updated in database");
@@ -68,31 +73,38 @@ public class Server_implt implements Iserver{
 		else { 
 			System.out.println("An error has occured updating user's token");
 		}
+		stmt.close();
+		db.close();
 	}
 	
 	@Override
-	public String login(String login, String password) throws RemoteException, SQLException {
+	public String login(Client client, String password) throws RemoteException, SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
-		String query = "SELECT ida FROM account WHERE pseudo='" + login + "' AND password='"+password+"';";
+		String query = "SELECT ida FROM account WHERE pseudo='" + client.getPseudo() + "' AND password='"+password+"';";
 		System.out.println("Query : " + query);
 		
 		ResultSet res = stmt.executeQuery(query);
 		if (res.next()) {
 			System.out.println(res.getInt("ida") + " user connected");
-			return gen_token(res.getInt("ida"));
+			client.setIdAccount(res.getInt("ida"));
+			return gen_token(client);
 		}
 		
 		System.out.println("Authentification failed, please try again."); 
 		System.out.println("If you are not already registered, you can do it now.");
+		res.close();
+		stmt.close();
+		db.close();
+		
 		return "0";
 		
 	}
 	
 	@Override
-	public String disconnect() throws RemoteException {
+	public String disconnect(Client client) throws RemoteException, SQLException {
 		// TODO Auto-generated method stub
-		//del_token(id);
+		del_token(client);
 		return null;
 	}
 
@@ -108,11 +120,40 @@ public class Server_implt implements Iserver{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	public int checks_user(String pseudo) throws SQLException {
+		Connection db = connect_db();
+		Statement stmt = db.createStatement();
+		String query = "SELECT COUNT(*) AS Total FROM account WHERE pseudo='" + pseudo + "';";
+		System.out.println("Query : " + query);
+		ResultSet res = stmt.executeQuery(query);
+		res.next();
+		if (res.getInt("Total")>0) {
+			System.out.println("L'utilisateur " + pseudo +" existe déjà");
+			return 0;
+		}
+		db.close();
+		return 1;
+	}
+	
 	@Override
-	public String register() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	public int register(String pseudo, String password) throws RemoteException, SQLException {
+		if (checks_user(pseudo)==0) {
+			return 0;
+		}
+		Connection db = connect_db();
+		Statement stmt = db.createStatement();
+		String query = "INSERT INTO account(pseudo,password) VALUES ('"+ pseudo +"', '"+ password +"');";
+		System.out.println(query);
+		if (stmt.executeUpdate(query)==1) {
+			System.out.println("User has been created");
+		}
+		else {
+			System.out.println("An error has occured creating user");
+		}
+		stmt.close();
+		db.close();
+		return 1;
 	}
 	
 
