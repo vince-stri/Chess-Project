@@ -10,6 +10,5 @@ public interface iClient extends Remote{
 	void PostMsg(String message) throws RemoteException;
 	void PostInfo(String info) throws RemoteException;
 	String getInfo() throws RemoteException;
-	
-
+	String getCharacterToMove(ArrayList<Characters> fightersAlive) throws RemoteException;
 }

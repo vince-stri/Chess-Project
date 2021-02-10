@@ -23,6 +23,11 @@ public class GameManager {
 	private int armiesNb;
 	
 	/**
+	 * The number of players
+	 */
+	private int playersNb;
+	
+	/**
 	 * The actual round of game
 	 */
 	private int round;
@@ -48,30 +53,37 @@ public class GameManager {
     private Army armies[];
     
     /**
-     * The object used to receive inputs from the players
+     * An array holding all the references to the players objects playing this game
      */
-    private InputController input = new InputTextualController();
+    private ClientWrapper players[];
     
     /**
      * Constructor of GameManager
      * @param boardShape the type of board
      * @param nameFileToSave the path of the save file
+     * @param players the references to the players
      */
-    public GameManager(BoardShape boardShape, String nameFileToSave) {
+    public GameManager(BoardShape boardShape, String nameFileToSave, ClientWrapper[] players) {
+    	if(players == null) { throw new NullPointerException("Players must not be null"); }
     	this.boardShape = boardShape;
     	this.save = new Save(nameFileToSave);
-    	armiesNb = 2;
+    	this.players = players;
+    	armiesNb = 2;//players.lenght;
+    	playersNb = 2;
+    	
+    	setUpBattle();
     }
 
     /**
      * Set up the game components according to the type of game wanted
+     * Warning: This method must be called before all the other
      */
     private void setUpBattle() {
     	round = 0;
     	switch (boardShape) {
 			default:
 				board = new BoardChess();
-				armies = ArmyComponents.generateChessBoardArmies(board);
+				armies = ArmyComponents.generateChessBoardArmies(board, 2, players); 
 			break;
 		}
     }
@@ -85,31 +97,34 @@ public class GameManager {
     			boolean darkSideAlive = !armies[0].isEmpty();
     			boolean lightSideAlive = !armies[1].isEmpty();
     			boolean stopGame = false;
+    			ClientWrapper playingClient = null;
     			Army playingArmy = armies[(1 + round) % armiesNb];
+    			playingClient = playingArmy.getClient();
     			do {
 	    				playARound(playingArmy);
 	    				darkSideAlive = !armies[0].isEmpty();
 	    				lightSideAlive = !armies[1].isEmpty();
 	    				playingArmy = armies[(1 + round) % armiesNb];
+	    				playingClient = playingArmy.getClient();
 	    				/**
 	    				 * display the armies
 	    				 */
-	    				Journal.displayBoard(board);
+	    				playingClient.displayBoard(board);
 	    				/*
 	    				Journal.displayText(armies[0].dumpArmy());
 	    				Journal.displayText(armies[1].dumpArmy());
 	    				*/
-	    				if(input.wantToSave()) {
+	    				if(playingClient.wantToSave()) {
 	    					save();
 	    					stopGame = true;
-	    				} 
+	    				}
     			} while(darkSideAlive && lightSideAlive && !stopGame);
     			if(stopGame) {
-    				Journal.displayText("We hope to see you back soon.");
+    				playingClient.displayText("We hope to see you back soon.");
     			} else if(lightSideAlive){
-    				Journal.displayText("The light side has won.");
+    				playingClient.displayText("The light side has won.");
     			} else {
-    				Journal.displayText("The dark side has won.");
+    				playingClient.displayText("The dark side has won.");
     			}
 			break;
 		}
@@ -122,20 +137,24 @@ public class GameManager {
 	private void playARound(Army playingArmy) {
     	Character chara = null;
     	Cell cell = null;
+    	ClientWrapper client = playingArmy.getClient();
     	int ret;
     	boolean hasToPlayAgain;
     	do {
     		hasToPlayAgain = false;
+    		
     		do {
-	    		chara = input.getCharacterToMove(playingArmy);
-	    		cell = input.getRecquiredCell(board);
+    			chara = playingArmy.getCharacterToMove();
+    			chara = client.getCharacterToMove(playingArmy);
+	    		cell = client.getRecquiredCell(board);
 	    	} while(cell == null);
+    		
     		ret = playingArmy.moveCharacter(chara, cell); 
     		if(ret == 0) {
-    			Journal.displayText("You cannot go on a cell where an ally is.");
+    			client.displayText("You cannot go on a cell where an ally is.");
     			hasToPlayAgain = true;
     		} else if(ret == 1){
-    			Journal.displayText("Such a character cannot move like this.");
+    			client.displayText("Such a character cannot move like this.");
     			hasToPlayAgain = true;
     		}
     	} while(hasToPlayAgain);

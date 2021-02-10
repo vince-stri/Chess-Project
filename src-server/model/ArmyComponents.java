@@ -22,10 +22,13 @@ public abstract class ArmyComponents {
 	 * @param board the board where the characters will move
 	 * @return the statically created armies
 	 */
-	public static Army[] generateChessBoardArmies(Board board) {
-		Army armies[] = new Army[2];
+	public static Army[] generateChessBoardArmies(Board board, int nummberOfArmies, ClientWrapper players[]) {
+		Army armies[] = new Army[numberOfArmies];
 		Character character;
-		armies[0] = new Army(board, "DarkSight");
+		
+		// If the game as to be updated to be able to be played by more than two players, it would be interesting to assign those players randomly to the armies below
+		
+		armies[0] = new Army(board, "DarkSight", players[0]);
 		
 		character = new Pawn(100, "Stormtroopeer_1", new Coordinates(0, 1), armies[0], 10, 20, board, new Coordinates(0, 1), 'a');
 		armies[0].addCharacter(character);
@@ -93,7 +96,7 @@ public abstract class ArmyComponents {
 		
 		/* --- */
 		
-		armies[1] = new Army(board, "LightSight");
+		armies[1] = new Army(board, "LightSight", players[1]);
 		
 		character = new Pawn(100, "Rebel_1", new Coordinates(0, 6), armies[1], 10,  20, board, new Coordinates(0, -1), 'A');
 		armies[1].addCharacter(character);
@@ -158,6 +161,10 @@ public abstract class ArmyComponents {
 		character = new King(200, "Master Yoda", new Coordinates(4, 7), armies[1], 200, 35, board, 'P');
 		armies[1].addCharacter(character);
 		character.getCell(board).setCharacter(character);
+		
+		if(numberOfArmies > 2) {
+			continue; // will be changed if the game allows more than 2 players
+		}
 		
 		return armies;
 	}

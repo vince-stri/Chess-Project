@@ -34,9 +34,7 @@ public abstract class Character implements Serializable{
      */
     protected int damagePoints;
     
-    
-
-	/**
+    /**
      * The current armor points of the character
      */
     protected int armor;

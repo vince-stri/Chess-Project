@@ -12,5 +12,4 @@ public interface Iserver extends Remote {
 	public String startMatchMaking() throws RemoteException;
 	public String startDuel() throws RemoteException;
 	public int register(String pseudo, String password) throws RemoteException, SQLException;
-	
 }
