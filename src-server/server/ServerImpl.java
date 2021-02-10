@@ -1,20 +1,32 @@
 package server;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.UUID;
-
+import java.util.ArrayList;
 import model.Client;
+import model.GameManager;
+import model.board.BoardShape;
 
 
-public class ServerImpl implements Iserver{
+public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	
+	private ArrayList<Client> queue = new ArrayList<>();
+	
+	
+	protected ServerImpl() throws RemoteException {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public Connection connect_db() {
 		Connection con = null;
 		try {	
@@ -25,11 +37,11 @@ public class ServerImpl implements Iserver{
 			prop.setProperty("ssl", "false");
 		    con = DriverManager.getConnection(server, prop);
 		} catch (SQLException e) {
-	
+			
 	        System.out.println("Connection Failed! Check output console");
 	        e.printStackTrace();
 	        return null;
-	
+	        
 	    }
 		
 		if (con != null) {
@@ -107,10 +119,24 @@ public class ServerImpl implements Iserver{
 		del_token(client);
 		return null;
 	}
-
+	
+	private void initializeGame(Client j1, Client j2) {
+		GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame");
+		gm.setUpGame();
+        gm.startGame();
+	}
+	
+	private void addToQueue(Client j) {
+		queue.add(j);
+		if (queue.size()==2) {
+			System.out.println(queue.get(0).getPseudo() + " & " + queue.get(1).getPseudo() + " are ready to play...");
+			initializeGame(queue.get(0), queue.get(1));
+		}
+	}
+	
 	@Override
-	public String startMatchMaking() throws RemoteException {
-		
+	public String startMatchMaking(Client j) throws RemoteException {
+		addToQueue(j);
 		return null;
 	}
 	
@@ -120,6 +146,7 @@ public class ServerImpl implements Iserver{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	
 	public int checks_user(String pseudo) throws SQLException {
 		Connection db = connect_db();
@@ -135,6 +162,7 @@ public class ServerImpl implements Iserver{
 		db.close();
 		return 1;
 	}
+	
 	
 	@Override
 	public int register(String pseudo, String password) throws RemoteException, SQLException {

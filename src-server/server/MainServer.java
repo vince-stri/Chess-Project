@@ -14,11 +14,10 @@ public class MainServer {
 	public static void main(String[] args) {
 		try {
 			LocateRegistry.createRegistry(1099);
-			//System.setProperty("java.rmi.server.hostname","192.168.1.17");
 			ServerImpl server = new ServerImpl();
-			//String url = "rmi://" + InetAddress.getLocalHost().getHostAddress() + "/Chess-Project";
-			//System.out.println("Registry with : " + url);
-			Naming.bind("Chess-Project",server);
+			String url = "rmi://" + InetAddress.getLocalHost().getHostAddress() + "/Chess-Project";
+			System.out.println("Registry with : " + url);
+			Naming.rebind("Chess-Project",server);
 			
 			System.out.println("Server launched");
 						
@@ -26,9 +25,9 @@ public class MainServer {
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
 		      e.printStackTrace();
-	    } catch (AlreadyBoundException e) {
+	    } catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 }
