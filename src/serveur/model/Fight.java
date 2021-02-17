@@ -3,6 +3,7 @@ package serveur.model;
 import client.view.Journal;
 import serveur.model.treasure.Armor;
 import serveur.model.treasure.Spell;
+import serveur.model.treasure.Treasure;
 import serveur.model.treasure.Weapon;
 
 /**

@@ -35,7 +35,7 @@ public class Army implements Serializable {
     /**
      * The reference to the player object
      */
-    private ClientWrapper player;
+    private Client player;
 
     /**
      * The list of all characters composing the army
