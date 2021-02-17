@@ -41,7 +41,6 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	        System.out.println("Connection Failed! Check output console");
 	        e.printStackTrace();
 	        return null;
-	        
 	    }
 		
 		if (con != null) {
@@ -121,9 +120,13 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	}
 	
 	private void initializeGame(Client j1, Client j2) {
-		GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame");
-		gm.setUpGame();
+		ClientWrapper[] tab_cw = new ClientWrapper[2];
+		tab_cw[0]= new ClientWrapper(j1);
+		tab_cw[0]= new ClientWrapper(j2);
+		
+		GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame", tab_cw);
         gm.startGame();
+       // return gm;
 	}
 	
 	private void addToQueue(Client j) {

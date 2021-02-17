@@ -30,6 +30,11 @@ public class Army implements Serializable {
     public transient Board board;
     
     /**
+     * The reference to the player object
+     */
+    private ClientWrapper player;
+
+    /**
      * The list of all characters composing the army
      */
     public ArrayList<Character> fightersAlive = new ArrayList<Character>();
@@ -39,9 +44,10 @@ public class Army implements Serializable {
      * @param board the board where the army is on
      * @param name the name of the army
      */
-    public Army(Board board, String name) {
+    public Army(Board board, String name, Client player) {
     	this.board = board;
     	this.name = name;
+    	this.player = player;
     }
 
     /**
@@ -181,5 +187,12 @@ public class Army implements Serializable {
     		chara.setBoard(board);
     	}
     }
+    
+    public Character getCharacterToMove() {
+    	return player.getCharacterToMove(fightersAlive);
+    }
 
+    public Client getClient() {
+    	return client;
+    }
 }
