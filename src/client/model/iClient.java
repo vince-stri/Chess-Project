@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import javax.xml.stream.events.Characters;
 
-import serveur.model.board.Board;
+import server.model.board.Board;
 
 
 public interface iClient extends Remote{

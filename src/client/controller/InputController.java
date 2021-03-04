@@ -1,8 +1,9 @@
 package client.controller;
 
-import serveur.model.Army;
-import serveur.model.board.Board;
-import serveur.model.board.Cell;
+import server.model.Army;
+import server.model.board.Board;
+import server.model.board.Cell;
+import server.model.character.Character;
 
 /**
  * Getting inputs abstract class

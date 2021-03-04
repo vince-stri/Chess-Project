@@ -1,7 +1,8 @@
 package client.view;
 
-import serveur.model.Coordinates;
-import serveur.model.board.Board;
+import server.model.Coordinates;
+import server.model.board.Board;
+import server.model.character.Character;
 
 public abstract class Journal {
 	

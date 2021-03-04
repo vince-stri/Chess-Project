@@ -3,10 +3,11 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import client.view.Journal;
-import serveur.model.Army;
-import serveur.model.Coordinates;
-import serveur.model.board.Board;
-import serveur.model.board.Cell;
+import server.model.Army;
+import server.model.Coordinates;
+import server.model.board.Board;
+import server.model.board.Cell;
+import server.model.character.Character;
 
 
 /**
@@ -31,7 +32,7 @@ public class InputTextualController extends InputController {
 	/**
 	 * {@inheritDoc}
 	 */
-	 public Character getCharacterToMove(Army army) {
+	 public server.model.character.Character getCharacterToMove(Army army) {
 	    	Journal.displayText(army.dumpArmy());
 	    	Journal.displayText("\nPlease, select the character you want to move by giving the character printed between [] on its line:");
 	    	boolean isCorrect = true;

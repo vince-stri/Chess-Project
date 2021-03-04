@@ -3,6 +3,8 @@ package shared;
 
 import java.rmi.Naming;
 
+import server.model.board.*;
+
 public class Client {
 	
 	private int idAccount;
@@ -44,6 +46,18 @@ public class Client {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+	
+	public void PostMsg(String msg) {
+		msg += "";
+	}
+	
+	public String getInfo() {
+		return "";
+	}
+	
+	public void postBoard(Board board) {
+		
 	}
 	
 }
