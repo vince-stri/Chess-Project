@@ -37,6 +37,7 @@ public class Cell implements Serializable {
     public Cell(CellType cellType, Coordinates coordinates) {
     	this.cellType = cellType;
     	this.coordinates = coordinates;
+    	this.character = null;
     }
     
     /**

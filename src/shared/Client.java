@@ -48,7 +48,7 @@ public class Client {
 		this.token = token;
 	}
 	
-	public void PostMsg(String msg) {
+	public void postMsg(String msg) {
 		msg += "";
 	}
 	
