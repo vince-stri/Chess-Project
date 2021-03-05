@@ -142,7 +142,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	
 
 	@Override
-	public String startDuel() throws RemoteException {
+	public String startDuel(Client client) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -185,7 +185,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	}
 
 	@Override
-	public String startMatchMaking() throws RemoteException {
+	public String startMatchMaking(Client client) throws RemoteException {
 		// TODO Auto-generated method stub
 		//addToQueue(j);
 		return null;

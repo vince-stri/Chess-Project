@@ -13,7 +13,7 @@ public class MainClient {
 
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
 		// TODO Auto-generated method stub
-		ServerImpl serverObject = (ServerImpl) Naming.lookup("rmi://localhost/Server");
+		ServerImpl serverObject = (ServerImpl) Naming.lookup("rmi://localhost/server/main");
 		boolean connectionSucces = false;
 		Scanner entry = new Scanner(System.in);
 		Client playingClient =new Client(-1, null, null);
@@ -25,6 +25,8 @@ public class MainClient {
 			connectionSucces = connectOrRegister(entry, serverObject,playingClient);
 		
 		}
+		
+		/*Menu principal*/
 		boolean isMenuRunning = true;
 				
 		while (isMenuRunning){
@@ -43,14 +45,14 @@ public class MainClient {
 					break;
 					
 				case 1:
-					goMatchmaking(entry,serverObject);
+					goMatchmaking(entry,serverObject,playingClient);
 					break;
 					
 				case 2:
-					defyPlayer(entry,serverObject);
+					defyPlayer(entry,serverObject,playingClient);
 					break;
 				case 3:
-					loadGame(entry,serverObject);
+					loadGame(entry,serverObject,playingClient);
 					break;
 				}
 					
@@ -185,24 +187,24 @@ public class MainClient {
 		return 1; //Success
 		
 	}
-	private static void loadGame(Scanner entry, ServerImpl serverObject) {
+	private static void loadGame(Scanner entry, ServerImpl serverObject,Client playingClient) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void defyPlayer(Scanner entry, ServerImpl serverObject) throws RemoteException {
+	private static void defyPlayer(Scanner entry, ServerImpl serverObject,Client playingClient) throws RemoteException {
 		String message;
 		
-		message = serverObject.startDuel();
+		message = serverObject.startDuel(playingClient);
 		System.out.println(message);
 	
 		
 	}
 
-	private static void goMatchmaking(Scanner entry,ServerImpl serverObject) throws RemoteException {
+	private static void goMatchmaking(Scanner entry,ServerImpl serverObject,Client playingClient) throws RemoteException {
 			String message;
 			
-			message = serverObject.startMatchMaking();
+			message = serverObject.startMatchMaking(playingClient);
 			System.out.println(message);
 		
 	}
