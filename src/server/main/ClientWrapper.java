@@ -19,7 +19,7 @@ public class ClientWrapper {
 	public boolean wantToSave() {
 		String ret = null;
 		do {
-			client.PostMsg("Want to save? [yes: 'y' or no: 'n']");
+			client.postMsg("Want to save? [yes: 'y' or no: 'n']");
 			ret = client.getInfo();
 		} while(ret != "y" && ret != "n");
 		return ret == "y";
@@ -27,6 +27,10 @@ public class ClientWrapper {
 	
 	public void displayBoard(Board board) {
 		client.postBoard(board);
+	}
+	
+	public void displayText(String msg) {
+		client.postMsg(msg);
 	}
 	
 	public Character getCharacterToMove(ArrayList<Character> fighters) {

@@ -160,7 +160,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 		tab_cw[0]= new ClientWrapper(j2);
 		
 		GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame", tab_cw);
-        gm.startGame();
+        gm.setUpBattle();
        // return gm;
 	}
 	

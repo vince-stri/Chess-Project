@@ -8,6 +8,7 @@ import server.model.board.Board;
 import server.model.board.BoardChess;
 import server.model.board.BoardShape;
 import server.model.board.Cell;
+import server.model.character.Character;
 
 
 
@@ -59,6 +60,8 @@ public class GameManager {
      */
     private ClientWrapper players[];
     
+    private Army playingArmy;
+    
     /**
      * Constructor of GameManager
      * @param boardShape the type of board
@@ -78,89 +81,79 @@ public class GameManager {
 
     /**
      * Set up the game components according to the type of game wanted
-     * Warning: This method must be called before all the other
+     * Warning: This method must be called before all the others
      */
-    private void setUpBattle() {
+    public void setUpBattle() {
     	round = 0;
     	switch (boardShape) {
 			default:
 				board = new BoardChess();
-				armies = ArmyComponents.generateChessBoardArmies(board, 2, players); 
+				armies = ArmyComponents.generateChessBoardArmies(board, 2, players);
+				playingArmy = armies[0];
 			break;
 		}
     }
     
     /**
-     * Start the game until one the players wins
+     * Verify if the move made by the player is valid or not
+     * @param srcX X-coordinate of the character to be moved 
+     * @param srcY Y-coordinate of the character to be moved
+     * @param destX X-coordinate of the landing place 
+     * @param destY Y-coordinate of the landing place
+     * @param player The player
+     * @return true if the move is valid, false otherwise
      */
-    public void startGame() {
-    	switch (boardShape) {
-    		default:
-    			boolean darkSideAlive = !armies[0].isEmpty();
-    			boolean lightSideAlive = !armies[1].isEmpty();
-    			boolean stopGame = false;
-    			ClientWrapper playingClient = null;
-    			Army playingArmy = armies[(1 + round) % armiesNb];
-    			playingClient = playingArmy.getClient();
-    			do {
-	    				playARound(playingArmy);
-	    				darkSideAlive = !armies[0].isEmpty();
-	    				lightSideAlive = !armies[1].isEmpty();
-	    				playingArmy = armies[(1 + round) % armiesNb];
-	    				playingClient = playingArmy.getClient();
-	    				/**
-	    				 * display the armies
-	    				 */
-	    				playingClient.displayBoard(board);
-	    				/*
-	    				Journal.displayText(armies[0].dumpArmy());
-	    				Journal.displayText(armies[1].dumpArmy());
-	    				*/
-	    				if(playingClient.wantToSave()) {
-	    					save();
-	    					stopGame = true;
-	    				}
-    			} while(darkSideAlive && lightSideAlive && !stopGame);
-    			if(stopGame) {
-    				playingClient.displayText("We hope to see you back soon.");
-    			} else if(lightSideAlive){
-    				playingClient.displayText("The light side has won.");
-    			} else {
-    				playingClient.displayText("The dark side has won.");
-    			}
-			break;
+    public boolean isAGoodMove(int srcX, int srcY, int destX, int destY, ClientWrapper player) {
+		Coordinates src = new Coordinates(srcX, srcY);
+		Coordinates dest = new Coordinates(destX, destY);
+		Cell source = board.getACell(src);
+		Cell destination = board.getACell(dest);
+		if(source == null || destination == null) { // verify if the coordinates were correct
+			return false;
 		}
+		Character selectedChara = source.getCharacter();
+		if(selectedChara.getArmy().getClient() != player) { // verify if the selected character belongs to the player's army  
+			return false;
+		}
+		if(selectedChara.isAPossibleMove(destination) == false) { // verify if the required move can be done
+			return false;
+		}
+		if(destination.getCharacter() != null) { // verify if there is a character on the destination cell 
+			return destination.getCharacter().getArmy().getClient() != player; // verify if this character is an ennemy 
+		} return true;
     }
 
     /**
-     * Play a round of the game
-     * @param playingArmy the army playing the game
+     * Play the move required by the player
+     * @param srcX X-coordinate of the character to be moved 
+     * @param srcY Y-coordinate of the character to be moved
+     * @param destX X-coordinate of the landing place 
+     * @param destY Y-coordinate of the landing place
+     * @param player The player
+     * @return Information code from moveCharacter() method
      */
-	private void playARound(Army playingArmy) {
-    	Character chara = null;
-    	Cell cell = null;
-    	ClientWrapper client = playingArmy.getClient();
-    	int ret;
-    	boolean hasToPlayAgain;
-    	do {
-    		hasToPlayAgain = false;
-    		
-    		do {
-    			chara = playingArmy.getCharacterToMove();
-    			chara = client.getCharacterToMove(playingArmy);
-	    		cell = client.getRecquiredCell(board);
-	    	} while(cell == null);
-    		
-    		ret = playingArmy.moveCharacter(chara, cell); 
-    		if(ret == 0) {
-    			client.displayText("You cannot go on a cell where an ally is.");
-    			hasToPlayAgain = true;
-    		} else if(ret == 1){
-    			client.displayText("Such a character cannot move like this.");
-    			hasToPlayAgain = true;
+    public int playMove(int srcX, int srcY, int destX, int destY, ClientWrapper player) {
+    	Coordinates src = new Coordinates(srcX, srcY);
+    	Coordinates dest = new Coordinates(destX, destY);
+    	Cell source = board.getACell(src);
+    	Cell destination = board.getACell(dest);
+    	Character playingCharacter = source.getCharacter();
+    	int infCode = playingCharacter.getArmy().moveCharacter(playingCharacter, destination);
+    	this.playingArmy = armies[(1 + round) % armiesNb];
+    	return infCode;
+    }
+    
+    /**
+     * Indicates if the game is won or not
+     * @return Code corresponding to the winner. -1 if the game is still playing
+     */
+    public int isGameOver() {
+    	for(int i = 0; i < armiesNb; i++) {
+    		if(armies[i].isEmpty()) {
+    			return i;
     		}
-    	} while(hasToPlayAgain);
-    	round++;
+    	}
+    	return -1;
     }
     
 	/**
@@ -200,7 +193,7 @@ public class GameManager {
     /**
      * Start the game from scratch or from a save
      */
-    public void setUpGame() {
+    /*public void setUpGame() {
     	if(input.wantANewGame()) {
     		setUpBattle();
     	} else {
@@ -215,7 +208,7 @@ public class GameManager {
     		}
     	}
     	Journal.displayBoard(board);
-    }
+    }*/
     
 
 }
