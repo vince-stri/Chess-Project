@@ -31,3 +31,4 @@ javadesigner.jar
 project.conf
 saves/allGame
 /bin/
+.db_connect

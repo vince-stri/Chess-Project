@@ -15,26 +15,60 @@ import java.util.UUID;
 import server.model.GameManager;
 import server.model.board.BoardShape;
 import shared.Client;
-
+import java.io.*;
 
 
 public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	
 	private ArrayList<Client> queue = new ArrayList<>();
-	
-	
+		
 	protected ServerImpl() throws RemoteException {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Get database configuration from external config file
+	 * @return conf array
+	 */
+	public String[] get_conf() {
+		BufferedReader file = null;
+		String[] conf = new String[5];
+	    String line;
+		try {
+			file = new BufferedReader(new FileReader(".db_connect"));
+		}
+	    catch(FileNotFoundException exc) {
+	    	System.out.println("An error was occured reading the config file");
+	    	return null;
+	    }
+	    try {
+	    	// 5 conf variables : url, port, db user, db password, db name
+			for (int i = 0; (line = file.readLine()) != null; i++) {
+				conf[i] = line;
+			}
+			file.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Config file may be empty");
+			return null;
+		}
+	    
+	    return conf;
+	  }
+	
 	public Connection connect_db() {
 		Connection con = null;
-		try {	
-			String server = "jdbc:postgresql://192.168.0.201:5432/chessgame";
+		String[] conf;
+		if ((conf=get_conf()) == null) {
+			return null;
+		}
+		try {
+			
+			String server = "jdbc:postgresql://" + conf[0] + ":" + conf[1] + "/" + conf[2];
 			Properties prop = new Properties();
-			prop.setProperty("user", "adm-chess");
-			prop.setProperty("password", "chessproject");
+			prop.setProperty("user", conf[3]);
+			prop.setProperty("password", conf[4]);
 			prop.setProperty("ssl", "false");
 		    con = DriverManager.getConnection(server, prop);
 		} catch (SQLException e) {
