@@ -13,4 +13,7 @@ public interface Iserver extends Remote {
 	public String startDuel(Client client) throws RemoteException;
 	public int register(String pseudo, String password) throws RemoteException, SQLException;
 	
+	//MoveChar
+	//Is
+	
 }
