@@ -207,12 +207,12 @@ public class MainClient {
 
 	private static void goMatchmaking(Scanner entry,ServerImpl serverObject,Client playingClient) throws RemoteException {
 			String gameManagerId = serverObject.startDuel(playingClient);
-			playAGame(entry, gameManagerId);
+			playAGame(entry, gameManagerId,serverObject,playingClient);
 			
 		
 	}
 	
-	private static void playAGame(Scanner entry,String gameManagerId) {
+	private static void playAGame(Scanner entry,String gameManagerId,ServerImpl serverObject,Client playingClient) {
 		boolean correctInput,correctOrigin,correctDestination,isGameOver;
 		int origin,destination;
 		String moveMessage;
@@ -253,7 +253,7 @@ public class MainClient {
 					}
 					
 				}
-				correctInput = serverObject.isGoodMove(gameManagerId,origin,destination);
+				correctInput = serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient);
 			}
 			moveMessage = playMove(gameManagerId,origin,destination);
 			System.out.println(moveMessage);
