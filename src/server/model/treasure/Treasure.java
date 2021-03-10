@@ -13,7 +13,6 @@ public abstract class Treasure {
 	/**
 	 * The type of treasure
 	 */
-    @SuppressWarnings("unused")
 	private TreasureType treasureType;
 
     /**

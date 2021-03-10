@@ -10,7 +10,6 @@ import server.model.board.Cell;
  * @author axel gauthier
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class Pawn extends Character {
 
 	private boolean firstMove = true;

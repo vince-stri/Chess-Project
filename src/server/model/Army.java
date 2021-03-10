@@ -15,7 +15,6 @@ import java.io.Serializable;
  * Class regrouping all the characters belonging to one side of the game
  * @author axel gauthier
  */
-@SuppressWarnings("serial")
 public class Army implements Serializable {
 	
 	/**

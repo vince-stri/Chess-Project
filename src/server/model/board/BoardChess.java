@@ -8,7 +8,6 @@ import server.model.character.Character;
  * Implementation of the Board abstract class
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class BoardChess extends Board {
 	
 	/**

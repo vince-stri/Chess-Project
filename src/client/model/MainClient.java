@@ -5,7 +5,11 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import org.postgresql.translation.messages_bg;
+
 import shared.Client;
 import server.main.ServerImpl;
 
@@ -201,11 +205,59 @@ public class MainClient {
 	}
 
 	private static void goMatchmaking(Scanner entry,ServerImpl serverObject,Client playingClient) throws RemoteException {
-			String message;
+			String gameManagerId = serverObject.startDuel(playingClient);
+			playAGame(entry, gameManagerId,serverObject,playingClient);
 			
-			message = serverObject.startMatchMaking(playingClient);
-			System.out.println(message);
 		
+	}
+	
+	private static void playAGame(Scanner entry,String gameManagerId,ServerImpl serverObject,Client playingClient) {
+		boolean correctInput,correctOrigin,correctDestination,isGameOver;
+		int origin,destination;
+		String moveMessage;
+		isGameOver = false;
+		while(isGameOver == false) {
+			isGameOver = checkGameOver(gameManagerId);
+			correctInput = false; 
+			while(correctInput == false) {
+				correctOrigin = false;
+				while(correctOrigin = false) {
+					try {
+						System.out.println("selectionnez un personnage à jouer. Tapez la ligne puis la colonne (exemple: 34)");
+						origin = entry.nextInt();
+						if(origin > -1 && origin < 78) {
+							correctOrigin = true;
+						}else {
+							System.out.println("Saisie d'origine non valide. rééssayez");
+						}
+					}catch (InputMismatchException ex){
+						System.out.println("Votre saisie est invalide rééssayez");
+						entry.nextLine();
+					}
+					
+				}
+				correctDestination = false;
+				while(correctDestination == false) {
+					try {
+						System.out.println("selectionnez une destination pour votre personnage. Tapez la ligne puis la colonne (exemple: 34)");
+						destination = entry.nextInt();
+						if(destination > -1 && destination < 78) {
+							correctDestination = true;
+						}else {
+							System.out.println("Saisie de destination non valide. rééssayez");
+						}
+					}catch (InputMismatchException ex){
+						System.out.println("Votre saisie est invalide rééssayez");
+						entry.nextLine();
+					}
+					
+				}
+				correctInput = serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient);
+			}
+			moveMessage = playMove(gameManagerId,origin,destination);
+			System.out.println(moveMessage);
+			
+		}
 	}
 	
 	
