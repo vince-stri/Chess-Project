@@ -24,7 +24,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	
 	private ArrayList<Client> queue = new ArrayList<>();
 	private Map<String, GameManager> games = new HashMap<String, GameManager>();
-		
+	
 	protected ServerImpl() throws RemoteException {
 		super();
 		// TODO Auto-generated constructor stub
@@ -157,13 +157,13 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 		return null;
 	}
 	
-	private void initializeGame(Client j1, Client j2) {
+	private String initializeGame(Client j1, Client j2) {
 		ClientWrapper[] tab_cw = new ClientWrapper[2];
 		tab_cw[0]= new ClientWrapper(j1);
 		tab_cw[0]= new ClientWrapper(j2);
 		
 		GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame", tab_cw);
-        gm.setUpBattle();
+		return null;
        // return gm;
 	}
 	
@@ -171,10 +171,9 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 		queue.add(j);
 		if (queue.size()==2) {
 			System.out.println(queue.get(0).getPseudo() + " & " + queue.get(1).getPseudo() + " are ready to play...");
-			initializeGame(queue.get(0), queue.get(1));
+			String token = initializeGame(queue.get(0), queue.get(1));
 		}
 	}
-	
 	
 	
 
@@ -227,6 +226,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 		//addToQueue(j);
 		return null;
 	}
+
 	
 	public boolean isAGoodMove(int source, int destination, String GMId, Client client) throws RemoteException {
 		int srcX = source / 10;

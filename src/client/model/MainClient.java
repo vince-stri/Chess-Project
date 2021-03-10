@@ -25,10 +25,7 @@ public class MainClient {
 		
 		while(connectionSucces == false) {
 			System.out.println("Bienvenue sur battle chess royale"); //la vanne du battle royale
-		
-		
 			connectionSucces = connectOrRegister(entry, serverObject, playingClient);
-		
 		}
 		
 		/*Menu principal*/
