@@ -16,7 +16,7 @@ public class MainServer {
 			ServerImpl server = new ServerImpl();
 			String url = "rmi://" + InetAddress.getLocalHost().getHostAddress() + "/Chess-Project";
 			System.out.println("Registry with : " + url);
-			Naming.rebind("Chess-Project",server);
+			Naming.rebind("Chess-Project", server);
 			
 			System.out.println("Server launched");
 						

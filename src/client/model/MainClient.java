@@ -16,8 +16,9 @@ import server.main.ServerImpl;
 public class MainClient {
 
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
+		
 		// TODO Auto-generated method stub
-		ServerImpl serverObject = (ServerImpl) Naming.lookup("rmi://localhost/server/main");
+		ServerImpl serverObject = (ServerImpl) Naming.lookup("rmi://localhost/Chess-Project");
 		boolean connectionSucces = false;
 		Scanner entry = new Scanner(System.in);
 		Client playingClient =new Client(-1, null, null);
@@ -26,7 +27,7 @@ public class MainClient {
 			System.out.println("Bienvenue sur battle chess royale"); //la vanne du battle royale
 		
 		
-			connectionSucces = connectOrRegister(entry, serverObject,playingClient);
+			connectionSucces = connectOrRegister(entry, serverObject, playingClient);
 		
 		}
 		
@@ -72,7 +73,7 @@ public class MainClient {
 
 	}
 	//connection or login screen 
-	private static boolean connectOrRegister(Scanner entry,ServerImpl serverObject,Client clientToInstanciate) {
+	private static boolean connectOrRegister(Scanner entry, ServerImpl serverObject,Client clientToInstanciate) {
 		boolean isMenuRunning = true;
 		int connectionResult = 1;//retry
 		int registerResult = 1;//retry
@@ -206,7 +207,7 @@ public class MainClient {
 	}
 
 	private static void goMatchmaking(Scanner entry,ServerImpl serverObject,Client playingClient) throws RemoteException {
-			String gameManagerId = serverObject.startDuel(playingClient);
+			String gameManagerId = serverObject.startMatchMaking(playingClient);
 			playAGame(entry, gameManagerId,serverObject,playingClient);
 			
 		
