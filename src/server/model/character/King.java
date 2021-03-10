@@ -10,7 +10,6 @@ import server.model.board.Cell;
  * @author vincent acila
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class King extends Character {
 
 	/**

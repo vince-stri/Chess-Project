@@ -17,8 +17,7 @@ import server.model.treasure.Treasure;
  * It corresponds to the tokens that will be moved on the board during the game.
  * @author axel gauthier
  * @version 1.0
- */
-@SuppressWarnings("serial")
+*/
 public abstract class Character implements Serializable{
 	/**
 	 * The current health points of the character

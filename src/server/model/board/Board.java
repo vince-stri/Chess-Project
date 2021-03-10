@@ -12,7 +12,6 @@ import server.model.Coordinates;
  * @author vincent acila
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public abstract class Board implements Serializable{
 	/**
 	 * The type of board used.

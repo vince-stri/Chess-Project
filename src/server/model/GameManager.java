@@ -189,26 +189,4 @@ public class GameManager {
     		return 0;
     	}
     }
-    
-    /**
-     * Start the game from scratch or from a save
-     */
-    /*public void setUpGame() {
-    	if(input.wantANewGame()) {
-    		setUpBattle();
-    	} else {
-    		while(load() != 0) {
-    			if(input.wantToRecoverFile()) {
-    				String path = input.getAPath();
-    				save.openFile(path);
-    			} else {
-    				setUpBattle();
-    				break;
-    			}
-    		}
-    	}
-    	Journal.displayBoard(board);
-    }*/
-    
-
 }

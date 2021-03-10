@@ -11,7 +11,6 @@ import server.model.character.Character;
  * @version 1.0
  * @author axel gauthier
  */
-@SuppressWarnings("serial")
 public class Cell implements Serializable {
 	/**
 	 * The type of the cell

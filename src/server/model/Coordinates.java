@@ -9,7 +9,6 @@ import java.io.Serializable;
  * @author Hugo BONNET
  */
 
-@SuppressWarnings("serial")
 public class Coordinates implements Serializable {
 	/**
 	 * Value corresponding to each axes. 

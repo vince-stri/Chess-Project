@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -21,6 +23,7 @@ import java.io.*;
 public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	
 	private ArrayList<Client> queue = new ArrayList<>();
+	private Map<String, GameManager> games = new HashMap<String, GameManager>();
 		
 	protected ServerImpl() throws RemoteException {
 		super();
@@ -225,5 +228,18 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 		return null;
 	}
 	
+	public boolean isAGoodMove(int source, int destination, String GMId, Client client) throws RemoteException {
+		int srcX = source / 10;
+		int srcY = source % 10;
+		int destX = destination / 10;
+		int destY = destination % 10;
+		return games.get(GMId).isAGoodMove(srcX, srcY, destX, destY, new ClientWrapper(client));
+	}
+	public int playMove(String infos, String GMId, Client client) throws RemoteException {
+		return 0;
+	}
+	public int isGameOver(String GMId, Client client) throws RemoteException {
+		return 0;
+	}
 
 }
