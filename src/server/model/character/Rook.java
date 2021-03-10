@@ -10,7 +10,6 @@ import server.model.board.Cell;
  * @version 1.0
  * @author vincent acila
  */
-@SuppressWarnings("serial")
 public class Rook extends Character {
 
 	/**
