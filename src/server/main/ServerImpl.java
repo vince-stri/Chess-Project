@@ -22,7 +22,7 @@ import java.io.*;
 
 public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	
-	private ArrayList<Client> queue = new ArrayList<>();
+	private ArrayList<GameManager> queueGM = new ArrayList<>();
 	private Map<String, GameManager> games = new HashMap<String, GameManager>();
 	
 	protected ServerImpl() throws RemoteException {
@@ -157,25 +157,6 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 		return null;
 	}
 	
-	private String initializeGame(Client j1, Client j2) {
-		ClientWrapper[] tab_cw = new ClientWrapper[2];
-		tab_cw[0]= new ClientWrapper(j1);
-		tab_cw[0]= new ClientWrapper(j2);
-		
-		GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame", tab_cw);
-		return null;
-       // return gm;
-	}
-	
-	private void addToQueue(Client j) {
-		queue.add(j);
-		if (queue.size()==2) {
-			System.out.println(queue.get(0).getPseudo() + " & " + queue.get(1).getPseudo() + " are ready to play...");
-			String token = initializeGame(queue.get(0), queue.get(1));
-		}
-	}
-	
-	
 
 	@Override
 	public String startDuel(Client client) throws RemoteException {
@@ -219,11 +200,36 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 		db.close();
 		return 1;
 	}
+	
 
 	@Override
-	public String startMatchMaking(Client client) throws RemoteException {
-		// TODO Auto-generated method stub
-		//addToQueue(j);
+	public String startMatchMaking(Client player) throws RemoteException {
+		// If there is already a player in standby
+		if (queueGM.isEmpty()) {
+			//Initialize CLientWrapper tab for the game manager
+			ClientWrapper[] players = new ClientWrapper[2];
+			players[0]= new ClientWrapper(player);
+			players[1]= null;
+			
+			// Create GameManager and add the player to it
+			GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame", players);
+			//gm.addplayer
+			// Create an unique ID for the GM
+			String gm_id = UUID.randomUUID().toString();
+			gm_id = gm_id.replace("-", "");
+			
+			// Put the Game manager in standby
+			queueGM.add(gm);
+			
+			// Add the GM to the list of current games
+			games.put(gm_id, gm);
+		} 
+		else {
+			int idx_GM = queueGM.size()-1;
+			GameManager gm = queueGM.get(idx_GM);
+			//gm.addplayer
+			queueGM.remove(idx_GM);
+		}
 		return null;
 	}
 
