@@ -162,7 +162,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 		tab_cw[0]= new ClientWrapper(j1);
 		tab_cw[0]= new ClientWrapper(j2);
 		
-		GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame", tab_cw);
+		GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame", 2);
 		return null;
        // return gm;
 	}

@@ -31,6 +31,11 @@ public class GameManager {
 	private int playersNb;
 	
 	/**
+	 * 
+	 */
+	private int connectedClientsNb;
+	
+	/**
 	 * The actual round of game
 	 */
 	private int round;
@@ -66,19 +71,32 @@ public class GameManager {
      * Constructor of GameManager
      * @param boardShape the type of board
      * @param nameFileToSave the path of the save file
-     * @param players the references to the players
+     * @param playersNb the number of players
      */
-    public GameManager(BoardShape boardShape, String nameFileToSave, ClientWrapper[] players) {
+    public GameManager(BoardShape boardShape, String nameFileToSave, int playerNb) {
     	if(players == null) { throw new NullPointerException("Players must not be null"); }
     	this.boardShape = boardShape;
     	this.save = new Save(nameFileToSave);
-    	this.players = players;
-    	armiesNb = 2;//players.lenght;
-    	playersNb = 2;
-    	
+    	this.armiesNb = playerNb;
+    	this.playersNb = playerNb;
+    	this.connectedClientsNb = 0;
     	setUpBattle();
     }
 
+    /**
+     * Add a client to the GameManager
+     * @param client the client to add
+     * @return false if the client could not be added
+     */
+    public boolean addClient(ClientWrapper client) {
+    	if(connectedClientsNb >= playersNb) {
+    		return false;
+    	} else {
+    		players[connectedClientsNb] = client;
+    		connectedClientsNb++;
+    		return true;
+    	}
+    }
     /**
      * Set up the game components according to the type of game wanted
      * Warning: This method must be called before all the others
