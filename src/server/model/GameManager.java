@@ -10,9 +10,6 @@ import server.model.board.BoardShape;
 import server.model.board.Cell;
 import server.model.character.Character;
 
-
-
-
 /**
  * The game manager class which supervises all the game
  * @version 1.0
@@ -65,6 +62,9 @@ public class GameManager {
      */
     private ClientWrapper players[];
     
+    /**
+     * 
+     */
     private Army playingArmy;
     
     /**
@@ -97,6 +97,7 @@ public class GameManager {
     		return true;
     	}
     }
+    
     /**
      * Set up the game components according to the type of game wanted
      * Warning: This method must be called before all the others
@@ -205,6 +206,14 @@ public class GameManager {
     			armies[i].reloadCharacter();
     		}
     		return 0;
+    	}
+    }
+    
+    public boolean isWinner(ClientWrapper client) {
+    	if(armies[0].getClient().getClient() == client.getClient()) {
+    		return !armies[0].isEmpty();
+    	} else {
+    		return armies[0].isEmpty();
     	}
     }
 }

@@ -42,4 +42,8 @@ public class ClientWrapper {
 		Cell cell = null;
 		return cell;
 	}
+	
+	public Client getClient() {
+		return client;
+	}
 }

@@ -13,7 +13,7 @@ public interface Iserver extends Remote {
 	public String startDuel(Client client) throws RemoteException;
 	public int register(String pseudo, String password) throws RemoteException, SQLException;
 	public boolean isAGoodMove(int source, int destination, String GMId, Client client) throws RemoteException;
-	public int playMove(String infos, String GMId, Client client) throws RemoteException;
+	public boolean playMove(int source, int destination, String GMId, Client client) throws RemoteException;
 	public int isGameOver(String GMId, Client client) throws RemoteException;
 	//MoveChar
 	//Is
