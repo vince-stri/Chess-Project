@@ -152,12 +152,11 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	
 	@Override
 	public String disconnect(Client client) throws RemoteException, SQLException {
-		// TODO Auto-generated method stub
 		del_token(client);
 		return null;
 	}
-	
 
+	
 	@Override
 	public String startDuel(Client client) throws RemoteException {
 		// TODO Auto-generated method stub
@@ -201,19 +200,21 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 		return 1;
 	}
 	
-
+	/**
+	 * Initialize a new game if there is no player in standby or add the player to an existing game.
+	 * @param player who launched a game
+	 * @return GameManagerID (String) that refers to the GM.  
+	 */
 	@Override
 	public String startMatchMaking(Client player) throws RemoteException {
+		//Initialize CLientWrapper tab for the game manager
+		ClientWrapper cwplayer = new ClientWrapper(player);
 		// If there is already a player in standby
 		if (queueGM.isEmpty()) {
-			//Initialize CLientWrapper tab for the game manager
-			ClientWrapper[] players = new ClientWrapper[2];
-			players[0]= new ClientWrapper(player);
-			players[1]= null;
-			
+						
 			// Create GameManager and add the player to it
-			GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame", players);
-			//gm.addplayer
+			GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame", 0);
+			gm.addClient(cwplayer);
 			// Create an unique ID for the GM
 			String gm_id = UUID.randomUUID().toString();
 			gm_id = gm_id.replace("-", "");
@@ -227,8 +228,9 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 		else {
 			int idx_GM = queueGM.size()-1;
 			GameManager gm = queueGM.get(idx_GM);
-			//gm.addplayer
+			gm.addClient(cwplayer);
 			queueGM.remove(idx_GM);
+			gm.setUpBattle();
 		}
 		return null;
 	}

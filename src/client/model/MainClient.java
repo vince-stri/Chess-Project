@@ -25,7 +25,10 @@ public class MainClient {
 		
 		while(connectionSucces == false) {
 			System.out.println("Bienvenue sur battle chess royale"); //la vanne du battle royale
+		
+		
 			connectionSucces = connectOrRegister(entry, serverObject, playingClient);
+		
 		}
 		
 		/*Menu principal*/
@@ -180,7 +183,6 @@ public class MainClient {
 				entry.nextLine();
 				if(retryOrQuit == 0) {
 					return 0; //fail
-				
 				}
 			}else {
 				isConnectionMenuRunning = false;
@@ -207,7 +209,6 @@ public class MainClient {
 			String gameManagerId = serverObject.startMatchMaking(playingClient);
 			playAGame(entry, gameManagerId,serverObject,playingClient);
 			
-		
 	}
 	
 	private static void playAGame(Scanner entry,String gameManagerId,ServerImpl serverObject,Client playingClient) {
@@ -258,6 +259,5 @@ public class MainClient {
 			
 		}
 	}
-	
 	
 }
