@@ -23,6 +23,7 @@ import java.io.*;
 public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	
 	private ArrayList<GameManager> queueGM = new ArrayList<>();
+	private ArrayList<String> queueIdGM = new ArrayList<>();
 	private Map<String, GameManager> games = new HashMap<String, GameManager>();
 	
 	protected ServerImpl() throws RemoteException {
@@ -221,9 +222,11 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 			
 			// Put the Game manager in standby
 			queueGM.add(gm);
+			queueIdGM.add(gm_id);
 			
 			// Add the GM to the list of current games
 			games.put(gm_id, gm);
+			return gm_id;
 		} 
 		else {
 			int idx_GM = queueGM.size()-1;
@@ -231,8 +234,9 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 			gm.addClient(cwplayer);
 			queueGM.remove(idx_GM);
 			gm.setUpBattle();
+			String gm_id = queueIdGM.remove(idx_GM);
+			return gm_id;
 		}
-		return null;
 	}
 
 	/**
