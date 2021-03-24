@@ -37,11 +37,4 @@ public class ClientImpl extends UnicastRemoteObject implements iClient {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public String getCharacterToMove(ArrayList<Characters> fightersAlive) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

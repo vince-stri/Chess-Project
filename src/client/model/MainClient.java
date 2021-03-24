@@ -211,13 +211,15 @@ public class MainClient {
 			
 	}
 	
-	private static void playAGame(Scanner entry,String gameManagerId,ServerImpl serverObject,Client playingClient) {
-		boolean correctInput,correctOrigin,correctDestination,isGameOver;
-		int origin,destination;
-		String moveMessage;
-		isGameOver = false;
-		while(isGameOver == false) {
-			isGameOver = checkGameOver(gameManagerId);
+	private static void playAGame(Scanner entry,String gameManagerId,ServerImpl serverObject,Client playingClient) throws RemoteException {
+		boolean correctInput,correctOrigin,correctDestination;
+		int isGameOver;
+		int origin = -1;
+		int destination = -1;
+		int moveMessage;
+		isGameOver = -1;
+		while(isGameOver == -1) {
+			isGameOver = serverObject.isGameOver(gameManagerId,playingClient);
 			correctInput = false; 
 			while(correctInput == false) {
 				correctOrigin = false;
@@ -254,9 +256,15 @@ public class MainClient {
 				}
 				correctInput = serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient);
 			}
-			moveMessage = playMove(gameManagerId,origin,destination);
-			System.out.println(moveMessage);
+			moveMessage = serverObject.playMove(origin,destination,gameManagerId,playingClient);
+			System.out.println("Mouvement validé");
 			
+		}
+		//affichage du message de victoire ou de défaite
+		if(isGameOver == 0) {
+			System.out.println("Vous avez Gagné !");
+		}else {
+			System.out.println("Vous avez Perdu !");
 		}
 	}
 	
