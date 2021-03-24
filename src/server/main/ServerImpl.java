@@ -255,12 +255,12 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	 * @return
 	 * @throws RemoteException
 	 */
-	public boolean playMove(int source, int destination, String GMId, Client client) throws RemoteException {
+	public int playMove(int source, int destination, String GMId, Client client) throws RemoteException {
 		int srcX = source / 10;
 		int srcY = source % 10;
 		int destX = destination / 10;
 		int destY = destination % 10;
-		return games.get(GMId).isAGoodMove(srcX, srcY, destX, destY, new ClientWrapper(client));
+		return games.get(GMId).playMove(srcX, srcY, destX, destY, new ClientWrapper(client));
 	}
 	
 	/**
