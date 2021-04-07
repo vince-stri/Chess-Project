@@ -2,7 +2,10 @@ package server.main;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.UUID;
 
 import shared.Client;
 
@@ -15,7 +18,5 @@ public interface Iserver extends Remote {
 	public boolean isAGoodMove(int source, int destination, String GMId, Client client) throws RemoteException;
 	public int playMove(int source, int destination, String GMId, Client client) throws RemoteException;
 	public int isGameOver(String GMId, Client client) throws RemoteException;
-	//MoveChar
-	//Is
-	
+	public int checks_user(String pseudo) throws SQLException, RemoteException;	
 }

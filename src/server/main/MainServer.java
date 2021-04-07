@@ -14,10 +14,9 @@ public class MainServer {
 		try {
 			LocateRegistry.createRegistry(1099);
 			ServerImpl server = new ServerImpl();
-			String url = "rmi://" + InetAddress.getLocalHost().getHostAddress() + "/Chess-Project";
+			String url = "rmi://" + InetAddress.getLocalHost().getHostAddress() + "/ChessProject";
 			System.out.println("Registry with : " + url);
-			Naming.rebind("Chess-Project", server);
-			
+			Naming.rebind(url, server);
 			System.out.println("Server launched");
 						
 		} catch (RemoteException e) {

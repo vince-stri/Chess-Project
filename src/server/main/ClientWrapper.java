@@ -1,5 +1,6 @@
 package server.main;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import server.model.Army;
@@ -16,21 +17,21 @@ public class ClientWrapper {
 		this.client = client;
 	}
 	
-	public boolean wantToSave() {
+	public boolean wantToSave() throws RemoteException {
 		String ret = null;
 		do {
-			client.postMsg("Want to save? [yes: 'y' or no: 'n']");
-			ret = client.getInfo();
+			client.PostMsg("Want to save? [yes: 'y' or no: 'n']");
+			ret = client.GetInfo();
 		} while(ret != "y" && ret != "n");
 		return ret == "y";
 	}
 	
-	public void displayBoard(Board board) {
-		client.postBoard(board);
+	public void displayBoard(Board board) throws RemoteException {
+		client.PostBoard(board);
 	}
 	
-	public void displayText(String msg) {
-		client.postMsg(msg);
+	public void displayText(String msg) throws RemoteException {
+		client.PostMsg(msg);
 	}
 	
 	public Character getCharacterToMove(ArrayList<Character> fighters) {

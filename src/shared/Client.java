@@ -1,64 +1,74 @@
 package shared;
 
 
+import java.io.Serializable;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
+import client.model.iClient;
+import client.view.Journal;
 import server.model.board.*;
 
-public class Client {
+public class Client extends UnicastRemoteObject implements iClient {
 	
 	private int idAccount;
 	private String pseudo;
 	private String token;
 	
 	
-	public Client(int idAccount, String pseudo, String token) {
-		this.setIdAccount(idAccount);
-		this.setPseudo(pseudo);
-		this.setToken(token);
+	public Client(int idAccount, String pseudo, String token) throws RemoteException {
+		this.SetIdAccount(idAccount);
+		this.SetPseudo(pseudo);
+		this.SetToken(token);
 	}
 
 
-	public int getIdAccount() {
+	public int GetIdAccount() {
 		return idAccount;
 	}
 
 
-	public void setIdAccount(int idAccount) {
+	public void SetIdAccount(int idAccount) {
 		this.idAccount = idAccount;
 	}
 
 
-	public String getPseudo() {
+	public String GetPseudo() {
 		return pseudo;
 	}
 
 
-	public void setPseudo(String pseudo) {
+	public void SetPseudo(String pseudo) {
 		this.pseudo = pseudo;
 	}
 
 
-	public String getToken() {
+	public String GetToken() {
 		return token;
 	}
 
 
-	public void setToken(String token) {
+	public void SetToken(String token) {
 		this.token = token;
 	}
 	
-	public void postMsg(String msg) {
-		msg += "";
+	public void PostMsg(String message) throws RemoteException {
+		System.out.println("[JOUEUR] "+message);
 	}
 	
-	public String getInfo() {
-		return "";
+	public String GetInfo() throws RemoteException {
+		return null;
 	}
 	
-	public void postBoard(Board board) {
-		
+	public void PostBoard(Board board) throws RemoteException {
+		Journal.displayBoard(board);
 	}
 	
+	public void PostInfo(String info) throws RemoteException {
+		System.out.println("[SERVEUR] "+info);
+	}
+
+
 	
 }

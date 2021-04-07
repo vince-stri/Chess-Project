@@ -20,7 +20,7 @@ import shared.Client;
 import java.io.*;
 
 
-public class ServerImpl extends UnicastRemoteObject implements Iserver{
+public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	private ArrayList<GameManager> queueGM = new ArrayList<>();
 	private ArrayList<String> queueIdGM = new ArrayList<>();
@@ -98,8 +98,8 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 		System.out.println("Your connection token is " + token);
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
-		client.setToken(token);
-		String query = "UPDATE account SET user_token='"+token+"' WHERE ida="+client.getIdAccount()+";";
+		client.SetToken(token);
+		String query = "UPDATE account SET user_token='"+token+"' WHERE ida="+client.GetIdAccount()+";";
 		System.out.println("Query : " + query);
 		if (stmt.executeUpdate(query)==1) {
 			System.out.println("Token updated in database");
@@ -115,7 +115,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	private void del_token(Client client) throws SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
-		String query = "UPDATE account SET user_token='0' WHERE ida="+client.getIdAccount()+";";
+		String query = "UPDATE account SET user_token='0' WHERE ida="+client.GetIdAccount()+";";
 		System.out.println("Query : " + query);
 		if (stmt.executeUpdate(query)==1) {
 			System.out.println("Token updated in database");
@@ -131,13 +131,13 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	public String login(Client client, String password) throws RemoteException, SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
-		String query = "SELECT ida FROM account WHERE pseudo='" + client.getPseudo() + "' AND password='"+password+"';";
+		String query = "SELECT ida FROM account WHERE pseudo='" + client.GetPseudo() + "' AND password='"+password+"';";
 		System.out.println("Query : " + query);
 		
 		ResultSet res = stmt.executeQuery(query);
 		if (res.next()) {
 			System.out.println(res.getInt("ida") + " user connected");
-			client.setIdAccount(res.getInt("ida"));
+			client.SetIdAccount(res.getInt("ida"));
 			return gen_token(client);
 		}
 		
@@ -165,7 +165,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 	}
 
 	
-	public int checks_user(String pseudo) throws SQLException {
+	public int checks_user(String pseudo) throws RemoteException, SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
 		String query = "SELECT COUNT(*) AS Total FROM account WHERE pseudo='" + pseudo + "';";
@@ -226,6 +226,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 			
 			// Add the GM to the list of current games
 			games.put(gm_id, gm);
+			System.out.println(gm_id);
 			return gm_id;
 		} 
 		else {
@@ -235,6 +236,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver{
 			queueGM.remove(idx_GM);
 			gm.setUpBattle();
 			String gm_id = queueIdGM.remove(idx_GM);
+			System.out.println(gm_id);
 			return gm_id;
 		}
 	}

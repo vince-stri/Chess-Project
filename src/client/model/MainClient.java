@@ -8,27 +8,23 @@ import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import org.postgresql.translation.messages_bg;
-
+import server.main.Iserver;
 import shared.Client;
-import server.main.ServerImpl;
+
 
 public class MainClient {
 
-	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
+	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException, SQLException {
 		
 		// TODO Auto-generated method stub
-		ServerImpl serverObject = (ServerImpl) Naming.lookup("rmi://localhost/Chess-Project");
+		Iserver serverObject = (Iserver) Naming.lookup("rmi://localhost:1099/ChessProject");
 		boolean connectionSucces = false;
 		Scanner entry = new Scanner(System.in);
 		Client playingClient =new Client(-1, null, null);
 		
 		while(connectionSucces == false) {
 			System.out.println("Bienvenue sur battle chess royale"); //la vanne du battle royale
-		
-		
 			connectionSucces = connectOrRegister(entry, serverObject, playingClient);
-		
 		}
 		
 		/*Menu principal*/
@@ -61,7 +57,7 @@ public class MainClient {
 					break;
 				}
 					
-			} catch(Exception InputMismatchException) {
+			} catch(InputMismatchException e) {
 				System.err.println("Erreur dans la saisie clavier");
 				entry.nextLine();
 			}
@@ -73,52 +69,49 @@ public class MainClient {
 
 	}
 	//connection or login screen 
-	private static boolean connectOrRegister(Scanner entry, ServerImpl serverObject,Client clientToInstanciate) {
+	private static boolean connectOrRegister(Scanner entry, Iserver serverObject,Client clientToInstanciate) throws RemoteException, SQLException {
 		boolean isMenuRunning = true;
 		int connectionResult = 1;//retry
 		int registerResult = 1;//retry
-		
-		
+		int menuChoice = -1;
+				
 		while(isMenuRunning) {
-			System.out.println("1- Connexion");
 			System.out.println("2- Creer un compte");
+			System.out.println("1- Connexion");
 			System.out.println("0- Quitter");
 			
-			int menuChoice = entry.nextInt();
-			entry.nextLine();
-			
 			try {
-				switch(menuChoice) {
-				case 0:
-					isMenuRunning = false;
-					break;
-				
-				case 1:
-					connectionResult = connect(entry,serverObject,clientToInstanciate);
-					break;
-				
-				case 2:
-					registerResult = register(entry,serverObject,clientToInstanciate);
-					break;
-				}
-				
-			} catch(Exception InputMismatchException) {
-				System.err.println("Erreur dans la saisie clavier");
+				menuChoice = entry.nextInt();
 				entry.nextLine();
+				if(menuChoice >= 0 && menuChoice <= 2) {
+					isMenuRunning = false;
+				}
+			} catch(InputMismatchException e) {
+				System.err.println("Erreur dans la saisie clavier");
 			}
-			if((connectionResult == 0) || (registerResult == 0)) {//Quit
-				return false;
-			}
-			if((connectionResult == 1)) {
-				return true;
-			}
-			
 		}
-		return false;//If we reach this point that means the user typed 0 
 		
+		switch(menuChoice) {
+		case 0:
+			return false;
+		case 1:
+			connectionResult = connect(entry,serverObject,clientToInstanciate);
+			break;
+		
+		case 2:
+			registerResult = register(entry,serverObject,clientToInstanciate);
+			break;
+		}
+		if((connectionResult == 0) || (registerResult == 0)) {//Quit
+			return false;
+		}
+		if((connectionResult == 1)) {
+			return true;
+		}
+		return false;//If we reach this point that means the user typed 0
 	}
 
-	private static int register(Scanner entry,ServerImpl serverObject,Client clientToInstanciate) throws RemoteException, SQLException {
+	private static int register(Scanner entry, Iserver serverObject, Client clientToInstanciate) throws RemoteException, SQLException {
 		boolean isRegisterMenuRunning = true;
 		int registerResult;
 		int retryOrQuit;
@@ -132,7 +125,6 @@ public class MainClient {
 			System.out.println("Entrez un pseudo");
 			pseudo = entry.nextLine();
 			if(serverObject.checks_user(pseudo) != 0) {//user already exist
-				
 				System.out.println("Entrez votre mot de passe");
 				password = entry.nextLine();
 				System.out.println("Confirmez votre mot de passe");
@@ -142,7 +134,7 @@ public class MainClient {
 					registerResult = serverObject.register(pseudo, password);
 					if(registerResult == 1) { //DB register went well
 						isRegisterMenuRunning = false;
-						clientToInstanciate.setPseudo(pseudo);
+						clientToInstanciate.SetPseudo(pseudo);
 						
 						
 					}else {//an issue occured during DB register
@@ -155,6 +147,8 @@ public class MainClient {
 							return 0; //fail
 						}
 					}
+				} else {
+					System.out.println("Les mots de passe ne correspondent pas");
 				}
 			}
 			
@@ -163,7 +157,7 @@ public class MainClient {
 		return 1; //Success
 	}
 	
-	private static int connect(Scanner entry,ServerImpl serverObject, Client clientToInstanciate) throws RemoteException, SQLException {
+	private static int connect(Scanner entry,Iserver serverObject, Client clientToInstanciate) throws RemoteException, SQLException {
 		boolean isConnectionMenuRunning= true;
 		String pseudo;
 		String password;
@@ -175,7 +169,7 @@ public class MainClient {
 			pseudo = entry.nextLine();
 			System.out.println("entrez votre mot de passe");
 			password = entry.nextLine();
-			clientToInstanciate.setPseudo(pseudo);
+			clientToInstanciate.SetPseudo(pseudo);
 			if(serverObject.login(clientToInstanciate, password) == "0") {
 				System.out.println("1- Reessayer");
 				System.out.println("0- Quitter");
@@ -191,12 +185,12 @@ public class MainClient {
 		return 1; //Success
 		
 	}
-	private static void loadGame(Scanner entry, ServerImpl serverObject,Client playingClient) {
+	private static void loadGame(Scanner entry, Iserver serverObject,Client playingClient) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void defyPlayer(Scanner entry, ServerImpl serverObject,Client playingClient) throws RemoteException {
+	private static void defyPlayer(Scanner entry, Iserver serverObject,Client playingClient) throws RemoteException {
 		String message;
 		
 		message = serverObject.startDuel(playingClient);
@@ -205,19 +199,21 @@ public class MainClient {
 		
 	}
 
-	private static void goMatchmaking(Scanner entry,ServerImpl serverObject,Client playingClient) throws RemoteException {
+	private static void goMatchmaking(Scanner entry, Iserver serverObject,Client playingClient) throws RemoteException {
 			String gameManagerId = serverObject.startMatchMaking(playingClient);
 			playAGame(entry, gameManagerId,serverObject,playingClient);
 			
 	}
 	
-	private static void playAGame(Scanner entry,String gameManagerId,ServerImpl serverObject,Client playingClient) throws RemoteException {
+	private static void playAGame(Scanner entry,String gameManagerId,Iserver serverObject,Client playingClient) throws RemoteException {
 		boolean correctInput,correctOrigin,correctDestination;
 		int isGameOver;
 		int origin = -1;
 		int destination = -1;
 		int moveMessage;
 		isGameOver = -1;
+		System.out.println(gameManagerId);
+		/*
 		while(isGameOver == -1) {
 			isGameOver = serverObject.isGameOver(gameManagerId,playingClient);
 			correctInput = false; 
@@ -265,7 +261,7 @@ public class MainClient {
 			System.out.println("Vous avez Gagné !");
 		}else {
 			System.out.println("Vous avez Perdu !");
-		}
+		}*/
 	}
 	
 }
