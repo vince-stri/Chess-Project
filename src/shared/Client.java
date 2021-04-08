@@ -2,7 +2,6 @@ package shared;
 
 
 import java.io.Serializable;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -10,7 +9,7 @@ import client.model.iClient;
 import client.view.Journal;
 import server.model.board.*;
 
-public class Client extends UnicastRemoteObject implements iClient {
+public class Client extends UnicastRemoteObject implements iClient, Serializable {
 	
 	private int idAccount;
 	private String pseudo;
@@ -24,32 +23,32 @@ public class Client extends UnicastRemoteObject implements iClient {
 	}
 
 
-	public int GetIdAccount() {
+	public int GetIdAccount() throws RemoteException {
 		return idAccount;
 	}
 
 
-	public void SetIdAccount(int idAccount) {
+	public void SetIdAccount(int idAccount) throws RemoteException {
 		this.idAccount = idAccount;
 	}
 
 
-	public String GetPseudo() {
+	public String GetPseudo() throws RemoteException {
 		return pseudo;
 	}
 
 
-	public void SetPseudo(String pseudo) {
+	public void SetPseudo(String pseudo) throws RemoteException {
 		this.pseudo = pseudo;
 	}
 
 
-	public String GetToken() {
+	public String GetToken() throws RemoteException {
 		return token;
 	}
 
 
-	public void SetToken(String token) {
+	public void SetToken(String token) throws RemoteException {
 		this.token = token;
 	}
 	

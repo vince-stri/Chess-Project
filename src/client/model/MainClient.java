@@ -9,6 +9,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import server.main.Iserver;
+import server.main.ServerImpl;
 import shared.Client;
 
 
@@ -157,8 +158,8 @@ public class MainClient {
 		return 1; //Success
 	}
 	
-	private static int connect(Scanner entry,Iserver serverObject, Client clientToInstanciate) throws RemoteException, SQLException {
-		boolean isConnectionMenuRunning= true;
+	private static int connect(Scanner entry, Iserver serverObject, Client clientToInstanciate) throws RemoteException, SQLException {
+		boolean isConnectionMenuRunning = true;
 		String pseudo;
 		String password;
 		int retryOrQuit;

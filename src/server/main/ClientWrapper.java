@@ -3,7 +3,7 @@ package server.main;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import server.model.Army;
+import client.model.iClient;
 import server.model.board.Board;
 import server.model.board.Cell;
 import server.model.character.Character;
@@ -11,10 +11,10 @@ import shared.Client;
 
 public class ClientWrapper {
 	
-	private Client client;
+	private iClient client;
 	
-	public ClientWrapper(Client client) {
-		this.client = client;
+	public ClientWrapper(iClient client2) {
+		this.client = client2;
 	}
 	
 	public boolean wantToSave() throws RemoteException {
@@ -44,7 +44,7 @@ public class ClientWrapper {
 		return cell;
 	}
 	
-	public Client getClient() {
+	public iClient getClient() {
 		return client;
 	}
 }

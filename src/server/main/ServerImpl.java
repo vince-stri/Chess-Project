@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import client.model.iClient;
 import server.model.GameManager;
 import server.model.board.BoardShape;
 import shared.Client;
@@ -35,7 +36,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	 * Get database configuration from external config file
 	 * @return conf array
 	 */
-	public String[] get_conf() {
+	private String[] get_conf() {
 		BufferedReader file = null;
 		String[] conf = new String[5];
 	    String line;
@@ -61,7 +62,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	    return conf;
 	  }
 	
-	public Connection connect_db() {
+	private Connection connect_db() {
 		Connection con = null;
 		String[] conf;
 		if ((conf=get_conf()) == null) {
@@ -92,7 +93,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return con;
 	}
 	
-	private String gen_token(Client client) throws SQLException {
+	private String gen_token(iClient client) throws SQLException, RemoteException {
 		String token = UUID.randomUUID().toString();
 		token = token.replace("-", "");
 		System.out.println("Your connection token is " + token);
@@ -112,7 +113,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return token;
 	}
 	
-	private void del_token(Client client) throws SQLException {
+	private void del_token(iClient client) throws SQLException, RemoteException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
 		String query = "UPDATE account SET user_token='0' WHERE ida="+client.GetIdAccount()+";";
@@ -126,9 +127,8 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		stmt.close();
 		db.close();
 	}
-	
-	@Override
-	public String login(Client client, String password) throws RemoteException, SQLException {
+
+	public String login(iClient client, String password) throws RemoteException, SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
 		String query = "SELECT ida FROM account WHERE pseudo='" + client.GetPseudo() + "' AND password='"+password+"';";
@@ -152,14 +152,14 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	}
 	
 	@Override
-	public String disconnect(Client client) throws RemoteException, SQLException {
+	public String disconnect(iClient client) throws RemoteException, SQLException {
 		del_token(client);
 		return null;
 	}
 
 	
 	@Override
-	public String startDuel(Client client) throws RemoteException {
+	public String startDuel(iClient client) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -207,7 +207,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	 * @return GameManagerID (String) that refers to the GM.  
 	 */
 	@Override
-	public String startMatchMaking(Client player) throws RemoteException {
+	public String startMatchMaking(iClient player) throws RemoteException {
 		//Initialize CLientWrapper tab for the game manager
 		ClientWrapper cwplayer = new ClientWrapper(player);
 		// If there is already a player in standby
@@ -244,7 +244,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	/**
 	 * 
 	 */
-	public boolean isAGoodMove(int source, int destination, String GMId, Client client) throws RemoteException {
+	public boolean isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException {
 		int srcX = source / 10;
 		int srcY = source % 10;
 		int destX = destination / 10;
@@ -261,7 +261,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	 * @return
 	 * @throws RemoteException
 	 */
-	public int playMove(int source, int destination, String GMId, Client client) throws RemoteException {
+	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException {
 		int srcX = source / 10;
 		int srcY = source % 10;
 		int destX = destination / 10;
@@ -272,7 +272,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	/**
 	 * 
 	 */
-	public int isGameOver(String GMId, Client client) throws RemoteException {
+	public int isGameOver(String GMId, iClient client) throws RemoteException {
 		if(games.get(GMId).isWinner(new ClientWrapper(client))) {
 			return 0;
 		} return 1;
