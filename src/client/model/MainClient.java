@@ -62,12 +62,9 @@ public class MainClient {
 				System.err.println("Erreur dans la saisie clavier");
 				entry.nextLine();
 			}
-			
-			
-			
 		}
 		entry.close();
-
+		System.out.println("A bientot !");
 	}
 	//connection or login screen 
 	private static boolean connectOrRegister(Scanner entry, Iserver serverObject,Client clientToInstanciate) throws RemoteException, SQLException {
@@ -171,7 +168,7 @@ public class MainClient {
 			System.out.println("entrez votre mot de passe");
 			password = entry.nextLine();
 			clientToInstanciate.SetPseudo(pseudo);
-			if(serverObject.login(clientToInstanciate, password) == "0") {
+			if(serverObject.login(clientToInstanciate, password).equals("0")) {
 				System.out.println("1- Reessayer");
 				System.out.println("0- Quitter");
 				retryOrQuit = entry.nextInt();
@@ -179,7 +176,7 @@ public class MainClient {
 				if(retryOrQuit == 0) {
 					return 0; //fail
 				}
-			}else {
+			} else {
 				isConnectionMenuRunning = false;
 			}
 		}
