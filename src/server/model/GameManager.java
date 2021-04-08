@@ -28,7 +28,7 @@ public class GameManager {
 	private int playersNb;
 	
 	/**
-	 * 
+	 * The number of clients currently connected to the game
 	 */
 	private int connectedClientsNb;
 	
@@ -74,13 +74,11 @@ public class GameManager {
      * @param playersNb the number of players
      */
     public GameManager(BoardShape boardShape, String nameFileToSave, int playerNb) {
-    	if(players == null) { throw new NullPointerException("Players must not be null"); }
     	this.boardShape = boardShape;
     	this.save = new Save(nameFileToSave);
     	this.armiesNb = playerNb;
     	this.playersNb = playerNb;
     	this.connectedClientsNb = 0;
-    	setUpBattle();
     }
 
     /**

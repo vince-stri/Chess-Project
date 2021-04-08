@@ -212,13 +212,13 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		ClientWrapper cwplayer = new ClientWrapper(player);
 		// If there is already a player in standby
 		if (queueGM.isEmpty()) {
-						
-			// Create GameManager and add the player to it
-			GameManager gm = new GameManager(BoardShape.CHESS, "saves/allGame", 0);
-			gm.addClient(cwplayer);
 			// Create an unique ID for the GM
 			String gm_id = UUID.randomUUID().toString();
 			gm_id = gm_id.replace("-", "");
+						
+			// Create GameManager and add the player to it
+			GameManager gm = new GameManager(BoardShape.CHESS, "saves/" + gm_id, 0);
+			gm.addClient(cwplayer);
 			
 			// Put the Game manager in standby
 			queueGM.add(gm);
@@ -226,7 +226,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			
 			// Add the GM to the list of current games
 			games.put(gm_id, gm);
-			System.out.println(gm_id);
+			System.out.println("The newly created GameManager id: " + gm_id);
 			return gm_id;
 		} 
 		else {
