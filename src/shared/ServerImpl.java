@@ -1,4 +1,4 @@
-package server.main;
+package shared;
 
 
 import java.rmi.RemoteException;
@@ -14,11 +14,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-import server.model.*;
-import client.model.iClient;
+import server.model.Coordinates;
 import server.model.GameManager;
 import server.model.board.BoardShape;
-import shared.Client;
+import server.main.ClientWrapper;
 import java.io.*;
 
 
@@ -28,7 +27,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	private ArrayList<String> queueIdGM = new ArrayList<>();
 	private Map<String, GameManager> games = new HashMap<String, GameManager>();
 	
-	protected ServerImpl() throws RemoteException {
+	public ServerImpl() throws RemoteException {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -230,6 +229,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println("The newly created GameManager id: " + gm_id);
 			gm.setUpBattle();
 			cwplayer.displayBoard(gm.getBoard());
+			cwplayer.displayText("Vous jouez l'equipe du cote obscure de la force");
 			return gm_id;
 		} else {
 			int idx_GM = queueGM.size()-1;
@@ -240,6 +240,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println(gm_id);
 			gm.setPlayersToArmies();
 			cwplayer.displayBoard(gm.getBoard());
+			cwplayer.displayText("Vous jouez l'equipe du cote clair de la force");
 			return gm_id;
 		}
 	}

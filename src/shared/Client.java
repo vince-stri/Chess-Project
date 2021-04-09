@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import client.model.iClient;
 import client.view.Journal;
 import server.model.board.*;
 

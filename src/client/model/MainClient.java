@@ -10,8 +10,8 @@ import java.util.Scanner;
 
 import client.view.CLI;
 import client.view.Journal;
-import server.main.Iserver;
 import shared.Client;
+import shared.Iserver;
 
 
 public class MainClient {

@@ -3,10 +3,10 @@ package server.main;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import client.model.iClient;
 import server.model.board.Board;
 import server.model.board.Cell;
 import server.model.character.Character;
+import shared.iClient;
 public class ClientWrapper {
 	
 	private iClient client;
