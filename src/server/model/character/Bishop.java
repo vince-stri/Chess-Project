@@ -1,6 +1,7 @@
 package server.model.character;
 
 
+import java.io.Serializable;
 import java.lang.Math;
 
 import server.model.Army;
@@ -13,7 +14,7 @@ import server.model.board.Cell;
  * @author vincent acila
  * @version 1.0
  */
-public class Bishop extends Character{
+public class Bishop extends Character {
 
 	/**
 	 * {@inheritDoc}

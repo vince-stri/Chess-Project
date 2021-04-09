@@ -74,22 +74,22 @@ public class Fight {
     		 * The challenger has more chance to strike damages
     		 */
     		if(dice.roll() > 3) {
-    			Journal.displayText(challenger.getName() + " deals " + challenged.getDamagePoints() + " damages to " + challenged.getName() );
+    			//Journal.displayText(challenger.getName() + " deals " + challenged.getDamagePoints() + " damages to " + challenged.getName() );
     			challengedDead = challenger.strike(challenged);
     		} else {
-    			Journal.displayText(challenged.getName() + " deals " + challenger.getDamagePoints() + " damages to " + challenger.getName() );
+    			//Journal.displayText(challenged.getName() + " deals " + challenger.getDamagePoints() + " damages to " + challenger.getName() );
     			challengerDead = challenged.strike(challenger);
     		}
     	}
     	if(challengerDead) {
-    		Journal.displayText(challenger.getName() + " has been killed by " + challenged.getName());
+    		//Journal.displayText(challenger.getName() + " has been killed by " + challenged.getName());
     		challenger.kill();
     		challenged.heal();
     		challenged.addTreasure(treasure);
     		challenged.equipTreasure(treasure);
     		return false;
     	} else {
-    		Journal.displayText(challenged.getName() + " has been killed by " + challenger.getName() + "\n");
+    		//Journal.displayText(challenged.getName() + " has been killed by " + challenger.getName() + "\n");
     		challenged.kill();
     		challenger.heal();
     		challenger.addTreasure(treasure);

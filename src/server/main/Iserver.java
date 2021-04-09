@@ -12,8 +12,9 @@ public interface Iserver extends Remote {
 	public String startMatchMaking(iClient client) throws RemoteException;
 	public String startDuel(iClient client) throws RemoteException;
 	public int register(String pseudo, String password) throws RemoteException, SQLException;
-	public boolean isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException;
 	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException;
 	public int isGameOver(String GMId, iClient client) throws RemoteException;
-	public int checks_user(String pseudo) throws SQLException, RemoteException;	
+	public int checks_user(String pseudo) throws SQLException, RemoteException;
+	public boolean isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException;
+	public boolean minimumPlayersAreConnected(String GMId) throws RemoteException;
 }

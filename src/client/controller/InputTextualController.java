@@ -21,26 +21,27 @@ public class InputTextualController extends InputController {
 	 * The scanner used to get inputs from the terminal
 	 */
 	Scanner myScanner = new Scanner(System.in);
-	
+	Journal journal;
 	/**
 	 * Constructor of InputTextualController
 	 */
-	public InputTextualController() {
+	public InputTextualController(Journal journal) {
 		myScanner = new Scanner(System.in);
+		this.journal = journal;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	 public server.model.character.Character getCharacterToMove(Army army) {
-	    	Journal.displayText(army.dumpArmy());
-	    	Journal.displayText("\nPlease, select the character you want to move by giving the character printed between [] on its line:");
+	    	journal.displayText(army.dumpArmy());
+	    	journal.displayText("\nPlease, select the character you want to move by giving the character printed between [] on its line:");
 	    	boolean isCorrect = true;
 	    	Character chara = null;
 	    	char c;
 	    	do {
 	    		if(!isCorrect) {
-	    			Journal.displayText("Please would you select a correct character!");
+	    			journal.displayText("Please would you select a correct character!");
 	    		}
 	    		isCorrect = true;
 				c = myScanner.next().charAt(0);
@@ -58,7 +59,7 @@ public class InputTextualController extends InputController {
     public Cell getRecquiredCell(Board board) {
     	switch (board.getBoardShape()) {
     		default:
-    			Journal.displayText("Please, select the cell where you want to move on your character:\n\tx:");
+    			journal.displayText("Please, select the cell where you want to move on your character:\n\tx:");
     			int x = 0, y = 0;
     			boolean isInteger, isCorrect;
     			/* get x */
@@ -70,19 +71,19 @@ public class InputTextualController extends InputController {
     				} catch (InputMismatchException e) {
     					isInteger = false;
     					isCorrect = false;
-    					Journal.displayText("Would you select a NUMBER please:");
+    					journal.displayText("Would you select a NUMBER please:");
     				} finally {
     					myScanner.nextLine();			
     				}
     				if(isInteger) {
     					if(x < 0 || x >= board.getWidthsNb()) {
-    						Journal.displayText("Would you select a VALID x-coordinate belonging to [0," + board.getWidthsNb() + "[:");
+    						journal.displayText("Would you select a VALID x-coordinate belonging to [0," + board.getWidthsNb() + "[:");
     						isCorrect = false;
     					}
     				}
     			} while(!isCorrect);
     			/* get y */
-    			Journal.displayText("\ty:");
+    			journal.displayText("\ty:");
     			do {
     				isInteger = true;
     				isCorrect = true;
@@ -91,13 +92,13 @@ public class InputTextualController extends InputController {
     				} catch (InputMismatchException e) {
     					isInteger = false;
     					isCorrect = false;
-    					Journal.displayText("Would you select a NUMBER please:");
+    					journal.displayText("Would you select a NUMBER please:");
     				} finally {
     					myScanner.nextLine();			
     				}
     				if(isInteger) {
     					if(y < 0 || y >= board.getWidthsNb()) {
-    						Journal.displayText("Would you select a VALID y-coordinate belonging to [0," + board.getWidthsNb() + "[:");
+    						journal.displayText("Would you select a VALID y-coordinate belonging to [0," + board.getWidthsNb() + "[:");
     						isCorrect = false;
     					}
     				}
@@ -114,11 +115,11 @@ public class InputTextualController extends InputController {
     	boolean error;
     	do {
     		error = false;
-			Journal.displayText("Would you stop your game here and come back later? [y or n]");
+			journal.displayText("Would you stop your game here and come back later? [y or n]");
     		str = myScanner.nextLine();
     		if(!str.equals("y") && !str.equals("n")) {
     			error = true;
-    			Journal.displayText("Would you enter a CORRECT character?");
+    			journal.displayText("Would you enter a CORRECT character?");
     		}
     	} while(error);
     	return str.equals("y");
@@ -129,11 +130,11 @@ public class InputTextualController extends InputController {
     	boolean error;
     	do {
     		error = false;
-			Journal.displayText("The save file doesn't exist.\nWould you like to recover it? (if not a new game will be started) [y or n]");
+			journal.displayText("The save file doesn't exist.\nWould you like to recover it? (if not a new game will be started) [y or n]");
     		str = myScanner.nextLine();
     		if(!str.equals("y") && !str.equals("n")) {
     			error = true;
-    			Journal.displayText("Would you enter a CORRECT character?");
+    			journal.displayText("Would you enter a CORRECT character?");
     		}
     	} while(error);
     	return str.equals("y");
@@ -147,11 +148,11 @@ public class InputTextualController extends InputController {
     	boolean error;
     	do {
     		error = false;
-			Journal.displayText("Would you like to start a new game or to continue a previous one? [s or c]");
+			journal.displayText("Would you like to start a new game or to continue a previous one? [s or c]");
     		str = myScanner.nextLine();
     		if(!str.equals("s") && !str.equals("c")) {
     			error = true;
-    			Journal.displayText("Would you enter a CORRECT character?");
+    			journal.displayText("Would you enter a CORRECT character?");
     		}
     	} while(error);
     	return str.equals("s");
@@ -161,7 +162,7 @@ public class InputTextualController extends InputController {
 	 * {@inheritDoc}
 	 */
     public String getAPath() {
-    	Journal.displayText("Please, indicate a path:");
+    	journal.displayText("Please, indicate a path:");
     	return myScanner.nextLine();
     }
 

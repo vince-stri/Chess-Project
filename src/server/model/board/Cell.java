@@ -25,7 +25,7 @@ public class Cell implements Serializable {
     /**
      * The character who stands on the cell
      */
-    private transient Character character;
+    private Character character;
 
 
     /**

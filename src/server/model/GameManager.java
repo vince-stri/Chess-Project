@@ -1,5 +1,6 @@
 package server.model;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import client.view.Journal;
@@ -79,19 +80,24 @@ public class GameManager {
     	this.armiesNb = playerNb;
     	this.playersNb = playerNb;
     	this.connectedClientsNb = 0;
+    	this.players = new ClientWrapper[2];
     }
 
     /**
      * Add a client to the GameManager
      * @param client the client to add
      * @return false if the client could not be added
+     * @throws RemoteException 
      */
-    public boolean addClient(ClientWrapper client) {
+    public boolean addClient(ClientWrapper client) throws RemoteException {
     	if(connectedClientsNb >= playersNb) {
     		return false;
     	} else {
-    		players[connectedClientsNb] = client;
-    		connectedClientsNb++;
+    		for(int i = 0; i < connectedClientsNb; i++) {
+    			players[i].displayText("Un joueur vient d'arriver");
+    		}
+    		players[connectedClientsNb++] = client;
+    		System.out.println(connectedClientsNb);
     		return true;
     	}
     }
@@ -99,13 +105,14 @@ public class GameManager {
     /**
      * Set up the game components according to the type of game wanted
      * Warning: This method must be called before all the others
+     * @throws RemoteException 
      */
-    public void setUpBattle() {
+    public void setUpBattle() throws RemoteException {
     	round = 0;
     	switch (boardShape) {
 			default:
 				board = new BoardChess();
-				armies = ArmyComponents.generateChessBoardArmies(board, 2, players);
+				armies = ArmyComponents.generateChessBoardArmies(board, 2);
 				playingArmy = armies[0];
 			break;
 		}
@@ -129,14 +136,14 @@ public class GameManager {
 			return false;
 		}
 		Character selectedChara = source.getCharacter();
-		if(selectedChara.getArmy().getClient() != player) { // verify if the selected character belongs to the player's army  
+		if(selectedChara.getArmy().getClientWrapper() != player) { // verify if the selected character belongs to the player's army  
 			return false;
 		}
 		if(selectedChara.isAPossibleMove(destination) == false) { // verify if the required move can be done
 			return false;
 		}
 		if(destination.getCharacter() != null) { // verify if there is a character on the destination cell 
-			return destination.getCharacter().getArmy().getClient() != player; // verify if this character is an ennemy 
+			return destination.getCharacter().getArmy().getClientWrapper() != player; // verify if this character is an ennemy 
 		} return true;
     }
 
@@ -208,10 +215,24 @@ public class GameManager {
     }
     
     public boolean isWinner(ClientWrapper client) {
-    	if(armies[0].getClient().getClient() == client.getClient()) {
+    	if(armies[0].getClientWrapper().getClient() == client.getClient()) {
     		return !armies[0].isEmpty();
     	} else {
     		return armies[0].isEmpty();
+    	}
+    }
+    
+    public boolean isMinimumClientsConnected() {
+    	return connectedClientsNb > 1;
+    }
+    
+    public Board getBoard() {
+    	return this.board;
+    }
+    
+    public void setPlayersToArmies() {    	
+    	for(int i = 0; i < playersNb; i++) {					
+    		armies[i].setClientWrapper(players[i]);
     	}
     }
 }

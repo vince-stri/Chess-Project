@@ -1,5 +1,7 @@
 package server.model.character;
 
+import java.io.Serializable;
+
 import server.model.Army;
 import server.model.Coordinates;
 import server.model.board.Board;

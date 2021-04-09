@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import server.model.*;
 import client.model.iClient;
 import server.model.GameManager;
 import server.model.board.BoardShape;
@@ -217,7 +218,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			gm_id = gm_id.replace("-", "");
 						
 			// Create GameManager and add the player to it
-			GameManager gm = new GameManager(BoardShape.CHESS, "saves/" + gm_id, 0);
+			GameManager gm = new GameManager(BoardShape.CHESS, "saves/" + gm_id, 2);
 			gm.addClient(cwplayer);
 			
 			// Put the Game manager in standby
@@ -227,20 +228,22 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			// Add the GM to the list of current games
 			games.put(gm_id, gm);
 			System.out.println("The newly created GameManager id: " + gm_id);
+			gm.setUpBattle();
+			cwplayer.displayBoard(gm.getBoard());
 			return gm_id;
-		} 
-		else {
+		} else {
 			int idx_GM = queueGM.size()-1;
 			GameManager gm = queueGM.get(idx_GM);
 			gm.addClient(cwplayer);
 			queueGM.remove(idx_GM);
-			gm.setUpBattle();
 			String gm_id = queueIdGM.remove(idx_GM);
 			System.out.println(gm_id);
+			gm.setPlayersToArmies();
+			cwplayer.displayBoard(gm.getBoard());
 			return gm_id;
 		}
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -278,4 +281,8 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		} return 1;
 	}
 
+	public boolean minimumPlayersAreConnected(String GMId) throws RemoteException {
+		GameManager gm = games.get(GMId);
+		return gm.isMinimumClientsConnected();
+	}
 }

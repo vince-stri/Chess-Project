@@ -8,23 +8,26 @@ import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import client.view.CLI;
+import client.view.Journal;
 import server.main.Iserver;
-import server.main.ServerImpl;
 import shared.Client;
 
 
 public class MainClient {
-
+	
+	static Journal journal;
+	
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException, SQLException {
-		
 		// TODO Auto-generated method stub
 		Iserver serverObject = (Iserver) Naming.lookup("rmi://localhost:1099/ChessProject");
 		boolean connectionSucces = false;
 		Scanner entry = new Scanner(System.in);
-		Client playingClient =new Client(-1, null, null);
+		journal = new CLI();
+		Client playingClient =new Client(-1, null, null, journal);
 		
 		while(connectionSucces == false) {
-			System.out.println("Bienvenue sur battle chess royale"); //la vanne du battle royale
+			journal.displayText("Bienvenue sur battle chess royale"); //la vanne du battle royale
 			connectionSucces = connectOrRegister(entry, serverObject, playingClient);
 		}
 		
@@ -32,10 +35,10 @@ public class MainClient {
 		boolean isMenuRunning = true;
 				
 		while (isMenuRunning){
-			System.out.println("1- Matchmaking aleatoire");
-			System.out.println("2- Defier un joueur");
-			System.out.println("3- Charger une partie");
-			System.out.println("0- Quitter");
+			journal.displayText("1- Matchmaking aleatoire");
+			journal.displayText("2- Defier un joueur");
+			journal.displayText("3- Charger une partie");
+			journal.displayText("0- Quitter");
 			
 			try {
 				int menuChoice = entry.nextInt();
@@ -64,7 +67,7 @@ public class MainClient {
 			}
 		}
 		entry.close();
-		System.out.println("A bientot !");
+		journal.displayText("A bientot !");
 	}
 	//connection or login screen 
 	private static boolean connectOrRegister(Scanner entry, Iserver serverObject,Client clientToInstanciate) throws RemoteException, SQLException {
@@ -74,9 +77,9 @@ public class MainClient {
 		int menuChoice = -1;
 				
 		while(isMenuRunning) {
-			System.out.println("2- Creer un compte");
-			System.out.println("1- Connexion");
-			System.out.println("0- Quitter");
+			journal.displayText("2- Creer un compte");
+			journal.displayText("1- Connexion");
+			journal.displayText("0- Quitter");
 			
 			try {
 				menuChoice = entry.nextInt();
@@ -119,13 +122,13 @@ public class MainClient {
 		
 		while(isRegisterMenuRunning) {//register Menu loop
 			
-			System.out.println("Creer un compte");
-			System.out.println("Entrez un pseudo");
+			journal.displayText("Creer un compte");
+			journal.displayText("Entrez un pseudo");
 			pseudo = entry.nextLine();
 			if(serverObject.checks_user(pseudo) != 0) {//user already exist
-				System.out.println("Entrez votre mot de passe");
+				journal.displayText("Entrez votre mot de passe");
 				password = entry.nextLine();
-				System.out.println("Confirmez votre mot de passe");
+				journal.displayText("Confirmez votre mot de passe");
 				confirmpassword = entry.nextLine();
 				
 				if(password.contentEquals(confirmpassword)) {//password and confimpassword are the same
@@ -133,12 +136,10 @@ public class MainClient {
 					if(registerResult == 1) { //DB register went well
 						isRegisterMenuRunning = false;
 						clientToInstanciate.SetPseudo(pseudo);
-						
-						
 					}else {//an issue occured during DB register
-						System.out.println("Un probleme est survenu");
-						System.out.println("1- Reessayer");
-						System.out.println("0- Quitter");
+						journal.displayText("Un probleme est survenu");
+						journal.displayText("1- Reessayer");
+						journal.displayText("0- Quitter");
 						retryOrQuit = entry.nextInt();
 						entry.nextLine();
 						if(retryOrQuit == 0) {
@@ -146,12 +147,12 @@ public class MainClient {
 						}
 					}
 				} else {
-					System.out.println("Les mots de passe ne correspondent pas");
+					journal.displayText("Les mots de passe ne correspondent pas");
 				}
 			}
 			
 		}
-		System.out.println("Votre compte a ete cree vous pouvez vous connecter");
+		journal.displayText("Votre compte a ete cree vous pouvez vous connecter");
 		return 1; //Success
 	}
 	
@@ -162,15 +163,15 @@ public class MainClient {
 		int retryOrQuit;
 		
 		while(isConnectionMenuRunning) {
-			System.out.println("Conection");
-			System.out.println("entrez votre pseudo");
+			journal.displayText("Conection");
+			journal.displayText("entrez votre pseudo");
 			pseudo = entry.nextLine();
-			System.out.println("entrez votre mot de passe");
+			journal.displayText("entrez votre mot de passe");
 			password = entry.nextLine();
 			clientToInstanciate.SetPseudo(pseudo);
 			if(serverObject.login(clientToInstanciate, password).equals("0")) {
-				System.out.println("1- Reessayer");
-				System.out.println("0- Quitter");
+				journal.displayText("1- Reessayer");
+				journal.displayText("0- Quitter");
 				retryOrQuit = entry.nextInt();
 				entry.nextLine();
 				if(retryOrQuit == 0) {
@@ -192,7 +193,7 @@ public class MainClient {
 		String message;
 		
 		message = serverObject.startDuel(playingClient);
-		System.out.println(message);
+		journal.displayText(message);
 	
 		
 	}
@@ -200,8 +201,7 @@ public class MainClient {
 	private static void goMatchmaking(Scanner entry, Iserver serverObject,Client playingClient) throws RemoteException {
 			String gameManagerId = serverObject.startMatchMaking(playingClient);
 			playAGame(entry, gameManagerId,serverObject,playingClient);
-			
-	}
+	}			
 	
 	private static void playAGame(Scanner entry,String gameManagerId,Iserver serverObject,Client playingClient) throws RemoteException {
 		boolean correctInput,correctOrigin,correctDestination;
@@ -210,24 +210,25 @@ public class MainClient {
 		int destination = -1;
 		int moveMessage;
 		isGameOver = -1;
-		System.out.println(gameManagerId);
-		/*
 		while(isGameOver == -1) {
-			isGameOver = serverObject.isGameOver(gameManagerId,playingClient);
-			correctInput = false; 
+			correctInput = false;
 			while(correctInput == false) {
 				correctOrigin = false;
-				while(correctOrigin = false) {
+				while(correctOrigin == false) {
 					try {
-						System.out.println("selectionnez un personnage à jouer. Tapez la ligne puis la colonne (exemple: 34)");
+						journal.displayText("Selectionnez un personnage à jouer. Tapez la ligne puis la colonne (exemple: 34)");
 						origin = entry.nextInt();
+						if(!serverObject.minimumPlayersAreConnected(gameManagerId)) {
+							journal.displayText("[INFO] Veuillez attendre l'arrivée de votre adversaire avant de jouer.");
+							continue;
+						}
 						if(origin > -1 && origin < 78) {
 							correctOrigin = true;
 						}else {
-							System.out.println("Saisie d'origine non valide. rééssayez");
+							journal.displayText("Rentrez un nombre entre 00 et 77");
 						}
 					}catch (InputMismatchException ex){
-						System.out.println("Votre saisie est invalide rééssayez");
+						journal.displayText("Rentrez un nombre entre 00 et 77");
 						entry.nextLine();
 					}
 					
@@ -235,15 +236,15 @@ public class MainClient {
 				correctDestination = false;
 				while(correctDestination == false) {
 					try {
-						System.out.println("selectionnez une destination pour votre personnage. Tapez la ligne puis la colonne (exemple: 34)");
+						journal.displayText("selectionnez une destination pour votre personnage. Tapez la ligne puis la colonne (exemple: 43)");
 						destination = entry.nextInt();
 						if(destination > -1 && destination < 78) {
 							correctDestination = true;
 						}else {
-							System.out.println("Saisie de destination non valide. rééssayez");
+							journal.displayText("Saisie de destination non valide. rééssayez");
 						}
 					}catch (InputMismatchException ex){
-						System.out.println("Votre saisie est invalide rééssayez");
+						journal.displayText("Votre saisie est invalide rééssayez");
 						entry.nextLine();
 					}
 					
@@ -251,15 +252,15 @@ public class MainClient {
 				correctInput = serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient);
 			}
 			moveMessage = serverObject.playMove(origin,destination,gameManagerId,playingClient);
-			System.out.println("Mouvement validé");
-			
+			journal.displayText("Mouvement validé");
+			isGameOver = serverObject.isGameOver(gameManagerId,playingClient);			
 		}
 		//affichage du message de victoire ou de défaite
 		if(isGameOver == 0) {
-			System.out.println("Vous avez Gagné !");
+			journal.displayText("Vous avez Gagné !");
 		}else {
-			System.out.println("Vous avez Perdu !");
-		}*/
+			journal.displayText("Vous avez Perdu !");
+		}
 	}
 	
 }

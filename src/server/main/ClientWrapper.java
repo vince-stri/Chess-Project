@@ -7,8 +7,6 @@ import client.model.iClient;
 import server.model.board.Board;
 import server.model.board.Cell;
 import server.model.character.Character;
-import shared.Client;
-
 public class ClientWrapper {
 	
 	private iClient client;

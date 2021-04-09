@@ -14,12 +14,13 @@ public class Client extends UnicastRemoteObject implements iClient, Serializable
 	private int idAccount;
 	private String pseudo;
 	private String token;
+	private Journal journal;
 	
-	
-	public Client(int idAccount, String pseudo, String token) throws RemoteException {
+	public Client(int idAccount, String pseudo, String token, Journal journal) throws RemoteException {
 		this.SetIdAccount(idAccount);
 		this.SetPseudo(pseudo);
 		this.SetToken(token);
+		this.journal = journal;
 	}
 
 
@@ -53,7 +54,7 @@ public class Client extends UnicastRemoteObject implements iClient, Serializable
 	}
 	
 	public void PostMsg(String message) throws RemoteException {
-		System.out.println("[JOUEUR] "+message);
+		journal.displayText("[JOUEUR] "+message);
 	}
 	
 	public String GetInfo() throws RemoteException {
@@ -61,11 +62,11 @@ public class Client extends UnicastRemoteObject implements iClient, Serializable
 	}
 	
 	public void PostBoard(Board board) throws RemoteException {
-		Journal.displayBoard(board);
+		journal.displayBoard(board);
 	}
 	
 	public void PostInfo(String info) throws RemoteException {
-		System.out.println("[SERVEUR] "+info);
+		journal.displayText("[SERVEUR] "+info);
 	}
 
 

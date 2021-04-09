@@ -195,7 +195,11 @@ public class Army implements Serializable {
     	return player.getCharacterToMove(fightersAlive);
     }
 
-    public ClientWrapper getClient() {
+    public ClientWrapper getClientWrapper() {
     	return player;
+    }
+    
+    public void setClientWrapper(ClientWrapper client) {
+    	this.player = client;
     }
 }
