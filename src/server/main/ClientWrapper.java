@@ -15,21 +15,34 @@ public class ClientWrapper {
 		this.client = client2;
 	}
 	
-	public boolean wantToSave() throws RemoteException {
+	public boolean wantToSave() {
 		String ret = null;
 		do {
-			client.PostMsg("Want to save? [yes: 'y' or no: 'n']");
-			ret = client.GetInfo();
+			try {				
+				client.PostMsg("Want to save? [yes: 'y' or no: 'n']");
+				ret = client.GetInfo();
+			} catch(RemoteException e) {
+				e.printStackTrace();
+			}
 		} while(ret != "y" && ret != "n");
 		return ret == "y";
 	}
 	
-	public void displayBoard(Board board) throws RemoteException {
-		client.PostBoard(board);
+	public void displayBoard(Board board) {
+		try {
+			client.PostBoard(board);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void displayText(String msg) throws RemoteException {
-		client.PostMsg(msg);
+	public void displayText(String msg) {
+		try {
+			client.PostMsg(msg);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public Character getCharacterToMove(ArrayList<Character> fighters) {

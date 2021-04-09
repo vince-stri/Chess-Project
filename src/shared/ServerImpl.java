@@ -14,13 +14,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-import server.model.Coordinates;
 import server.model.GameManager;
 import server.model.board.BoardShape;
 import server.main.ClientWrapper;
 import java.io.*;
 
 
+@SuppressWarnings("serial")
 public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	private ArrayList<GameManager> queueGM = new ArrayList<>();
@@ -245,10 +245,18 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		}
 	}
 	
+	public boolean isItPlayerSTurn(String GMId, iClient client) throws RemoteException{
+		return games.get(GMId).getPlayingAmry().getClientWrapper().getClient() == client;
+	}
+	
 	/**
 	 * 
 	 */
 	public boolean isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException {
+		if(!this.isItPlayerSTurn(GMId, client)) {
+			client.PostMsg("It is not your turn to play");
+			return false;
+		}
 		int srcX = source / 10;
 		int srcY = source % 10;
 		int destX = destination / 10;
@@ -266,6 +274,10 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	 * @throws RemoteException
 	 */
 	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException {
+		if(!this.isItPlayerSTurn(GMId, client)) {
+			client.PostMsg("It is not your turn to play");
+			return -1;
+		}
 		int srcX = source / 10;
 		int srcY = source % 10;
 		int destX = destination / 10;

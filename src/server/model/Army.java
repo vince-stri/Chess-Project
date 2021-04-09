@@ -7,6 +7,7 @@ import server.main.ClientWrapper;
 import server.model.board.Board;
 import server.model.board.Cell;
 import server.model.character.Character;
+import server.model.character.King;
 import shared.Client;
 
 import java.io.Serializable;
@@ -36,7 +37,8 @@ public class Army implements Serializable {
      * The reference to the player object
      */
     private ClientWrapper player;
-
+    
+    private Character king;
     /**
      * The list of all characters composing the army
      */
@@ -60,6 +62,9 @@ public class Army implements Serializable {
     public void addCharacter(Character newCharacter) {
     	fightersAlive.add(newCharacter);
     	fightersNb++;
+    	if(newCharacter.getClass().getName().equals("server.model.character.King")) {
+    		this.king = newCharacter;
+    	}
     }
 
     /**
@@ -201,5 +206,9 @@ public class Army implements Serializable {
     
     public void setClientWrapper(ClientWrapper client) {
     	this.player = client;
+    }
+    
+    public Character getKing() {
+    	return king;
     }
 }
