@@ -307,4 +307,26 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		GameManager gm = games.get(GMId);
 		return gm.isMinimumClientsConnected();
 	}
+	
+	public void save(String GMId, iClient client) throws RemoteException {
+		sendMessage(GMId, client, "Your opponent decided to save the game. You can ask later to continue it");
+		GameManager gm = games.get(GMId);
+		gm.save();
+		
+	}
+	
+	public void sendMessage(String GMId, iClient sender, String msg) throws RemoteException {
+		GameManager gm = games.get(GMId);
+		ClientWrapper [] players = gm.getPlayers();
+		for(ClientWrapper i : players) {
+			if(! i.getClient().equals(sender)) {
+				i.displayText("Adversaire : " + msg);
+			}
+		}
+	}
+	
+	/*public void clientQuit() {
+		
+	}*/
+
 }

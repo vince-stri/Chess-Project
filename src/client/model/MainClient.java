@@ -21,16 +21,16 @@ public class MainClient {
 	
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException, SQLException {
 		// TODO Auto-generated method stub
+		journal = new CLI();
 		Iserver serverObject;
 		try {
 			serverObject = (Iserver) Naming.lookup("rmi://localhost:1099/ChessProject");
 		}catch(ConnectException ex) {
-			System.err.println("Le serveur du jeu ne répond pas retentez plus tard");
+			journal.displayTextError("Le serveur du jeu ne répond pas retentez plus tard");
 			return;
 		}
 		boolean connectionSuccess = false;
 		Scanner entry = new Scanner(System.in);
-		journal = new CLI();
 		Client playingClient =new Client(-1, null, null, journal);
 		
 		/*Menu de connexion*/
@@ -73,7 +73,7 @@ public class MainClient {
 				}
 					
 			} catch(InputMismatchException e) {
-				System.err.println("Erreur dans la saisie clavier");
+				journal.displayTextError("Erreur dans la saisie clavier");
 				entry.nextLine();
 			}
 		}
@@ -99,7 +99,7 @@ public class MainClient {
 					isMenuRunning = false;
 				}
 			} catch(InputMismatchException e) {
-				System.err.println("Erreur dans la saisie clavier");
+				journal.displayTextError("Erreur dans la saisie clavier");
 				entry.nextLine();
 			}
 		}
@@ -217,16 +217,43 @@ public class MainClient {
 	
 	private static void playAGame(Scanner entry,String gameManagerId,Iserver serverObject,Client playingClient) throws RemoteException {
 		boolean correctInput,correctOrigin,correctDestination;
-		int isGameOver;
+		int isGameOver = -1;
 		int origin = -1;
 		int destination = -1;
 		int moveMessage;
-		isGameOver = -1;
+		int action = -1;
 		gameover:
 			while(isGameOver == -1) {
 				correctInput = false;
 				while(correctInput == false) {
 					correctOrigin = false;
+					boolean correctAction = false;
+					while(!correctAction) {
+						try {
+							journal.displayText("3 - Quitter\n2 - Jouer un coup\n1 - Sauvegarder la partie\n0 - Envoyer un message");
+							action = entry.nextInt();
+							if(action >= 0 && action < 4) {
+								correctAction = true;
+							}
+						} catch (InputMismatchException e) {
+							journal.displayTextError("Il faut rentrer une valeur numerique");
+							entry.nextLine();
+						}
+						
+					}
+					if(action == 1) {
+						serverObject.save(gameManagerId, playingClient);
+						break gameover;						
+					} else if(action == 0) {
+						journal.displayText("Votre message :");
+						entry.nextLine();
+						String msg = entry.nextLine();
+						serverObject.sendMessage(gameManagerId, playingClient, msg);
+						continue gameover;							
+					} else if(action == 3) {
+						//serverObject.clientQuit(gameManagerId, playingClient);
+						break gameover;
+					}
 					while(correctOrigin == false) {
 						try {
 							journal.displayText("Selectionnez un personnage à jouer. Tapez la ligne puis la colonne (exemple: 34)");
