@@ -189,7 +189,6 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
 		String query = "INSERT INTO account(pseudo,password) VALUES ('"+ pseudo +"', '"+ password +"');";
-		System.out.println(query);
 		if (stmt.executeUpdate(query)==1) {
 			System.out.println("User has been created");
 		}
@@ -237,7 +236,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			gm.addClient(cwplayer);
 			queueGM.remove(idx_GM);
 			String gm_id = queueIdGM.remove(idx_GM);
-			System.out.println(gm_id);
+			System.out.println("The newly created GameManager id: " + gm_id);
 			gm.setPlayersToArmies();
 			cwplayer.displayBoard(gm.getBoard());
 			cwplayer.displayText("Vous jouez l'equipe du cote clair de la force");

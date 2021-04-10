@@ -97,7 +97,7 @@ public class GameManager {
     			players[i].displayText("Un joueur vient d'arriver");
     		}
     		players[connectedClientsNb++] = client;
-    		System.out.println(connectedClientsNb);
+    		System.out.println("The number of connected clients: " + connectedClientsNb);
     		return true;
     	}
     }
@@ -168,7 +168,7 @@ public class GameManager {
     	Cell destination = board.getACell(dest);
     	Character playingCharacter = source.getCharacter();
     	int infCode = playingCharacter.getArmy().moveCharacter(playingCharacter, destination);
-    	this.playingArmy = armies[(1 + round) % armiesNb];
+    	this.playingArmy = armies[(++round) % armiesNb];
     	return infCode;
     }
     
