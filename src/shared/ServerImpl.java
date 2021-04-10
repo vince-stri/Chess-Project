@@ -245,8 +245,8 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		}
 	}
 	
-	public boolean isItPlayerSTurn(String GMId, iClient client) throws RemoteException{
-		return games.get(GMId).getPlayingAmry().getClientWrapper().getClient() == client;
+	public boolean isItPlayerSTurn(String GMId, iClient client) throws RemoteException {
+		return client.equals(games.get(GMId).getPlayingAmry().getClientWrapper().getClient());
 	}
 	
 	/**
@@ -282,7 +282,13 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		int srcY = source % 10;
 		int destX = destination / 10;
 		int destY = destination % 10;
-		return games.get(GMId).playMove(srcX, srcY, destX, destY, new ClientWrapper(client));
+		GameManager gm = games.get(GMId); 
+		int ret = gm.playMove(srcX, srcY, destX, destY, new ClientWrapper(client));
+		ClientWrapper [] players = gm.getPlayers();
+		for(ClientWrapper i : players) {
+			i.displayBoard(gm.getBoard());
+		}
+		return ret;
 	}
 	
 	/**
@@ -291,7 +297,11 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	public int isGameOver(String GMId, iClient client) throws RemoteException {
 		if(games.get(GMId).isWinner(new ClientWrapper(client))) {
 			return 0;
-		} return 1;
+		} else if(games.get(GMId).isLoser(new ClientWrapper(client))) {
+			return 1;
+		} else {
+			return -1;
+		}
 	}
 
 	public boolean minimumPlayersAreConnected(String GMId) throws RemoteException {

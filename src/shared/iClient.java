@@ -16,4 +16,5 @@ public interface iClient extends Remote {
 	public String GetInfo() throws RemoteException;
 	public void PostBoard(Board board) throws RemoteException;
 	public void PostInfo(String info) throws RemoteException;
+	public boolean equals(iClient client) throws RemoteException;
 }

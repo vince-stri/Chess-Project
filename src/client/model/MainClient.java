@@ -258,7 +258,7 @@ public class MainClient {
 		//affichage du message de victoire ou de défaite
 		if(isGameOver == 0) {
 			journal.displayText("Vous avez Gagné !");
-		}else {
+		} else {
 			journal.displayText("Vous avez Perdu !");
 		}
 	}

@@ -137,8 +137,8 @@ public class GameManager {
 			return false;
 		}
 		Character selectedChara = source.getCharacter();
-		if(selectedChara.getArmy().getClientWrapper() != player) { // verify if the selected character belongs to the player's army
-			player.displayText("The character you've selected doesn't not belong to your army");
+		if(! selectedChara.getArmy().getClientWrapper().equals(player)) { // verify if the selected character belongs to the player's army
+			player.displayText("The character you've selected doesn't belong to your army");
 			return false;
 		}
 		if(selectedChara.isAPossibleMove(destination) == false) { // verify if the required move can be done
@@ -146,7 +146,7 @@ public class GameManager {
 			return false;
 		}
 		if(destination.getCharacter() != null) { // verify if there is a character on the destination cell
-			boolean tmp = destination.getCharacter().getArmy().getClientWrapper() != player;
+			boolean tmp = ! destination.getCharacter().getArmy().getClientWrapper().equals(player);
 			player.displayText("You cannot go on a cell where one of your characters is already on");;
 			return tmp; // verify if this character is an ennemy 
 		} return true;
@@ -220,10 +220,18 @@ public class GameManager {
     }
     
     public boolean isWinner(ClientWrapper client) {
-    	if(armies[0].getClientWrapper().getClient() == client.getClient()) {
-    		return !armies[0].isEmpty();
+    	if(armies[0].getClientWrapper().equals(client)) {
+    		return armies[1].isEmpty();
     	} else {
     		return armies[0].isEmpty();
+    	}
+    }
+    
+    public boolean isLoser(ClientWrapper client) {
+    	if(armies[0].getClientWrapper().equals(client)) {
+    		return armies[0].isEmpty();
+    	} else {
+    		return armies[1].isEmpty();
     	}
     }
     
@@ -244,5 +252,9 @@ public class GameManager {
     
     public Army getPlayingAmry() {
     	return playingArmy;
+    }
+    
+    public ClientWrapper[] getPlayers() {
+    	return players;
     }
 }

@@ -68,6 +68,9 @@ public class Client extends UnicastRemoteObject implements iClient, Serializable
 		journal.displayText("[SERVEUR] "+info);
 	}
 
+	public boolean equals(iClient client) throws RemoteException {
+		return token.equals(client.GetToken());
+	}
 
 	
 }

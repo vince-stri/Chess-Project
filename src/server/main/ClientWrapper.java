@@ -40,7 +40,6 @@ public class ClientWrapper {
 		try {
 			client.PostMsg(msg);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -57,5 +56,14 @@ public class ClientWrapper {
 	
 	public iClient getClient() {
 		return client;
+	}
+	
+	public boolean equals(ClientWrapper client) {
+		try {
+			return this.client.equals(client.getClient());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }
