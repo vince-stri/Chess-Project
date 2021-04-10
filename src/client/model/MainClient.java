@@ -1,6 +1,7 @@
 package client.model;
 
 import java.net.MalformedURLException;
+import java.rmi.ConnectException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -20,16 +21,26 @@ public class MainClient {
 	
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException, SQLException {
 		// TODO Auto-generated method stub
-		Iserver serverObject = (Iserver) Naming.lookup("rmi://localhost:1099/ChessProject");
-		boolean connectionSucces = false;
+		Iserver serverObject;
+		try {
+			serverObject = (Iserver) Naming.lookup("rmi://localhost:1099/ChessProject");
+		}catch(ConnectException ex) {
+			System.err.println("Le serveur du jeu ne répond pas retentez plus tard");
+			return;
+		}
+		boolean connectionSuccess = false;
 		Scanner entry = new Scanner(System.in);
 		journal = new CLI();
 		Client playingClient =new Client(-1, null, null, journal);
 		
-		while(connectionSucces == false) {
-			journal.displayText("Bienvenue sur battle chess royale"); //la vanne du battle royale
-			connectionSucces = connectOrRegister(entry, serverObject, playingClient);
+		/*Menu de connexion*/
+		journal.displayText("Bienvenue sur battle chess royale"); 
+		connectionSuccess = connectOrRegister(entry, serverObject, playingClient);
+		if(connectionSuccess == false) {
+			journal.displayText("Au revoir");
+			return;
 		}
+		
 		
 		/*Menu principal*/
 		boolean isMenuRunning = true;
@@ -89,6 +100,7 @@ public class MainClient {
 				}
 			} catch(InputMismatchException e) {
 				System.err.println("Erreur dans la saisie clavier");
+				entry.nextLine();
 			}
 		}
 		
