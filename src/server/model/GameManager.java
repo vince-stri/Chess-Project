@@ -137,6 +137,10 @@ public class GameManager {
 			return false;
 		}
 		Character selectedChara = source.getCharacter();
+		if(selectedChara == null) {
+			player.displayText("There is no one on the cell you've picked");
+			return false;
+		}
 		if(! selectedChara.getArmy().getClientWrapper().equals(player)) { // verify if the selected character belongs to the player's army
 			player.displayText("The character you've selected doesn't belong to your army");
 			return false;

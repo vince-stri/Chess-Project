@@ -222,51 +222,58 @@ public class MainClient {
 		int destination = -1;
 		int moveMessage;
 		isGameOver = -1;
-		while(isGameOver == -1) {
-			correctInput = false;
-			while(correctInput == false) {
-				correctOrigin = false;
-				while(correctOrigin == false) {
-					try {
-						journal.displayText("Selectionnez un personnage à jouer. Tapez la ligne puis la colonne (exemple: 34)");
-						origin = entry.nextInt();
-						if(!serverObject.minimumPlayersAreConnected(gameManagerId)) {
-							journal.displayText("[INFO] Veuillez attendre l'arrivée de votre adversaire avant de jouer.");
-							continue;
-						}
-						if(origin > -1 && origin < 78) {
-							correctOrigin = true;
-						}else {
+		gameover:
+			while(isGameOver == -1) {
+				correctInput = false;
+				while(correctInput == false) {
+					correctOrigin = false;
+					while(correctOrigin == false) {
+						try {
+							journal.displayText("Selectionnez un personnage à jouer. Tapez la ligne puis la colonne (exemple: 34)");
+							origin = entry.nextInt();
+							if(!serverObject.minimumPlayersAreConnected(gameManagerId)) {
+								journal.displayText("[INFO] Veuillez attendre l'arrivée de votre adversaire avant de jouer.");
+								continue;
+							}
+							if(serverObject.isGameOver(gameManagerId,playingClient) != -1) {
+								break gameover;
+							}
+							if(origin > -1 && origin < 78) {
+								correctOrigin = true;
+							}else {
+								journal.displayText("Rentrez un nombre entre 00 et 77");
+							}
+						}catch (InputMismatchException ex){
 							journal.displayText("Rentrez un nombre entre 00 et 77");
+							entry.nextLine();
 						}
-					}catch (InputMismatchException ex){
-						journal.displayText("Rentrez un nombre entre 00 et 77");
-						entry.nextLine();
+						
 					}
-					
-				}
-				correctDestination = false;
-				while(correctDestination == false) {
-					try {
-						journal.displayText("selectionnez une destination pour votre personnage. Tapez la ligne puis la colonne (exemple: 43)");
-						destination = entry.nextInt();
-						if(destination > -1 && destination < 78) {
-							correctDestination = true;
-						}else {
-							journal.displayText("Saisie de destination non valide. rééssayez");
+					correctDestination = false;
+					while(correctDestination == false) {
+						try {
+							journal.displayText("selectionnez une destination pour votre personnage. Tapez la ligne puis la colonne (exemple: 43)");
+							destination = entry.nextInt();
+							if(serverObject.isGameOver(gameManagerId,playingClient) != -1) {
+								break gameover;
+							}
+							if(destination > -1 && destination < 78) {
+								correctDestination = true;
+							}else {
+								journal.displayText("Saisie de destination non valide. rééssayez");
+							}
+						}catch (InputMismatchException ex){
+							journal.displayText("Votre saisie est invalide rééssayez");
+							entry.nextLine();
 						}
-					}catch (InputMismatchException ex){
-						journal.displayText("Votre saisie est invalide rééssayez");
-						entry.nextLine();
+						
 					}
-					
+					correctInput = serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient);
 				}
-				correctInput = serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient);
+				moveMessage = serverObject.playMove(origin,destination,gameManagerId,playingClient);
+				journal.displayText("Mouvement validé");
+				isGameOver = serverObject.isGameOver(gameManagerId,playingClient);			
 			}
-			moveMessage = serverObject.playMove(origin,destination,gameManagerId,playingClient);
-			journal.displayText("Mouvement validé");
-			isGameOver = serverObject.isGameOver(gameManagerId,playingClient);			
-		}
 		//affichage du message de victoire ou de défaite
 		if(isGameOver == 0) {
 			journal.displayText("Vous avez Gagné !");
