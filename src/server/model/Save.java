@@ -76,7 +76,7 @@ public class Save {
 		try {
 			outFile.writeObject(saveObjectsNb);
 		} catch (IOException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 2;
 		}    	
     	
@@ -85,14 +85,14 @@ public class Save {
     			try {
 					outFile.writeObject(""+o.getClass());
 				} catch (IOException e) {
-					//Journal.displayTextError(e.getMessage());
+					System.err.println(e.getMessage());
 					return 2;
 				}
     			
 				try {
 					outFile.writeObject(o);
 				} catch (IOException e) {
-					//Journal.displayTextError(e.getMessage());
+					System.err.println(e.getMessage());
 					return 2;
 				}
     	}
@@ -120,10 +120,10 @@ public class Save {
     	try {
 			saveObjectsNb = (int)inFile.readObject();
 		} catch (ClassNotFoundException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return null;
 		} catch (IOException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return null;
 		}
     	
@@ -132,10 +132,10 @@ public class Save {
     		try {
     			objectType = (String)inFile.readObject();
     		} catch (ClassNotFoundException e) {
-    			//Journal.displayTextError(e.getMessage());
+    			System.err.println(e.getMessage());
     			return null;
     		} catch (IOException e) {
-    			//Journal.displayTextError(e.getMessage());
+    			System.err.println(e.getMessage());
     			return null;
     		}
     		switch (objectType) {
@@ -143,10 +143,10 @@ public class Save {
 					try {
 		    			listToLoad.add((BoardChess)inFile.readObject());
 		    		} catch (ClassNotFoundException e) {
-		    			//Journal.displayTextError(e.getMessage());
+		    			System.err.println(e.getMessage());
 		    			return null;
 		    		} catch (IOException e) {
-		    			//Journal.displayTextError(e.getMessage());
+		    			System.err.println(e.getMessage());
 		    			return null;
 		    		}	
 				break;
@@ -154,10 +154,10 @@ public class Save {
 					try {
 						listToLoad.add((Army[])inFile.readObject());
 		    		} catch (ClassNotFoundException e) {
-		    			//Journal.displayTextError(e.getMessage());
+		    			System.err.println(e.getMessage());
 		    			return null;
 		    		} catch (IOException e) {
-		    			//Journal.displayTextError(e.getMessage());
+		    			System.err.println(e.getMessage());
 		    			return null;
 		    		}
 				break;
@@ -165,10 +165,10 @@ public class Save {
 					try {
 						listToLoad.add((Integer)inFile.readObject());
 		    		} catch (ClassNotFoundException e) {
-		    			//Journal.displayTextError(e.getMessage());
+		    			System.err.println(e.getMessage());
 		    			return null;
 		    		} catch (IOException e) {
-		    			//Journal.displayTextError(e.getMessage());
+		    			System.err.println(e.getMessage());
 		    			return null;
 		    		}
 				break;
@@ -193,16 +193,16 @@ public class Save {
     		file = new File(pathFile);
 			outFile = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
 		} catch(NullPointerException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 1; 
 		}catch(FileNotFoundException e) { 
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 2; 
 		} catch(SecurityException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 3; 
 		} catch(IOException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 4;
 		}
     	return 0;
@@ -222,16 +222,16 @@ public class Save {
     		file = new File(pathFile);
 			inFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
 		} catch(NullPointerException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 1; 
 		}catch(FileNotFoundException e) { 
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 2; 
 		} catch(SecurityException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 3; 
 		} catch(IOException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 4;
 		}
     	return 0;
@@ -252,16 +252,16 @@ public class Save {
     		file = new File(newPath);
 			inFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
 		} catch(NullPointerException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 1; 
 		}catch(FileNotFoundException e) { 
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 2; 
 		} catch(SecurityException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 3; 
 		} catch(IOException e) {
-			//Journal.displayTextError(e.getMessage());
+			System.err.println(e.getMessage());
 			return 4;
 		}
     	return 0;

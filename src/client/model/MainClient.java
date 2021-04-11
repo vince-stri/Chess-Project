@@ -236,12 +236,17 @@ public class MainClient {
 				}
 				break;
 			case 1: // save the game
-				try {							
-					serverObject.save(gameManagerId, playingClient);
+				try {
+					if(!serverObject.minimumPlayersAreConnected(gameManagerId)) {
+						journal.displayText("[INFO] Veuillez attendre l'arrivée de votre adversaire avant de jouer.");
+					} else {						
+						serverObject.save(gameManagerId, playingClient);
+						isGameOver = -2;
+					}
 				} catch (NullPointerException e) {
 					journal.displayText("Your opponent has quit the game. Try to found another one");
+					isGameOver = -2;
 				}
-				isGameOver = -2;
 				break;
 			case 2: // play
 				boolean moveError = false;
@@ -256,6 +261,7 @@ public class MainClient {
 						}
 					} else {
 						moveError = true;
+						correctInput = true;
 					}
 				}
 				if( !moveError) {
@@ -315,6 +321,7 @@ public class MainClient {
 				if(!serverObject.minimumPlayersAreConnected(GMId)) {
 					journal.displayText("[INFO] Veuillez attendre l'arrivée de votre adversaire avant de jouer.");
 					correctOrigin = true;
+					coordinates = -1;
 				} else if(serverObject.isGameOver(GMId, playingClient) != -1) {
 					coordinates = -2;
 				} else if(coordinates > -1 && coordinates < 78) {
