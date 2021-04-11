@@ -18,11 +18,13 @@ import shared.Iserver;
 public class MainClient {
 	
 	static Journal journal;
+	static Iserver serverObject;
+	static Client playingClient;
+	static Scanner entry;
 	
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException, SQLException {
 		// TODO Auto-generated method stub
 		journal = new CLI();
-		Iserver serverObject;
 		try {
 			serverObject = (Iserver) Naming.lookup("rmi://localhost:1099/ChessProject");
 		}catch(ConnectException ex) {
@@ -30,8 +32,8 @@ public class MainClient {
 			return;
 		}
 		boolean connectionSuccess = false;
-		Scanner entry = new Scanner(System.in);
-		Client playingClient =new Client(-1, null, null, journal);
+		entry = new Scanner(System.in);
+		playingClient = new Client(-1, null, null, journal);
 		
 		/*Menu de connexion*/
 		journal.displayText("Bienvenue sur battle chess royale"); 
@@ -175,10 +177,10 @@ public class MainClient {
 		int retryOrQuit;
 		
 		while(isConnectionMenuRunning) {
-			journal.displayText("Conection");
-			journal.displayText("entrez votre pseudo");
+			journal.displayText("Connexion");
+			journal.displayText("Entrez votre pseudo");
 			pseudo = entry.nextLine();
-			journal.displayText("entrez votre mot de passe");
+			journal.displayText("Entrez votre mot de passe");
 			password = entry.nextLine();
 			clientToInstanciate.SetPseudo(pseudo);
 			if(serverObject.login(clientToInstanciate, password).equals("0")) {
@@ -216,97 +218,121 @@ public class MainClient {
 	}			
 	
 	private static void playAGame(Scanner entry,String gameManagerId,Iserver serverObject,Client playingClient) throws RemoteException {
-		boolean correctInput,correctOrigin,correctDestination;
 		int isGameOver = -1;
 		int origin = -1;
 		int destination = -1;
-		int moveMessage;
-		int action = -1;
-		gameover:
-			while(isGameOver == -1) {
-				correctInput = false;
-				while(correctInput == false) {
-					correctOrigin = false;
-					boolean correctAction = false;
-					while(!correctAction) {
-						try {
-							journal.displayText("3 - Quitter\n2 - Jouer un coup\n1 - Sauvegarder la partie\n0 - Envoyer un message");
-							action = entry.nextInt();
-							if(action >= 0 && action < 4) {
-								correctAction = true;
-							}
-						} catch (InputMismatchException e) {
-							journal.displayTextError("Il faut rentrer une valeur numerique");
-							entry.nextLine();
-						}
-						
-					}
-					if(action == 1) {
-						serverObject.save(gameManagerId, playingClient);
-						break gameover;						
-					} else if(action == 0) {
-						journal.displayText("Votre message :");
-						entry.nextLine();
-						String msg = entry.nextLine();
-						serverObject.sendMessage(gameManagerId, playingClient, msg);
-						continue gameover;							
-					} else if(action == 3) {
-						//serverObject.clientQuit(gameManagerId, playingClient);
-						break gameover;
-					}
-					while(correctOrigin == false) {
-						try {
-							journal.displayText("Selectionnez un personnage à jouer. Tapez la ligne puis la colonne (exemple: 34)");
-							origin = entry.nextInt();
-							if(!serverObject.minimumPlayersAreConnected(gameManagerId)) {
-								journal.displayText("[INFO] Veuillez attendre l'arrivée de votre adversaire avant de jouer.");
-								continue;
-							}
-							if(serverObject.isGameOver(gameManagerId,playingClient) != -1) {
-								break gameover;
-							}
-							if(origin > -1 && origin < 78) {
-								correctOrigin = true;
-							}else {
-								journal.displayText("Rentrez un nombre entre 00 et 77");
-							}
-						}catch (InputMismatchException ex){
-							journal.displayText("Rentrez un nombre entre 00 et 77");
-							entry.nextLine();
-						}
-						
-					}
-					correctDestination = false;
-					while(correctDestination == false) {
-						try {
-							journal.displayText("selectionnez une destination pour votre personnage. Tapez la ligne puis la colonne (exemple: 43)");
-							destination = entry.nextInt();
-							if(serverObject.isGameOver(gameManagerId,playingClient) != -1) {
-								break gameover;
-							}
-							if(destination > -1 && destination < 78) {
-								correctDestination = true;
-							}else {
-								journal.displayText("Saisie de destination non valide. rééssayez");
-							}
-						}catch (InputMismatchException ex){
-							journal.displayText("Votre saisie est invalide rééssayez");
-							entry.nextLine();
-						}
-						
-					}
-					correctInput = serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient);
+		while(isGameOver == -1) {
+			boolean correctInput = false;
+			int action = getAction(entry);
+			switch (action) {
+			case 0: // send a message
+				journal.displayText("Votre message :");
+				String msg = entry.nextLine();
+				try {
+					serverObject.sendMessage(gameManagerId, playingClient, msg, false);
+				} catch (NullPointerException e) {
+					journal.displayText("Your opponent has quit the game. Try to found another one");
+					isGameOver = -2; 
 				}
-				moveMessage = serverObject.playMove(origin,destination,gameManagerId,playingClient);
-				journal.displayText("Mouvement validé");
-				isGameOver = serverObject.isGameOver(gameManagerId,playingClient);			
+				break;
+			case 1: // save the game
+				try {							
+					serverObject.save(gameManagerId, playingClient);
+				} catch (NullPointerException e) {
+					journal.displayText("Your opponent has quit the game. Try to found another one");
+				}
+				isGameOver = -2;
+				break;
+			case 2: // play
+				boolean moveError = false;
+				while( !correctInput) {							
+					origin = getMoveOptions("selectionnez une source pour votre personnage. Tapez la ligne puis la colonne (exemple: 43)", gameManagerId);
+					if(origin >= 0) {							
+						destination = getMoveOptions("selectionnez une destination pour votre personnage. Tapez la ligne puis la colonne (exemple: 43)", gameManagerId);
+						if(destination >= 0) {							
+							correctInput = serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient);
+						} else {
+							moveError = true;
+						}
+					} else {
+						moveError = true;
+					}
+				}
+				if( !moveError) {
+					try {
+						serverObject.playMove(origin,destination,gameManagerId,playingClient);
+						journal.displayText("Mouvement validé");
+					} catch(NullPointerException e) {
+						journal.displayText("Your opponent has quit the game. Try to found another one");
+						isGameOver = -2;
+					}
+				}
+				break;
+			default: // quit
+				serverObject.clientQuit(gameManagerId, playingClient);
+				isGameOver = -2;
+				break;
 			}
-		//affichage du message de victoire ou de défaite
+			if(isGameOver >= 0) {
+				if(serverObject.minimumPlayersAreConnected(gameManagerId)) {
+					isGameOver = serverObject.isGameOver(gameManagerId,playingClient);			
+				}
+			}
+		}
+		journal.displayText("Fin de la partie");
 		if(isGameOver == 0) {
 			journal.displayText("Vous avez Gagné !");
-		} else {
+		} else if(isGameOver > 0) {
 			journal.displayText("Vous avez Perdu !");
 		}
+	}
+	
+	private static int getAction(Scanner entry) {
+		boolean correctAction = false;
+		int action = -1;
+		while(!correctAction) {
+			try {
+				journal.displayText("3 - Quitter\n2 - Jouer un coup\n1 - Sauvegarder la partie\n0 - Envoyer un message");
+				action = entry.nextInt();
+				if(action >= 0 && action < 4) {
+					correctAction = true;
+				}
+			} catch (InputMismatchException e) {
+				journal.displayTextError("Il faut rentrer une valeur numerique");
+			}
+			entry.nextLine();
+		}
+		return action;
+	}
+	
+	private static int getMoveOptions(String msg, String GMId) throws RemoteException {
+		boolean correctOrigin = false;
+		int coordinates = -1;
+		while( !correctOrigin) {
+			try {
+				journal.displayText(msg);
+				coordinates = entry.nextInt();
+				if(!serverObject.minimumPlayersAreConnected(GMId)) {
+					journal.displayText("[INFO] Veuillez attendre l'arrivée de votre adversaire avant de jouer.");
+					correctOrigin = true;
+				} else if(serverObject.isGameOver(GMId, playingClient) != -1) {
+					coordinates = -2;
+				} else if(coordinates > -1 && coordinates < 78) {
+					correctOrigin = true;
+				} else {
+					journal.displayText("Rentrez un nombre entre 00 et 77");
+				}
+			} catch(InputMismatchException e){
+				journal.displayText("Rentrez un nombre entre 00 et 77");
+				entry.nextLine();
+			} catch(NullPointerException e) {
+				journal.displayText("Your opponent has quit the game. Try to found another one");
+				coordinates = -3;
+				correctOrigin = true;
+			}
+			entry.nextLine();
+		}
+		return coordinates;
 	}
 	
 }

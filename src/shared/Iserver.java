@@ -12,12 +12,13 @@ public interface Iserver extends Remote {
 	public String disconnect(iClient client) throws RemoteException, SQLException;
 	public String startMatchMaking(iClient client) throws RemoteException;
 	public String startDuel(iClient client) throws RemoteException;
-	public int register(String pseudo, String password) throws RemoteException, SQLException;
-	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException;
-	public int isGameOver(String GMId, iClient client) throws RemoteException;
 	public int checks_user(String pseudo) throws SQLException, RemoteException;
-	public boolean isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException;
-	public boolean minimumPlayersAreConnected(String GMId) throws RemoteException;
-	public void save(String GMId, iClient client) throws RemoteException;
-	public void sendMessage(String GMId, iClient sender, String msg) throws RemoteException;
+	public int register(String pseudo, String password) throws RemoteException, SQLException;
+	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException;
+	public int isGameOver(String GMId, iClient client) throws RemoteException, NullPointerException;
+	public boolean isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException;
+	public boolean minimumPlayersAreConnected(String GMId) throws RemoteException, NullPointerException;
+	public void save(String GMId, iClient client) throws RemoteException, NullPointerException;
+	public void sendMessage(String GMId, iClient sender, String msg, boolean systemMessage) throws RemoteException, NullPointerException;
+	public void clientQuit(String GMId, iClient client) throws RemoteException, NullPointerException;
 }

@@ -244,14 +244,14 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		}
 	}
 	
-	public boolean isItPlayerSTurn(String GMId, iClient client) throws RemoteException {
+	public boolean isItPlayerSTurn(String GMId, iClient client) throws RemoteException, NullPointerException {
 		return client.equals(games.get(GMId).getPlayingAmry().getClientWrapper().getClient());
 	}
 	
 	/**
 	 * 
 	 */
-	public boolean isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException {
+	public boolean isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
 			client.PostMsg("It is not your turn to play");
 			return false;
@@ -272,7 +272,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	 * @return
 	 * @throws RemoteException
 	 */
-	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException {
+	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
 			client.PostMsg("It is not your turn to play");
 			return -1;
@@ -293,7 +293,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	/**
 	 * 
 	 */
-	public int isGameOver(String GMId, iClient client) throws RemoteException {
+	public int isGameOver(String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(games.get(GMId).isWinner(new ClientWrapper(client))) {
 			return 0;
 		} else if(games.get(GMId).isLoser(new ClientWrapper(client))) {
@@ -303,30 +303,43 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		}
 	}
 
-	public boolean minimumPlayersAreConnected(String GMId) throws RemoteException {
+	public boolean minimumPlayersAreConnected(String GMId) throws RemoteException, NullPointerException {
 		GameManager gm = games.get(GMId);
 		return gm.isMinimumClientsConnected();
 	}
 	
-	public void save(String GMId, iClient client) throws RemoteException {
-		sendMessage(GMId, client, "Your opponent decided to save the game. You can ask later to continue it");
+	public void save(String GMId, iClient client) throws RemoteException, NullPointerException {
+		sendMessage(GMId, client, "Your opponent decided to save the game. You can ask later for continue it", true);
 		GameManager gm = games.get(GMId);
 		gm.save();
-		
+		clientQuit(GMId, client);
 	}
 	
-	public void sendMessage(String GMId, iClient sender, String msg) throws RemoteException {
+	public void sendMessage(String GMId, iClient sender, String msg, boolean systemMsg) throws RemoteException, NullPointerException {
 		GameManager gm = games.get(GMId);
 		ClientWrapper [] players = gm.getPlayers();
-		for(ClientWrapper i : players) {
-			if(! i.getClient().equals(sender)) {
-				i.displayText("Adversaire : " + msg);
+		for(ClientWrapper i : players) { // The loop is used supposing the program can evolve in the future, involving more than 2 players within a game
+			if(i != null) {
+				if(! i.getClient().equals(sender)) {
+					if(systemMsg) {
+						i.displayText("System: " + msg);
+					} else {
+						i.displayText(sender.GetPseudo() + ": " + msg);					
+					}
+				}				
 			}
 		}
 	}
 	
-	/*public void clientQuit() {
+	public void clientQuit(String GMId, iClient client) throws RemoteException, NullPointerException {
+		GameManager gm = games.get(GMId);
+		sendMessage(GMId, client, "Your opponent quitted the game. You must find another game", true);
+		removeGMFromList(GMId);
 		
-	}*/
+	}
+	
+	private void removeGMFromList(String GMId) {
+		games.remove(GMId);
+	}
 
 }
