@@ -29,6 +29,6 @@ javadesigner.jar
 .classpath
 .project
 project.conf
-saves/allGame
+saves/*
 /bin/
 .db_connect

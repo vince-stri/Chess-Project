@@ -251,16 +251,20 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	/**
 	 * 
 	 */
-	public boolean isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
+	public int isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
 			client.PostMsg("It is not your turn to play");
-			return false;
+			return -1;
 		}
 		int srcX = source / 10;
 		int srcY = source % 10;
 		int destX = destination / 10;
 		int destY = destination % 10;
-		return games.get(GMId).isAGoodMove(srcX, srcY, destX, destY, new ClientWrapper(client));
+		if(games.get(GMId).isAGoodMove(srcX, srcY, destX, destY, new ClientWrapper(client))) {
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 	
 	/**

@@ -255,7 +255,19 @@ public class MainClient {
 					if(origin >= 0) {							
 						destination = getMoveOptions("selectionnez une destination pour votre personnage. Tapez la ligne puis la colonne (exemple: 43)", gameManagerId);
 						if(destination >= 0) {							
-							correctInput = serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient);
+							switch (serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient)) {
+							case 0:
+								correctInput = true; 
+								break;
+							case 1:
+								correctInput = false;
+								break;
+							default:
+								correctInput = true;
+								moveError = true;
+								break;
+							}
+									
 						} else {
 							moveError = true;
 						}
@@ -266,7 +278,9 @@ public class MainClient {
 				}
 				if( !moveError) {
 					try {
-						serverObject.playMove(origin,destination,gameManagerId,playingClient);
+						if(serverObject.playMove(origin,destination,gameManagerId,playingClient) == -1) {
+							
+						}
 						journal.displayText("Mouvement validé");
 					} catch(NullPointerException e) {
 						journal.displayText("Your opponent has quit the game. Try to found another one");

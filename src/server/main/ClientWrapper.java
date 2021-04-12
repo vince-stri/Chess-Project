@@ -1,5 +1,6 @@
 package server.main;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -7,7 +8,7 @@ import server.model.board.Board;
 import server.model.board.Cell;
 import server.model.character.Character;
 import shared.iClient;
-public class ClientWrapper {
+public class ClientWrapper implements Serializable {
 	
 	private iClient client;
 	
