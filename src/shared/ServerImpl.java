@@ -19,8 +19,11 @@ import server.model.board.BoardShape;
 import server.main.ClientWrapper;
 import java.io.*;
 
-
-@SuppressWarnings("serial")
+/**
+ * Gives remote actions to the clients
+ * @version 1.0
+ * @author vincent acilla
+ */
 public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	private ArrayList<GameManager> queueGM = new ArrayList<>();
@@ -152,9 +155,8 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	}
 	
 	@Override
-	public String disconnect(iClient client) throws RemoteException, SQLException {
+	public void disconnect(iClient client) throws RemoteException, SQLException {
 		del_token(client);
-		return null;
 	}
 
 	
@@ -248,16 +250,13 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return client.equals(games.get(GMId).getPlayingAmry().getClientWrapper().getClient());
 	}
 	
-	/**
-	 * 
-	 */
 	public int isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
 			client.PostMsg("It is not your turn to play");
 			return -1;
 		}
-		int srcX = source / 10;
-		int srcY = source % 10;
+		int srcX = source / 10; // get ordinate
+		int srcY = source % 10; // get abscissa
 		int destX = destination / 10;
 		int destY = destination % 10;
 		if(games.get(GMId).isAGoodMove(srcX, srcY, destX, destY, new ClientWrapper(client))) {
@@ -266,23 +265,14 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			return 1;
 		}
 	}
-	
-	/**
-	 * 
-	 * @param source
-	 * @param destination
-	 * @param GMId
-	 * @param client
-	 * @return
-	 * @throws RemoteException
-	 */
+
 	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
 			client.PostMsg("It is not your turn to play");
 			return -1;
 		}
-		int srcX = source / 10;
-		int srcY = source % 10;
+		int srcX = source / 10; // get ordinate
+		int srcY = source % 10; // get abscissa
 		int destX = destination / 10;
 		int destY = destination % 10;
 		GameManager gm = games.get(GMId); 
@@ -294,9 +284,6 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return ret;
 	}
 	
-	/**
-	 * 
-	 */
 	public int isGameOver(String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(games.get(GMId).isWinner(new ClientWrapper(client))) {
 			return 0;
@@ -336,12 +323,20 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	}
 	
 	public void clientQuit(String GMId, iClient client) throws RemoteException, NullPointerException {
-		GameManager gm = games.get(GMId);
+		games.get(GMId);
 		sendMessage(GMId, client, "Your opponent quitted the game. You must find another game", true);
 		removeGMFromList(GMId);
-		
+		try {
+			disconnect(client);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
 	}
 	
+	/**
+	 * Removes the given GameManager from the list of active's ones 
+	 * @param GMId the string identifying the GameManager
+	 */
 	private void removeGMFromList(String GMId) {
 		games.remove(GMId);
 	}

@@ -2,33 +2,29 @@ package server.main;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-
 import server.model.board.Board;
-import server.model.board.Cell;
-import server.model.character.Character;
 import shared.iClient;
+
+/**
+ * Gives a controlled interface to the server to communicate with the client
+ * @version 1.0
+ * @author axel gauthier
+ */
 public class ClientWrapper implements Serializable {
 	
+	/**
+	 * Reference to the client to call operations
+	 */
 	private iClient client;
 	
-	public ClientWrapper(iClient client2) {
-		this.client = client2;
+	public ClientWrapper(iClient client) {
+		this.client = client;
 	}
-	
-	public boolean wantToSave() {
-		String ret = null;
-		do {
-			try {				
-				client.PostMsg("Want to save? [yes: 'y' or no: 'n']");
-				ret = client.GetInfo();
-			} catch(RemoteException e) {
-				e.printStackTrace();
-			}
-		} while(ret != "y" && ret != "n");
-		return ret == "y";
-	}
-	
+
+	/**
+	 * Tells to the client to display the given board
+	 * @param board the board to display
+	 */
 	public void displayBoard(Board board) {
 		try {
 			client.PostBoard(board);
@@ -37,6 +33,10 @@ public class ClientWrapper implements Serializable {
 		}
 	}
 	
+	/**
+	 * Tells to the client to display a given message
+	 * @param msg the message to diplay
+	 */
 	public void displayText(String msg) {
 		try {
 			client.PostMsg(msg);
@@ -45,20 +45,19 @@ public class ClientWrapper implements Serializable {
 		}
 	}
 	
-	public Character getCharacterToMove(ArrayList<Character> fighters) {
-		Character chara = null;
-		return chara;
-	}
-	
-	public Cell getRecquiredCell(Board board) {
-		Cell cell = null;
-		return cell;
-	}
-	
+	/**
+	 * Gets the client attribute
+	 * @return iClient object
+	 */
 	public iClient getClient() {
 		return client;
 	}
 	
+	/**
+	 * Tests if two ClientWrapper are equals, based upon the equality of their iClient attribute
+	 * @param client the second ClientWrapper to compare
+	 * @return true if the ClientWrapper are equals, false otherwise
+	 */
 	public boolean equals(ClientWrapper client) {
 		try {
 			return this.client.equals(client.getClient());

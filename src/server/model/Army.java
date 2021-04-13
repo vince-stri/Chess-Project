@@ -195,10 +195,6 @@ public class Army implements Serializable {
     		chara.setBoard(board);
     	}
     }
-    
-    public Character getCharacterToMove() {
-    	return player.getCharacterToMove(fightersAlive);
-    }
 
     public ClientWrapper getClientWrapper() {
     	return player;

@@ -14,7 +14,11 @@ import client.view.Journal;
 import shared.Client;
 import shared.Iserver;
 
-
+/**
+ * The client launcher
+ * @version 1.0
+ * @author enzo moretto
+ */
 public class MainClient {
 	
 	static Journal journal;
@@ -63,14 +67,14 @@ public class MainClient {
 					break;
 					
 				case 1:
-					goMatchmaking(entry,serverObject,playingClient);
+					goMatchmaking();
 					break;
 					
 				case 2:
-					defyPlayer(entry,serverObject,playingClient);
+					defyPlayer();
 					break;
 				case 3:
-					loadGame(entry,serverObject,playingClient);
+					loadGame();
 					break;
 				}
 					
@@ -110,11 +114,11 @@ public class MainClient {
 		case 0:
 			return false;
 		case 1:
-			connectionResult = connect(entry,serverObject,clientToInstanciate);
+			connectionResult = connect(clientToInstanciate);
 			break;
 		
 		case 2:
-			registerResult = register(entry,serverObject,clientToInstanciate);
+			registerResult = register(clientToInstanciate);
 			break;
 		}
 		if((connectionResult == 0) || (registerResult == 0)) {//Quit
@@ -126,7 +130,7 @@ public class MainClient {
 		return false;//If we reach this point that means the user typed 0
 	}
 
-	private static int register(Scanner entry, Iserver serverObject, Client clientToInstanciate) throws RemoteException, SQLException {
+	private static int register(Client clientToInstanciate) throws RemoteException, SQLException {
 		boolean isRegisterMenuRunning = true;
 		int registerResult;
 		int retryOrQuit;
@@ -170,7 +174,7 @@ public class MainClient {
 		return 1; //Success
 	}
 	
-	private static int connect(Scanner entry, Iserver serverObject, Client clientToInstanciate) throws RemoteException, SQLException {
+	private static int connect(Client clientToInstanciate) throws RemoteException, SQLException {
 		boolean isConnectionMenuRunning = true;
 		String pseudo;
 		String password;
@@ -198,34 +202,42 @@ public class MainClient {
 		return 1; //Success
 		
 	}
-	private static void loadGame(Scanner entry, Iserver serverObject,Client playingClient) {
+	private static void loadGame() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void defyPlayer(Scanner entry, Iserver serverObject,Client playingClient) throws RemoteException {
-		String message;
-		
+	private static void defyPlayer() throws RemoteException {
+		String message;	
 		message = serverObject.startDuel(playingClient);
 		journal.displayText(message);
 	
 		
 	}
 
-	private static void goMatchmaking(Scanner entry, Iserver serverObject,Client playingClient) throws RemoteException {
+	private static void goMatchmaking() throws RemoteException {
 			String gameManagerId = serverObject.startMatchMaking(playingClient);
-			playAGame(entry, gameManagerId,serverObject,playingClient);
+			playAGame(gameManagerId);
 	}			
 	
-	private static void playAGame(Scanner entry,String gameManagerId,Iserver serverObject,Client playingClient) throws RemoteException {
+	/**
+	 * Major loop of gameplay. Asks player actions to perform while fighting for the victory. 
+	 * @param GMId the string identifying the GameManager
+	 * @throws RemoteException raised during connection issue by RMI
+	 */
+	private static void playAGame(String gameManagerId) throws RemoteException {
 		int isGameOver = -1;
 		int origin = -1;
 		int destination = -1;
+		
+		/* Game loop */
 		while(isGameOver == -1) {
 			boolean correctInput = false;
-			int action = getAction(entry);
+			int action = getAction();
 			switch (action) {
-			case 0: // send a message
+			
+			/* Send a message */
+			case 0:
 				journal.displayText("Votre message :");
 				String msg = entry.nextLine();
 				try {
@@ -235,7 +247,9 @@ public class MainClient {
 					isGameOver = -2; 
 				}
 				break;
-			case 1: // save the game
+				
+			/* Save the game */
+			case 1:
 				try {
 					if(!serverObject.minimumPlayersAreConnected(gameManagerId)) {
 						journal.displayText("[INFO] Veuillez attendre l'arrivée de votre adversaire avant de jouer.");
@@ -248,9 +262,13 @@ public class MainClient {
 					isGameOver = -2;
 				}
 				break;
-			case 2: // play
+				
+			/* Play a turn */ 
+			case 2:
 				boolean moveError = false;
-				while( !correctInput) {							
+				
+				/* Loop verifying the validity of the player's input */
+				while( !correctInput) {					
 					origin = getMoveOptions("selectionnez une source pour votre personnage. Tapez la ligne puis la colonne (exemple: 43)", gameManagerId);
 					if(origin >= 0) {							
 						destination = getMoveOptions("selectionnez une destination pour votre personnage. Tapez la ligne puis la colonne (exemple: 43)", gameManagerId);
@@ -278,9 +296,7 @@ public class MainClient {
 				}
 				if( !moveError) {
 					try {
-						if(serverObject.playMove(origin,destination,gameManagerId,playingClient) == -1) {
-							
-						}
+						serverObject.playMove(origin,destination,gameManagerId,playingClient);
 						journal.displayText("Mouvement validé");
 					} catch(NullPointerException e) {
 						journal.displayText("Your opponent has quit the game. Try to found another one");
@@ -288,11 +304,15 @@ public class MainClient {
 					}
 				}
 				break;
-			default: // quit
+				
+			/* Quit the game */
+			default:
 				serverObject.clientQuit(gameManagerId, playingClient);
 				isGameOver = -2;
 				break;
 			}
+			
+			/* Tests if the game is over */
 			if(isGameOver >= 0) {
 				if(serverObject.minimumPlayersAreConnected(gameManagerId)) {
 					isGameOver = serverObject.isGameOver(gameManagerId,playingClient);			
@@ -307,7 +327,11 @@ public class MainClient {
 		}
 	}
 	
-	private static int getAction(Scanner entry) {
+	/**
+	 * Gets the action to perform from the player
+	 * @return a code representing the action wanted by the player
+	 */
+	private static int getAction() {
 		boolean correctAction = false;
 		int action = -1;
 		while(!correctAction) {
@@ -325,6 +349,17 @@ public class MainClient {
 		return action;
 	}
 	
+	/**
+	 * Gets coordinates from the player
+	 * @param msg the message to display to the player
+	 * @param GMId the string identifying the GameManager
+	 * @return the chosen coordinates or an information code.
+	 * 		-1 : It doesn't belong to the player to play
+	 * 		-2 : The player cannot play because the game is over
+	 * 		-3 : The opponent left the game so the player cannot play
+	 * 		x : the coordinates selected by the player
+	 * @throws RemoteException raised during connection issue by RMI
+	 */
 	private static int getMoveOptions(String msg, String GMId) throws RemoteException {
 		boolean correctOrigin = false;
 		int coordinates = -1;
