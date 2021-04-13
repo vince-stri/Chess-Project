@@ -94,9 +94,11 @@ public class MainClient {
 		int menuChoice = -1;
 				
 		while(isMenuRunning) {
-			journal.displayText("2- Creer un compte");
-			journal.displayText("1- Connexion");
+			
+			
 			journal.displayText("0- Quitter");
+			journal.displayText("1- Connexion");
+			journal.displayText("2- Creer un compte");
 			
 			try {
 				menuChoice = entry.nextInt();
@@ -170,7 +172,7 @@ public class MainClient {
 			}
 			
 		}
-		journal.displayText("Votre compte a ete cree vous pouvez vous connecter");
+		journal.displayText("Votre compte a été créé nous vous avons connecté");
 		return 1; //Success
 	}
 	
