@@ -22,13 +22,16 @@ import java.io.*;
 /**
  * Gives remote actions to the clients
  * @version 1.0
- * @author vincent acilla
+ * @author vincent acila
  */
 public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	private ArrayList<GameManager> queueGM = new ArrayList<>();
-	private ArrayList<String> queueIdGM = new ArrayList<>();
+	//private ArrayList<String> queueIdGM = new ArrayList<>();
 	private Map<String, GameManager> games = new HashMap<String, GameManager>();
+	//private ArrayList<GameManager> queueDuel= new ArrayList<>();
+	private Map<String, GameManager> queueDuel = new HashMap<String, GameManager>();
+	
 	
 	public ServerImpl() throws RemoteException {
 		super();
@@ -116,6 +119,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return token;
 	}
 	
+	
 	private void del_token(iClient client) throws SQLException, RemoteException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
@@ -160,10 +164,45 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	}
 
 	
+	
 	@Override
-	public String startDuel(iClient client) throws RemoteException {
-		// TODO Auto-generated method stub
+	public String joinDuel(iClient player) throws RemoteException {
+		ClientWrapper cwplayer = new ClientWrapper(player);
+		GameManager gm;
+		if ((gm = queueDuel.get(player.GetPseudo())) != null) {
+			gm.addClient(cwplayer);
+			System.out.println("The newly created GameManager id: " + gm.getIdGM());
+			gm.setPlayersToArmies();
+			cwplayer.displayBoard(gm.getBoard());
+			cwplayer.displayText("Vous jouez l'equipe du cote clair de la force");
+			queueDuel.remove(player.GetPseudo(), gm);
+			return gm.getIdGM();
+		}
 		return null;
+	}
+	
+	@Override
+	public String startDuel(iClient player, String opponentPlayer) throws RemoteException {
+		ClientWrapper cwplayer = new ClientWrapper(player);
+		// Create an unique ID for the GM
+		String gm_id = UUID.randomUUID().toString();
+		gm_id = gm_id.replace("-", "");
+					
+		// Create GameManager and add the player to it
+		GameManager gm = new GameManager(BoardShape.CHESS, "saves/" + gm_id, 2);
+		gm.addClient(cwplayer);
+		gm.setIdGM(gm_id);
+		
+		// Put the Game manager in standby
+		queueDuel.put(opponentPlayer, gm);
+		
+		// Add the GM to the list of current games
+		games.put(gm_id, gm);
+		System.out.println("The newly created GameManager id: " + gm_id);
+		gm.setUpBattle();
+		cwplayer.displayBoard(gm.getBoard());
+		cwplayer.displayText("Vous jouez l'equipe du cote obscure de la force");
+		return gm_id;
 	}
 
 	
@@ -220,10 +259,9 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			// Create GameManager and add the player to it
 			GameManager gm = new GameManager(BoardShape.CHESS, "saves/" + gm_id, 2);
 			gm.addClient(cwplayer);
-			
+			gm.setIdGM(gm_id);
 			// Put the Game manager in standby
 			queueGM.add(gm);
-			queueIdGM.add(gm_id);
 			
 			// Add the GM to the list of current games
 			games.put(gm_id, gm);
@@ -232,17 +270,18 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			cwplayer.displayBoard(gm.getBoard());
 			cwplayer.displayText("Vous jouez l'equipe du cote obscure de la force");
 			return gm_id;
+			
 		} else {
 			int idx_GM = queueGM.size()-1;
 			GameManager gm = queueGM.get(idx_GM);
 			gm.addClient(cwplayer);
 			queueGM.remove(idx_GM);
-			String gm_id = queueIdGM.remove(idx_GM);
-			System.out.println("The newly created GameManager id: " + gm_id);
+			//String gm_id = queueIdGM.remove(idx_GM);
+			System.out.println("The newly created GameManager id: " + gm.getIdGM());
 			gm.setPlayersToArmies();
 			cwplayer.displayBoard(gm.getBoard());
 			cwplayer.displayText("Vous jouez l'equipe du cote clair de la force");
-			return gm_id;
+			return gm.getIdGM();
 		}
 	}
 	

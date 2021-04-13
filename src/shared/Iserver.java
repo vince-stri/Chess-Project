@@ -26,7 +26,8 @@ public interface Iserver extends Remote {
 	
 	public void disconnect(iClient client) throws RemoteException, SQLException;
 	public String startMatchMaking(iClient client) throws RemoteException;
-	public String startDuel(iClient client) throws RemoteException;
+	public String startDuel(iClient client, String opponentPlayer) throws RemoteException;
+	public String joinDuel(iClient client) throws RemoteException;
 	public int checks_user(String pseudo) throws SQLException, RemoteException;
 	public int register(String pseudo, String password) throws RemoteException, SQLException;
 	
