@@ -265,6 +265,7 @@ public class MainClient {
 					isDefyMenuRunning = false;
 				}
 			}catch (InputMismatchException e){
+				entry.nextLine();
 				journal.displayTextError("Erreur dans la saisie clavier");
 				
 			}
@@ -293,6 +294,7 @@ public class MainClient {
 				}
 			}
 			gameManagerId = serverObject.startDuel(playingClient,opponentPseudo);
+			break;
 			
 			
 		case 2://Challenger			
@@ -301,10 +303,12 @@ public class MainClient {
 				journal.displayText("La partie recherchée n'existe pas");
 				return;
 			}
+			break;
 			
 		}
 		
 		playAGame(gameManagerId);
+		
 		
 	}
 
