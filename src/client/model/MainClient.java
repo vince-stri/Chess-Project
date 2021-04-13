@@ -79,6 +79,7 @@ public class MainClient {
 				}
 					
 			} catch(InputMismatchException e) {
+				journal.clearTerminal();
 				journal.displayTextError("Erreur dans la saisie clavier");
 				entry.nextLine();
 			}
@@ -86,7 +87,19 @@ public class MainClient {
 		entry.close();
 		journal.displayText("A bientot !");
 	}
-	//connection or login screen 
+	
+	
+
+	/**
+	 * First display asking if connect or register
+	 * Calls connect() or register()
+	 * @param entry scanner to catch input
+	 * @param serverObject rmiInterface
+	 * @param clientToInstanciate
+	 * @return false if failed to connect or register or quit, true if succeed
+	 * @throws RemoteException
+	 * @throws SQLException
+	 */
 	private static boolean connectOrRegister(Scanner entry, Iserver serverObject,Client clientToInstanciate) throws RemoteException, SQLException {
 		boolean isMenuRunning = true;
 		int connectionResult = 1;//retry
@@ -107,6 +120,7 @@ public class MainClient {
 					isMenuRunning = false;
 				}
 			} catch(InputMismatchException e) {
+				journal.clearTerminal();
 				journal.displayTextError("Erreur dans la saisie clavier");
 				entry.nextLine();
 			}
@@ -131,7 +145,14 @@ public class MainClient {
 		}
 		return false;//If we reach this point that means the user typed 0
 	}
-
+	/**
+	 * Function asking the client to register with username and password calls remote function register()
+	 * Instantiate a client object with informations about the player
+	 * Log the client if success
+	 * @param clientToInstanciate client object filled with player informations
+	 * @throws RemoteException raised during connection issue by RMI, SQLException raised calling check_user()
+	 * @return 0 if abort try / 1 if register and login success
+	 */
 	private static int register(Client clientToInstanciate) throws RemoteException, SQLException {
 		boolean isRegisterMenuRunning = true;
 		int registerResult;
@@ -157,6 +178,7 @@ public class MainClient {
 						isRegisterMenuRunning = false;
 						clientToInstanciate.SetPseudo(pseudo);
 					}else {//an issue occured during DB register
+						journal.clearTerminal();
 						journal.displayText("Un probleme est survenu");
 						journal.displayText("1- Reessayer");
 						journal.displayText("0- Quitter");
@@ -172,10 +194,18 @@ public class MainClient {
 			}
 			
 		}
+		journal.clearTerminal();
 		journal.displayText("Votre compte a été créé nous vous avons connecté");
 		return 1; //Success
 	}
-	
+	/**
+	 * Function asking the client to connect with username and password calls remote function login()
+	 * Instantiate a client object with informations about the player
+	 * @param clientToInstanciate client object filled with player informations
+	 * @throws RemoteException raised during connection issue by RMI, 
+	 * @throws SQLException raised calling check_user()
+	 * @return 0 if abort try / 1 if login success
+	 */
 	private static int connect(Client clientToInstanciate) throws RemoteException, SQLException {
 		boolean isConnectionMenuRunning = true;
 		String pseudo;
@@ -189,7 +219,7 @@ public class MainClient {
 			journal.displayText("Entrez votre mot de passe");
 			password = entry.nextLine();
 			clientToInstanciate.SetPseudo(pseudo);
-			if(serverObject.login(clientToInstanciate, password).equals("0")) {
+				if(serverObject.login(clientToInstanciate, password).equals("0")) {
 				journal.displayText("1- Reessayer");
 				journal.displayText("0- Quitter");
 				retryOrQuit = entry.nextInt();
@@ -208,12 +238,86 @@ public class MainClient {
 		// TODO Auto-generated method stub
 		
 	}
-
-	private static void defyPlayer() throws RemoteException {
-		String message;	
-		message = serverObject.startDuel(playingClient);
-		journal.displayText(message);
-	
+	/**
+	 * Duel Menu. Asks the player if hosting or joining game. calls startDuel or joinDuel in function
+	 * 
+	 * @throws RemoteException raised during connection issue by RMI
+	 * @throws SQLException raised calling check_user()
+	 */
+	private static void defyPlayer() throws RemoteException, SQLException {
+		String opponentPseudo;
+		int menuChoice = 0;
+		boolean isDefyMenuRunning = true;
+		boolean isInvalidPlayer;
+		String gameManagerId;
+		
+		while(isDefyMenuRunning) {
+			journal.displayText("C'est l'heure du Du-Duel");
+			journal.displayText("Voulez vous héberger une partie ou rejoindre un adversaire ?");
+			journal.displayText("1- Héberger");
+			journal.displayText("2- Rejoindre");
+			journal.displayText("0- Quitter");
+		
+			try {
+				menuChoice = entry.nextInt();
+				entry.nextLine();
+				if((menuChoice >= 0) && (menuChoice <= 2)) {
+					isDefyMenuRunning = false;
+				}
+			}catch (InputMismatchException e){
+				journal.displayTextError("Erreur dans la saisie clavier");
+				
+			}
+		
+			
+		}
+		
+		switch(menuChoice) {
+		case 0:
+			return; //player choosed to quit
+			
+		case 1: //Host
+			isInvalidPlayer = true;
+			while(isInvalidPlayer) {
+				journal.displayText("Entrez le pseudo du joueur qui va vous défier");
+				journal.displayText("Ou quittez en entrant 0 ");
+				opponentPseudo = entry.nextLine();
+				if(opponentPseudo == "0") {
+					return;
+				}
+				if(serverObject.checks_user(opponentPseudo) == 0) {
+					isInvalidPlayer = false;
+				}else {
+					journal.displayText("Le joueur n'existe pas réessayez");
+				}
+			}
+			gameManagerId = serverObject.startDuel(playingClient,opponentPseudo);
+			
+			
+		case 2://Challenger
+			isInvalidPlayer = true;
+			while(isInvalidPlayer) {
+				journal.displayText("Entrez le pseudo du joueur qui attend votre défi");
+				journal.displayText("Ou quittez en entrant 0 ");
+				opponentPseudo = entry.nextLine();
+				if(opponentPseudo == "0") {
+					return;
+				}
+				if(serverObject.checks_user(opponentPseudo) == 0) {
+					isInvalidPlayer = false;
+				}else {
+					journal.displayText("Le joueur n'existe pas réessayez");
+				}
+			}
+			gameManagerId = serverObject.joinDuel(playingClient,opponentPseudo);
+			if(gameManagerId == null) {
+				journal.displayText("La partie recherchée n'existe pas");
+				return;
+			}
+			
+		}
+		
+		playAGame(gameManagerId);
 		
 	}
 

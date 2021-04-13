@@ -10,4 +10,6 @@ public abstract class Journal {
 	
 	public abstract void displayBoard(Board board);
 	
+	public abstract void clearTerminal();
+	
 }

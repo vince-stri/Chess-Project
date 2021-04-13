@@ -42,4 +42,11 @@ public class CLI extends Journal {
 			System.out.print("\n		    _________________________________________________________________\n\n");
 		}
 	}
+
+	@Override
+	public void clearTerminal() {
+		for(int i = 0; i<40;i++) {
+			System.out.println();
+		}
+	}
 }
