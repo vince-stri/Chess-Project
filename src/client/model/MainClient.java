@@ -32,7 +32,7 @@ public class MainClient {
 		try {
 			serverObject = (Iserver) Naming.lookup("rmi://localhost:1099/ChessProject");
 		}catch(ConnectException ex) {
-			journal.displayTextError("Le serveur du jeu ne répond pas retentez plus tard");
+			journal.displayTextError("Le serveur du jeu ne répond pas, vérifier qu'il est en cours d'exécution");
 			return;
 		}
 		boolean connectionSuccess = false;
@@ -40,10 +40,10 @@ public class MainClient {
 		playingClient = new Client(-1, null, null, journal);
 		
 		/*Menu de connexion*/
-		journal.displayText("Bienvenue sur battle chess royale"); 
+		journal.displayText("/\\/\\ Bienvenue sur le Battle Chess Royale ! /\\/\\"); 
 		connectionSuccess = connectOrRegister(entry, serverObject, playingClient);
 		if(connectionSuccess == false) {
-			journal.displayText("Au revoir");
+			journal.displayText("Bye bye, à bientôt!");
 			return;
 		}
 		
@@ -52,10 +52,12 @@ public class MainClient {
 		boolean isMenuRunning = true;
 				
 		while (isMenuRunning){
-			journal.displayText("1- Matchmaking aleatoire");
-			journal.displayText("2- Defier un joueur");
-			journal.displayText("3- Charger une partie");
+			journal.displayText("\n\n\n//_____________BATTLE CHESS ROYALE____________\\\\\n");
+			journal.displayText("1- Matchmaking - Joue une partie en ligne");
+			journal.displayText("2- Duel - Joue contre un de tes amis");
+			journal.displayText("3- Charger une partie - Reprend une partie déjà commencé");
 			journal.displayText("0- Quitter");
+			journal.displayText("\n\nJoueur : " + playingClient.GetPseudo());
 			
 			try {
 				int menuChoice = entry.nextInt();
@@ -85,7 +87,7 @@ public class MainClient {
 			}
 		}
 		entry.close();
-		journal.displayText("A bientot !");
+		journal.displayText("Bye bye, à bientôt!");
 	}
 	
 	
@@ -109,9 +111,10 @@ public class MainClient {
 		while(isMenuRunning) {//connect menu loop
 			
 			
-			journal.displayText("0- Quitter");
+			
 			journal.displayText("1- Connexion");
 			journal.displayText("2- Creer un compte");
+			journal.displayText("0- Quitter");
 			
 			try {
 				menuChoice = entry.nextInt();
@@ -163,13 +166,13 @@ public class MainClient {
 		
 		while(isRegisterMenuRunning) {//register Menu loop
 			
-			journal.displayText("Creer un compte");
-			journal.displayText("Entrez un pseudo");
+			journal.displayText("____________ Créer ton compte ! ____________ ");
+			journal.displayText("Pseudo => ");
 			pseudo = entry.nextLine();
 			if(serverObject.checks_user(pseudo) != 0) {//user already exist
-				journal.displayText("Entrez votre mot de passe");
+				journal.displayText("Mot de passe => ");
 				password = entry.nextLine();
-				journal.displayText("Confirmez votre mot de passe");
+				journal.displayText("Confirmation du mot de passe => ");
 				confirmpassword = entry.nextLine();
 				
 				if(password.contentEquals(confirmpassword)) {//password and confimpassword are the same
@@ -179,8 +182,8 @@ public class MainClient {
 						clientToInstanciate.SetPseudo(pseudo);
 					}else {//an issue occured during DB register
 						journal.clearTerminal();
-						journal.displayText("Un probleme est survenu");
-						journal.displayText("1- Reessayer");
+						journal.displayText("Un probleme est survenu lors de la création du compte");
+						journal.displayText("1- Réessayer");
 						journal.displayText("0- Quitter");
 						retryOrQuit = entry.nextInt();
 						entry.nextLine();
@@ -189,7 +192,7 @@ public class MainClient {
 						}
 					}
 				} else {
-					journal.displayText("Les mots de passe ne correspondent pas");
+					journal.displayText("Les mots de passe ne correspondent pas, réessayez");
 				}
 			}
 			
@@ -213,14 +216,14 @@ public class MainClient {
 		int retryOrQuit;
 		
 		while(isConnectionMenuRunning) {
-			journal.displayText("Connexion");
-			journal.displayText("Entrez votre pseudo");
+			journal.displayText("____________ CONNEXION ____________");
+			journal.displayText("Pseudo => ");
 			pseudo = entry.nextLine();
-			journal.displayText("Entrez votre mot de passe");
+			journal.displayText("Mot de passe =>");
 			password = entry.nextLine();
 			clientToInstanciate.SetPseudo(pseudo);
 				if(serverObject.login(clientToInstanciate, password).equals("0")) {
-				journal.displayText("1- Reessayer");
+				journal.displayText("1- Réessayer");
 				journal.displayText("0- Quitter");
 				retryOrQuit = entry.nextInt();
 				entry.nextLine();
@@ -249,11 +252,11 @@ public class MainClient {
 		int menuChoice = 0;
 		boolean isDefyMenuRunning = true;
 		boolean isInvalidPlayer;
-		String gameManagerId =null;
+		String gameManagerId = null;
 		
 		while(isDefyMenuRunning) {
-			journal.displayText("C'est l'heure du Du-Duel");
-			journal.displayText("Voulez vous héberger une partie ou rejoindre un adversaire ?");
+			journal.displayText("C'est l'heure du Du-Duel !");
+			journal.displayText("Voulez vous héberger une partie ou rejoindre un ami ?");
 			journal.displayText("1- Héberger");
 			journal.displayText("2- Rejoindre");
 			journal.displayText("0- Quitter");
@@ -281,8 +284,8 @@ public class MainClient {
 			String opponentPseudo =null;
 			isInvalidPlayer = true;
 			while(isInvalidPlayer) {
-				journal.displayText("Entrez le pseudo du joueur qui va vous défier");
-				journal.displayText("Ou quittez en entrant 0 ");
+				journal.displayText("Entrer le pseudo du joueur à inviter");
+				journal.displayText("Ou quitter en entrant 0 ");
 				opponentPseudo = entry.nextLine();
 				if(opponentPseudo == "0") {
 					return;
@@ -290,7 +293,7 @@ public class MainClient {
 				if(serverObject.checks_user(opponentPseudo) == 0) {
 					isInvalidPlayer = false;
 				}else {
-					journal.displayText("Le joueur n'existe pas réessayez");
+					journal.displayText("Ce joueur n'existe pas, réessayer");
 				}
 			}
 			gameManagerId = serverObject.startDuel(playingClient,opponentPseudo);
@@ -300,7 +303,7 @@ public class MainClient {
 		case 2://Challenger			
 			gameManagerId = serverObject.joinDuel(playingClient);
 			if(gameManagerId == null) {
-				journal.displayText("La partie recherchée n'existe pas");
+				journal.displayText("Vous n'avez reçue aucune invitation pour une partie");
 				return;
 			}
 			break;
@@ -335,12 +338,12 @@ public class MainClient {
 			
 			/* Send a message */
 			case 0:
-				journal.displayText("Votre message :");
+				journal.displayText("Message :");
 				String msg = entry.nextLine();
 				try {
 					serverObject.sendMessage(gameManagerId, playingClient, msg, false);
 				} catch (NullPointerException e) {
-					journal.displayText("Your opponent has quit the game. Try to found another one");
+					journal.displayText("Votre adversaire à quitté la partie...");
 					isGameOver = -2; 
 				}
 				break;
@@ -355,7 +358,7 @@ public class MainClient {
 						isGameOver = -2;
 					}
 				} catch (NullPointerException e) {
-					journal.displayText("Your opponent has quit the game. Try to found another one");
+					journal.displayText("Votre adversaire à quitté la partie...");
 					isGameOver = -2;
 				}
 				break;
@@ -366,9 +369,9 @@ public class MainClient {
 				
 				/* Loop verifying the validity of the player's input */
 				while( !correctInput) {					
-					origin = getMoveOptions("selectionnez une source pour votre personnage. Tapez la ligne puis la colonne (exemple: 43)", gameManagerId);
+					origin = getMoveOptions("Selectionner une source pour votre personnage. Usage : ligneColonne (exemple: 43)", gameManagerId);
 					if(origin >= 0) {							
-						destination = getMoveOptions("selectionnez une destination pour votre personnage. Tapez la ligne puis la colonne (exemple: 43)", gameManagerId);
+						destination = getMoveOptions("Selectionner une destination pour votre personnage. Usage : ligneColonne (exemple: 43)", gameManagerId);
 						if(destination >= 0) {							
 							switch (serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient)) {
 							case 0:
@@ -396,7 +399,7 @@ public class MainClient {
 						serverObject.playMove(origin,destination,gameManagerId,playingClient);
 						journal.displayText("Mouvement validé");
 					} catch(NullPointerException e) {
-						journal.displayText("Your opponent has quit the game. Try to found another one");
+						journal.displayText("Votre adversaire à quitté la partie...");
 						isGameOver = -2;
 					}
 				}
@@ -419,9 +422,9 @@ public class MainClient {
 		serverObject.clientQuit(gameManagerId, playingClient);
 		journal.displayText("Fin de la partie");
 		if(isGameOver == 0) {
-			journal.displayText("Vous avez Gagné !");
+			journal.displayText("Félicitations " + playingClient.GetPseudo() + ", vous avez gagné !");
 		} else if(isGameOver > 0) {
-			journal.displayText("Vous avez Perdu !");
+			journal.displayText("Dommage, vous avez perdu, vous ferez mieux la prochaine fois !");
 		}
 	}
 	
@@ -474,13 +477,13 @@ public class MainClient {
 				} else if(coordinates > -1 && coordinates < 78) {
 					correctOrigin = true;
 				} else {
-					journal.displayText("Rentrez un nombre entre 00 et 77");
+					journal.displayText("Rentrer un nombre entre 00 et 77");
 				}
 			} catch(InputMismatchException e){
-				journal.displayText("Rentrez un nombre entre 00 et 77");
+				journal.displayText("Rentrer un nombre entre 00 et 77");
 				entry.nextLine();
 			} catch(NullPointerException e) {
-				journal.displayText("Your opponent has quit the game. Try to found another one");
+				journal.displayText("Votre adversaire à quitté la partie...");
 				coordinates = -3;
 				correctOrigin = true;
 			}
