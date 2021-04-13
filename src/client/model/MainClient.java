@@ -425,6 +425,7 @@ public class MainClient {
 				}
 			}
 		}
+		serverObject.clientQuit(gameManagerId, playingClient);
 		journal.displayText("Fin de la partie");
 		if(isGameOver == 0) {
 			journal.displayText("Vous avez Gagné !");
