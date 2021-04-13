@@ -245,11 +245,11 @@ public class MainClient {
 	 * @throws SQLException raised calling check_user()
 	 */
 	private static void defyPlayer() throws RemoteException, SQLException {
-		String opponentPseudo;
+		
 		int menuChoice = 0;
 		boolean isDefyMenuRunning = true;
 		boolean isInvalidPlayer;
-		String gameManagerId;
+		String gameManagerId =null;
 		
 		while(isDefyMenuRunning) {
 			journal.displayText("C'est l'heure du Du-Duel");
@@ -277,6 +277,7 @@ public class MainClient {
 			return; //player choosed to quit
 			
 		case 1: //Host
+			String opponentPseudo =null;
 			isInvalidPlayer = true;
 			while(isInvalidPlayer) {
 				journal.displayText("Entrez le pseudo du joueur qui va vous défier");
@@ -294,22 +295,8 @@ public class MainClient {
 			gameManagerId = serverObject.startDuel(playingClient,opponentPseudo);
 			
 			
-		case 2://Challenger
-			isInvalidPlayer = true;
-			while(isInvalidPlayer) {
-				journal.displayText("Entrez le pseudo du joueur qui attend votre défi");
-				journal.displayText("Ou quittez en entrant 0 ");
-				opponentPseudo = entry.nextLine();
-				if(opponentPseudo == "0") {
-					return;
-				}
-				if(serverObject.checks_user(opponentPseudo) == 0) {
-					isInvalidPlayer = false;
-				}else {
-					journal.displayText("Le joueur n'existe pas réessayez");
-				}
-			}
-			gameManagerId = serverObject.joinDuel(playingClient,opponentPseudo);
+		case 2://Challenger			
+			gameManagerId = serverObject.joinDuel(playingClient);
 			if(gameManagerId == null) {
 				journal.displayText("La partie recherchée n'existe pas");
 				return;
