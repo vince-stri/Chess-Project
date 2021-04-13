@@ -13,6 +13,7 @@ import client.view.CLI;
 import client.view.Journal;
 import shared.Client;
 import shared.Iserver;
+import shared.iClient;
 
 /**
  * The client launcher
@@ -398,6 +399,7 @@ public class MainClient {
 					try {
 						serverObject.playMove(origin,destination,gameManagerId,playingClient);
 						journal.displayText("Mouvement validé");
+						isGameOver = 0;
 					} catch(NullPointerException e) {
 						journal.displayText("Votre adversaire à quitté la partie...");
 						isGameOver = -2;
@@ -419,7 +421,11 @@ public class MainClient {
 				}
 			}
 		}
-		serverObject.clientQuit(gameManagerId, playingClient);
+		try {
+			serverObject.clientQuit(gameManagerId, playingClient);
+		} catch (NullPointerException e) {
+			
+		}
 		journal.displayText("Fin de la partie");
 		if(isGameOver == 0) {
 			journal.displayText("Félicitations " + playingClient.GetPseudo() + ", vous avez gagné !");
