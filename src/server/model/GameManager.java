@@ -69,6 +69,10 @@ public class GameManager {
     private Army playingArmy;
     
     /**
+     * Id for the game manager
+     */
+    private String idGM;
+    /**
      * Constructor of GameManager
      * @param boardShape the type of board
      * @param nameFileToSave the path of the save file
@@ -261,4 +265,12 @@ public class GameManager {
     public ClientWrapper[] getPlayers() {
     	return players;
     }
+
+	public String getIdGM() {
+		return idGM;
+	}
+
+	public void setIdGM(String idGM) {
+		this.idGM = idGM;
+	}
 }
