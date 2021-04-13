@@ -106,7 +106,7 @@ public class MainClient {
 		int registerResult = 1;//retry
 		int menuChoice = -1;
 				
-		while(isMenuRunning) {
+		while(isMenuRunning) {//connect menu loop
 			
 			
 			journal.displayText("0- Quitter");
