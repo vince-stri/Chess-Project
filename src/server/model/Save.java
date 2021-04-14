@@ -197,7 +197,7 @@ public class Save {
     private int createFile() {
     	File path = new File(defaultPath);
     	if(!path.exists() ||  !path.isDirectory()) {
-    		if(!file.mkdirs()) {
+    		if(!path.mkdirs()) {
     			System.err.println("An error occured creating the path ofr the saved files");
     			return 5;
     		}
