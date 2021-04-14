@@ -106,7 +106,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
 		client.SetToken(token);
-		String query = "UPDATE account SET user_token='"+token+"' WHERE ida="+client.GetIdAccount()+";";
+		String query = "UPDATE account SET user_token='"+ token +"' WHERE ida="+client.GetIdAccount()+";";
 		System.out.println("Query : " + query);
 		if (stmt.executeUpdate(query)==1) {
 			System.out.println("Token updated in database");
@@ -221,6 +221,34 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return 1;
 	}
 	
+	public String load_Idgm(String pseudo) throws SQLException {
+		Connection db = connect_db();
+		Statement stmt = db.createStatement();
+		String query = "SELECT idgm_save FROM account WHERE pseudo='" + pseudo + "';";
+		System.out.println("Query : " + query);
+		ResultSet res = stmt.executeQuery(query);
+		stmt.close();
+		if (res.next()) {
+			db.close();
+			return res.getString("idgm_save");
+		}
+		db.close();
+		return null;
+	}
+	
+	public void save_Idgm(String pseudo, String idgm) throws SQLException {
+		Connection db = connect_db();
+		Statement stmt = db.createStatement();
+		String query = "UPDATE TABLE account SET idgm_save='"+ idgm +"' WHERE pseudo='" + pseudo + "';";
+		if (stmt.executeUpdate(query)==1) {
+			System.out.println("IDGM for " + pseudo + "has been saved");
+		}
+		else {
+			System.out.println("An error has occured saving IDGM for " + pseudo);
+		}
+		stmt.close();
+		db.close();
+	}
 	
 	@Override
 	public int register(String pseudo, String password) throws RemoteException, SQLException {
