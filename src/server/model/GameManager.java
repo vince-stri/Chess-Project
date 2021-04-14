@@ -64,7 +64,7 @@ public class GameManager {
     private ClientWrapper players[];
     
     /**
-     * 
+     * The pseudos of the connected players
      */
     private String pseudos[];
     
@@ -117,7 +117,7 @@ public class GameManager {
     /**
      * Set up the game components according to the type of game wanted
      * Warning: This method must be called before all the others
-     * @throws RemoteException 
+     * @throws RemoteException raised during connection issue by RMI
      */
     public void setUpBattle() throws RemoteException {
     	round = 0;
@@ -130,6 +130,10 @@ public class GameManager {
 		}
     }
     
+    /**
+     * Set the playing army
+     * @throws RemoteException raised during connection issue by RMI
+     */
     public void setPlayingArmy() throws RemoteException {
     	playingArmy = armies[0];
     }
@@ -250,6 +254,11 @@ public class GameManager {
     	}
     }
     
+    /**
+     * Tests if the given player has won the game.
+     * @param client the given player
+     * @return true if the client won, false otherwise
+     */
     public boolean isWinner(ClientWrapper client) {
     	if(armies[0].getClientWrapper().equals(client)) {
     		return armies[1].isEmpty();
@@ -258,6 +267,11 @@ public class GameManager {
     	}
     }
     
+    /**
+     * Tests if the given player has loose the game.
+     * @param client the given player
+     * @return true if the client loose, false otherwise
+     */
     public boolean isLoser(ClientWrapper client) {
     	if(armies[0].getClientWrapper().equals(client)) {
     		return armies[0].isEmpty();
@@ -266,14 +280,25 @@ public class GameManager {
     	}
     }
     
+    /**
+     * Tests if the minimum numbers of clients are connected
+     * @return true if the number is greater than 1
+     */
     public boolean isMinimumClientsConnected() {
     	return connectedClientsNb > 1;
     }
     
+    /**
+     * Get the board
+     * @return the board
+     */
     public Board getBoard() {
     	return this.board;
     }
     
+    /**
+     * Associates a client to an army
+     */
     public void setPlayersToArmies() {    	
     	for(int i = 0; i < playersNb; i++) {				
     		armies[i].setClientWrapper(players[i]);
@@ -283,18 +308,34 @@ public class GameManager {
     	}
     }
     
+    /**
+     * Gets the army which is supposed to play
+     * @return the army
+     */
     public Army getPlayingAmry() {
     	return playingArmy;
     }
     
+    /**
+     * Gets all the players connected to the game 
+     * @return
+     */
     public ClientWrapper[] getPlayers() {
     	return players;
     }
 
+    /**
+     * Gets the identification string associated with the GameManager
+     * @return
+     */
 	public String getIdGM() {
 		return idGM;
 	}
 
+	/**
+	 * Sets an identification string to the GameManager
+	 * @param idGM
+	 */
 	public void setIdGM(String idGM) {
 		this.idGM = idGM;
 	}
