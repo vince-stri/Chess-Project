@@ -393,6 +393,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			gm.setIdGM(GMId);
 			gm.load();
 			gm.addClient(cwplayer);
+			gm.setPlayingArmy();
 			
 			String [] pseudos = gm.getPseudos();
 			if(client.GetPseudo() == pseudos[0]) {

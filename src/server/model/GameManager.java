@@ -130,6 +130,10 @@ public class GameManager {
 		}
     }
     
+    public void setPlayingArmy() throws RemoteException {
+    	playingArmy = armies[0];
+    }
+    
     /**
      * Verify if the move made by the player is valid or not
      * @param srcX X-coordinate of the character to be moved 
