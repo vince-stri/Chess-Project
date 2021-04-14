@@ -34,12 +34,24 @@ public class ClientWrapper implements Serializable {
 	}
 	
 	/**
-	 * Tells to the client to display a given message
+	 * Display a message coming from another player
 	 * @param msg the message to diplay
 	 */
 	public void displayText(String msg) {
 		try {
 			client.PostMsg(msg);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Display a message coming from the system
+	 * @param msg the message to display
+	 */
+	public void displayInfo(String msg) {
+		try {
+			client.PostInfo(msg);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

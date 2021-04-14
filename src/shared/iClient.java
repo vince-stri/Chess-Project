@@ -62,4 +62,16 @@ public interface iClient extends Remote {
 	 * @return true if the tokens match, false otherwise
 	 */
 	public boolean equals(iClient client) throws RemoteException;
+	
+	/**
+	 * Get the GMId saved by the client
+	 * @return the GMId saved
+	 */
+	public String getGMId() throws RemoteException;
+	
+	/**
+	 * Set a saved GMId
+	 * @param GMId the saved GMId
+	 */
+	public void setGMId(String GMId) throws RemoteException;
 }

@@ -174,7 +174,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println("The newly created GameManager id: " + gm.getIdGM());
 			gm.setPlayersToArmies();
 			cwplayer.displayBoard(gm.getBoard());
-			cwplayer.displayText("Vous jouez l'equipe du cote clair de la force");
+			cwplayer.displayInfo("Vous jouez l'equipe du cote clair de la force");
 			queueDuel.remove(player.GetPseudo(), gm);
 			return gm.getIdGM();
 		}
@@ -189,7 +189,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		gm_id = gm_id.replace("-", "");
 					
 		// Create GameManager and add the player to it
-		GameManager gm = new GameManager(BoardShape.CHESS, "saves/" + gm_id, 2);
+		GameManager gm = new GameManager(BoardShape.CHESS, gm_id, 2);
 		gm.addClient(cwplayer);
 		gm.setIdGM(gm_id);
 		
@@ -201,7 +201,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		System.out.println("The newly created GameManager id: " + gm_id);
 		gm.setUpBattle();
 		cwplayer.displayBoard(gm.getBoard());
-		cwplayer.displayText("Vous jouez l'equipe du cote obscure de la force");
+		cwplayer.displayInfo("Vous jouez l'equipe du cote obscure de la force");
 		return gm_id;
 	}
 
@@ -257,7 +257,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			gm_id = gm_id.replace("-", "");
 						
 			// Create GameManager and add the player to it
-			GameManager gm = new GameManager(BoardShape.CHESS, "saves/" + gm_id, 2);
+			GameManager gm = new GameManager(BoardShape.CHESS, gm_id, 2);
 			gm.addClient(cwplayer);
 			gm.setIdGM(gm_id);
 			// Put the Game manager in standby
@@ -268,7 +268,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println("The newly created GameManager id: " + gm_id);
 			gm.setUpBattle();
 			cwplayer.displayBoard(gm.getBoard());
-			cwplayer.displayText("Vous jouez l'equipe du cote obscure de la force");
+			cwplayer.displayInfo("Vous jouez l'equipe du cote obscure de la force");
 			return gm_id;
 			
 		} else {
@@ -280,7 +280,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println("The newly created GameManager id: " + gm.getIdGM());
 			gm.setPlayersToArmies();
 			cwplayer.displayBoard(gm.getBoard());
-			cwplayer.displayText("Vous jouez l'equipe du cote clair de la force");
+			cwplayer.displayInfo("Vous jouez l'equipe du cote clair de la force");
 			return gm.getIdGM();
 		}
 	}
@@ -342,7 +342,37 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		sendMessage(GMId, client, "Your opponent decided to save the game. You can ask later for continue it", true);
 		GameManager gm = games.get(GMId);
 		gm.save();
+		ClientWrapper [] clients = gm.getPlayers();
+		for(ClientWrapper i : clients) {
+			i.getClient().setGMId(GMId);
+			// A ENREGISTRER DANS LA BDD
+		}
 		clientQuit(GMId, client);
+	}
+	
+	public void load(iClient client) throws RemoteException {
+		String GMId = client.getGMId();
+		if(isExists(GMId)) {
+			GameManager gm = new GameManager(BoardShape.CHESS, GMId, 2);
+			gm.setIdGM(GMId);
+			gm.load();
+			gm.addClient(new ClientWrapper(client));
+			client.PostBoard(gm.getBoard());
+			queueDuel.put(GMId, gm);
+		} else {
+			client.PostInfo("The game you want to load doesn't exist");
+			client.setGMId(null);
+		}
+	}
+	
+	/**
+	 * Tests if a specified game has been saved or not 
+	 * @param GMId the GMId indentifying the game
+	 * @return true or false
+	 */
+	private boolean isExists(String GMId) {
+		File f = new File(GMId);
+		return f.exists() && f.isFile();
 	}
 	
 	public void sendMessage(String GMId, iClient sender, String msg, boolean systemMsg) throws RemoteException, NullPointerException {
@@ -352,7 +382,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			if(i != null) {
 				if(! i.getClient().equals(sender)) {
 					if(systemMsg) {
-						i.displayText("System: " + msg);
+						i.displayInfo(msg);
 					} else {
 						i.displayText(sender.GetPseudo() + ": " + msg);					
 					}

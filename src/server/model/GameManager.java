@@ -64,7 +64,7 @@ public class GameManager {
     private ClientWrapper players[];
     
     /**
-     * 
+     * The army which is supposed to play the current move
      */
     private Army playingArmy;
     
@@ -72,6 +72,7 @@ public class GameManager {
      * Id for the game manager
      */
     private String idGM;
+    
     /**
      * Constructor of GameManager
      * @param boardShape the type of board

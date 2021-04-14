@@ -136,7 +136,6 @@ public class MainClient {
 		case 1:
 			connectionResult = connect(clientToInstanciate);
 			break;
-		
 		case 2:
 			registerResult = register(clientToInstanciate);
 			break;

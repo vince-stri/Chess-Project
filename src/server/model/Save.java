@@ -2,6 +2,8 @@ package server.model;
 
 import java.io.*;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -41,13 +43,16 @@ public class Save {
      * The number of saved objects
      */
     private int saveObjectsNb;
+    
+    private String defaultPath;
 
     /**
      * Constructor of Save
      * @param pathFile the path of the save file
      */
     public Save(String pathFile) {
-    	this.pathFile = pathFile;
+    	this.defaultPath = "saves/";
+    	this.pathFile = this.defaultPath + pathFile;
     	file = null;
     	outFile = null;
     	inFile = null;
@@ -187,8 +192,16 @@ public class Save {
      *  2 - the file cannot be created here
      *  3 - security issues has been raised
      *  4 - an input / output error has been raised
+     *  5 - The default path cannot be created
      */
     private int createFile() {
+    	File path = new File(defaultPath);
+    	if(!path.exists() ||  !path.isDirectory()) {
+    		if(!file.mkdirs()) {
+    			System.err.println("An error occured creating the path ofr the saved files");
+    			return 5;
+    		}
+    	}
     	try {
     		file = new File(pathFile);
 			outFile = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
