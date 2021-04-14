@@ -291,7 +291,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	public int isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
-			client.PostMsg("It is not your turn to play");
+			client.PostInfo("It is not your turn to play");
 			return -1;
 		}
 		int srcX = source / 10; // get ordinate
@@ -307,7 +307,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 
 	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
-			client.PostMsg("It is not your turn to play");
+			client.PostInfo("It is not your turn to play");
 			return -1;
 		}
 		int srcX = source / 10; // get ordinate

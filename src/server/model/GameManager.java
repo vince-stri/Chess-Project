@@ -99,7 +99,7 @@ public class GameManager {
     		return false;
     	} else {
     		for(int i = 0; i < connectedClientsNb; i++) {
-    			players[i].displayText("Un joueur vient d'arriver");
+    			players[i].displayInfo("Un joueur vient d'arriver");
     		}
     		players[connectedClientsNb++] = client;
     		System.out.println("The number of connected clients: " + connectedClientsNb);
@@ -138,25 +138,36 @@ public class GameManager {
 		Cell source = board.getACell(src);
 		Cell destination = board.getACell(dest);
 		if(source == null || destination == null) { // verify if the coordinates were correct
+
 			player.displayText("Les coordonnées entrées sont invalides");
+
 			return false;
 		}
 		Character selectedChara = source.getCharacter();
 		if(selectedChara == null) {
+
 			player.displayText("Il n'y a pas de personnage dans la case séléctionnée");
+
 			return false;
 		}
 		if(! selectedChara.getArmy().getClientWrapper().equals(player)) { // verify if the selected character belongs to the player's army
+
 			player.displayText("Le personnage désigné n'appartient pas à votre armée !");
+
+
 			return false;
 		}
 		if(selectedChara.isAPossibleMove(destination) == false) { // verify if the required move can be done
+
 			player.displayText("Ce mouvement est impossible pour un " + selectedChara.getName());
+
 			return false;
 		}
 		if(destination.getCharacter() != null) { // verify if there is a character on the destination cell
 			boolean tmp = ! destination.getCharacter().getArmy().getClientWrapper().equals(player);
+
 			player.displayText("Vous ne pouvez pas aller sur une case occupée par un de vos pions");;
+
 			return tmp; // verify if this character is an ennemy 
 		} return true;
     }
@@ -255,7 +266,9 @@ public class GameManager {
     public void setPlayersToArmies() {    	
     	for(int i = 0; i < playersNb; i++) {				
     		armies[i].setClientWrapper(players[i]);
+
     		armies[i].getClientWrapper().displayText("Votre armée est dirigée par le personnage " + armies[i].getKing().getSymbol());
+
     	}
     }
     
