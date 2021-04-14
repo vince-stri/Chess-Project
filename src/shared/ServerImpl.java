@@ -34,7 +34,6 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	public ServerImpl() throws RemoteException {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -183,23 +182,13 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		
 	}
 	
-	/**
-	 * Disconnect a client : delete the token
-	 * @param client
-	 * @throws RemoteException
-	 * @throws SQLException
-	 */
+	
 	@Override
 	public void disconnect(iClient client) throws RemoteException, SQLException {
 		del_token(client);
 	}
 	
-	/**
-	 * Allows to a player to join a duel create by an other player
-	 * @param player
-	 * @return GameManager ID or null if there is no game available
-	 * @throws RemoteException
-	 */
+	
 	@Override
 	public String joinDuel(iClient player) throws RemoteException {
 		ClientWrapper cwplayer = new ClientWrapper(player);
@@ -216,14 +205,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return null;
 	}
 	
-	/**
-	 * Create a duel for a player, against the opponent player specified.
-	 * It's create a new game manager puts in a special queue, waiting for the opponent player.
-	 * @param player
-	 * @param opponentPlayer
-	 * @return GameManager ID
-	 * @throws RemoteException
-	 */
+	
 	@Override
 	public String startDuel(iClient player, String opponentPlayer) throws RemoteException {
 		ClientWrapper cwplayer = new ClientWrapper(player);
@@ -272,7 +254,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	}
 	
 	/**
-	 * 
+	 * Load the GameManagerID saved in the database for a player
 	 * @param pseudo
 	 * @return
 	 * @throws SQLException
@@ -292,6 +274,12 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return null;
 	}
 	
+	/**
+	 * Save the GameManagerID in the database for a player
+	 * @param pseudo
+	 * @return
+	 * @throws SQLException
+	 */
 	private void save_Idgm(String pseudo, String idgm) throws SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
@@ -326,11 +314,6 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return 1;
 	}
 	
-	/**
-	 * Initialize a new game if there is no player in standby or add the player to an existing game.
-	 * @param player who launched a game
-	 * @return GameManagerID (String) that refers to the GM.  
-	 */
 	@Override
 	public String startMatchMaking(iClient player) throws RemoteException {
 		//Initialize CLientWrapper tab for the game manager

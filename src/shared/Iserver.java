@@ -24,11 +24,59 @@ public interface Iserver extends Remote {
 	 */
 	public String login(iClient client, String password) throws RemoteException, SQLException;
 	
+	/**
+	 * Disconnect a client : delete the token in the database.
+	 * @param client the client who wants quit
+	 * @throws RemoteException
+	 * @throws SQLException
+	 */
 	public void disconnect(iClient client) throws RemoteException, SQLException;
+	
+	/**
+	 * Initialize a new game if there is no player in standby or add the player to an existing game.
+	 * @param player who launched a game
+	 * @return GameManagerID (String) that refers to the GM joined or the GM created.  
+	 * @throws RemoteException
+	 */
 	public String startMatchMaking(iClient client) throws RemoteException;
+	
+	/**
+	 * Create a duel for a player, against the opponent player specified.
+	 * It's create a new game manager puts in a special queue, waiting for the opponent player.
+	 * @param player
+	 * @param opponentPlayer
+	 * @return GameManager ID
+	 * @throws RemoteException
+	 */
 	public String startDuel(iClient client, String opponentPlayer) throws RemoteException;
+	
+	/**
+	 * Allows to a player to join a duel create by an other player
+	 * @param player
+	 * @return GameManager ID or null if there is no game available
+	 * @throws RemoteException
+	 */
 	public String joinDuel(iClient client) throws RemoteException;
+	
+	/**
+	 * 
+	 * Checks if the user already exists in the database with the given pseudo
+	 * @param pseudo
+	 * @return 1 for true or 0 for false
+	 * @throws SQLException
+	 * @throws RemoteException
+	 */
 	public int checks_user(String pseudo) throws SQLException, RemoteException;
+	
+	/**
+	 * Create a new user in the database
+	 * @param pseudo
+	 * @param password
+	 * @return 1 : the user is created
+	 * 			0 : Error occurred
+	 * @throws RemoteException
+	 * @throws SQLException
+	 */
 	public int register(String pseudo, String password) throws RemoteException, SQLException;
 	
 	/**
