@@ -66,6 +66,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	    return conf;
 	  }
 	
+
 	private Connection connect_db() {
 		Connection con = null;
 		String[] conf;
@@ -104,7 +105,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
 		client.SetToken(token);
-		String query = "UPDATE account SET user_token='"+token+"' WHERE ida="+client.GetIdAccount()+";";
+		String query = "UPDATE account SET user_token='"+ token +"' WHERE ida="+client.GetIdAccount()+";";
 		System.out.println("Query : " + query);
 		if (stmt.executeUpdate(query)==1) {
 			System.out.println("Token updated in database");
@@ -170,7 +171,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println("The newly created GameManager id: " + gm.getIdGM());
 			gm.setPlayersToArmies();
 			cwplayer.displayBoard(gm.getBoard());
-			cwplayer.displayInfo("Vous jouez l'equipe du cote clair de la force");
+			cwplayer.displayInfo("____________ Vous jouez l'equipe du cote clair de la force ____________");
 			queueDuel.remove(player.GetPseudo(), gm);
 			return gm.getIdGM();
 		}
@@ -197,7 +198,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		System.out.println("The newly created GameManager id: " + gm_id);
 		gm.setUpBattle();
 		cwplayer.displayBoard(gm.getBoard());
-		cwplayer.displayInfo("Vous jouez l'equipe du cote obscure de la force");
+		cwplayer.displayInfo("____________ Vous jouez l'equipe du cote obscure de la force ____________");
 		return gm_id;
 	}
 
@@ -217,6 +218,34 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return 1;
 	}
 	
+	public String load_Idgm(String pseudo) throws SQLException {
+		Connection db = connect_db();
+		Statement stmt = db.createStatement();
+		String query = "SELECT idgm_save FROM account WHERE pseudo='" + pseudo + "';";
+		System.out.println("Query : " + query);
+		ResultSet res = stmt.executeQuery(query);
+		stmt.close();
+		if (res.next()) {
+			db.close();
+			return res.getString("idgm_save");
+		}
+		db.close();
+		return null;
+	}
+	
+	public void save_Idgm(String pseudo, String idgm) throws SQLException {
+		Connection db = connect_db();
+		Statement stmt = db.createStatement();
+		String query = "UPDATE TABLE account SET idgm_save='"+ idgm +"' WHERE pseudo='" + pseudo + "';";
+		if (stmt.executeUpdate(query)==1) {
+			System.out.println("IDGM for " + pseudo + "has been saved");
+		}
+		else {
+			System.out.println("An error has occured saving IDGM for " + pseudo);
+		}
+		stmt.close();
+		db.close();
+	}
 	
 	@Override
 	public int register(String pseudo, String password) throws RemoteException, SQLException {
@@ -264,7 +293,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println("The newly created GameManager id: " + gm_id);
 			gm.setUpBattle();
 			cwplayer.displayBoard(gm.getBoard());
-			cwplayer.displayInfo("Vous jouez l'equipe du cote obscure de la force");
+			cwplayer.displayInfo("____________ Vous jouez l'equipe du cote obscur de la force ____________");
 			return gm_id;
 			
 		} else {
@@ -275,7 +304,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println("The newly created GameManager id: " + gm.getIdGM());
 			gm.setPlayersToArmies();
 			cwplayer.displayBoard(gm.getBoard());
-			cwplayer.displayInfo("Vous jouez l'equipe du cote clair de la force");
+			cwplayer.displayInfo("____________ Vous jouez l'equipe du cote clair de la force ____________");
 			return gm.getIdGM();
 		}
 	}
@@ -286,7 +315,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	public int isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
-			client.PostInfo("It is not your turn to play");
+			client.PostInfo("/!\\ ------ Ce n'est pas à ton tour de jouer ------ /!\\");
 			return -1;
 		}
 		int srcX = source / 10; // get ordinate
@@ -302,7 +331,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 
 	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
-			client.PostInfo("It is not your turn to play");
+			client.PostInfo("/!\\ ------ Ce n'est pas à ton tour de jouer ------ /!\\");
 			return -1;
 		}
 		int srcX = source / 10; // get ordinate
@@ -334,7 +363,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	}
 	
 	public void save(String GMId, iClient client) throws RemoteException, NullPointerException {
-		sendMessage(GMId, client, "Your opponent decided to save the game. You can ask later for continue it", true);
+		sendMessage(GMId, client, "[INFO] : Votre adversaire a décidé de sauvegarder la partie", true);
 		GameManager gm = games.get(GMId);
 		ClientWrapper [] clients = gm.getPlayers();
 		for(ClientWrapper i : clients) {
@@ -370,7 +399,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			cwplayer.displayInfo("Vous jouez l'equipe du cote obscure de la force");
 			return gm.getIdGM();
 		} else {
-			client.PostInfo("The game you want to load doesn't exist");
+			client.PostInfo("La partie que vous essayez de charger n'existe pas");
 			client.setGMId(null);
 			return null;
 		}
@@ -404,7 +433,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	public void clientQuit(String GMId, iClient client) throws RemoteException, NullPointerException {
 		games.get(GMId);
-		sendMessage(GMId, client, "Your opponent quitted the game. You must find another game", true);
+		sendMessage(GMId, client, "[INFO] : Votre adversaire a quitté la partie", true);
 		removeGMFromList(GMId);
 		try {
 			disconnect(client);

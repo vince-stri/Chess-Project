@@ -37,6 +37,14 @@ public class Client extends UnicastRemoteObject implements iClient, Serializable
 	 */
 	private String GMId;
 	
+	/**
+	 * Client object constructor
+	 * @param idAccount
+	 * @param pseudo
+	 * @param token
+	 * @param journal
+	 * @throws RemoteException
+	 */
 	public Client(int idAccount, String pseudo, String token, Journal journal) throws RemoteException {
 		this.SetIdAccount(idAccount);
 		this.SetPseudo(pseudo);

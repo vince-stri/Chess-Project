@@ -145,25 +145,36 @@ public class GameManager {
 		Cell source = board.getACell(src);
 		Cell destination = board.getACell(dest);
 		if(source == null || destination == null) { // verify if the coordinates were correct
-			player.displayInfo("The provided coordinates do not exist");
+
+			player.displayText("/!\\ ------ Les coordonnées entrées sont invalides ------ /!\\");
+
 			return false;
 		}
 		Character selectedChara = source.getCharacter();
 		if(selectedChara == null) {
-			player.displayInfo("There is no one on the cell you've picked");
+
+			player.displayText("/!\\ ------ Il n'y a pas de personnage dans la case séléctionnée ------ /!\\");
+
 			return false;
 		}
 		if(! selectedChara.getArmy().getClientWrapper().equals(player)) { // verify if the selected character belongs to the player's army
-			player.displayInfo("The character you've selected doesn't belong to your army");
+
+			player.displayText("/!\\ ------ Le personnage désigné n'appartient pas à votre armée ! ------ /!\\");
+
+
 			return false;
 		}
 		if(selectedChara.isAPossibleMove(destination) == false) { // verify if the required move can be done
-			player.displayInfo("The required move cannot be made by this character");
+
+			player.displayText("/!\\ ------ Ce mouvement est impossible pour un " + selectedChara.getName() + " ------ /!\\");
+
 			return false;
 		}
 		if(destination.getCharacter() != null) { // verify if there is a character on the destination cell
 			boolean tmp = ! destination.getCharacter().getArmy().getClientWrapper().equals(player);
-			player.displayInfo("You cannot go on a cell where one of your characters is already on");;
+
+			player.displayText("/!\\ ------ Vous ne pouvez pas aller sur une case occupée par un de vos pions ------ /!\\");;
+
 			return tmp; // verify if this character is an ennemy 
 		} return true;
     }
@@ -262,7 +273,9 @@ public class GameManager {
     public void setPlayersToArmies() {    	
     	for(int i = 0; i < playersNb; i++) {				
     		armies[i].setClientWrapper(players[i]);
-    		armies[i].getClientWrapper().displayInfo("Your army is led by the character " + armies[i].getKing().getSymbol());
+
+    		armies[i].getClientWrapper().displayText("Votre armée est dirigée par le personnage " + armies[i].getKing().getSymbol());
+
     	}
     }
     

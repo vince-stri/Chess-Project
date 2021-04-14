@@ -168,30 +168,43 @@ public class MainClient {
 			journal.displayText("____________ Créer ton compte ! ____________ ");
 			journal.displayText("Pseudo => ");
 			pseudo = entry.nextLine();
+			
 			if(serverObject.checks_user(pseudo) != 0) {//user already exist
+				
 				journal.displayText("Mot de passe => ");
 				password = entry.nextLine();
 				journal.displayText("Confirmation du mot de passe => ");
 				confirmpassword = entry.nextLine();
 				
 				if(password.contentEquals(confirmpassword)) {//password and confimpassword are the same
+					
 					registerResult = serverObject.register(pseudo, password);
+					
 					if(registerResult == 1) { //DB register went well
+						
 						isRegisterMenuRunning = false;
 						clientToInstanciate.SetPseudo(pseudo);
+						
 					}else {//an issue occured during DB register
+						
 						journal.clearTerminal();
 						journal.displayText("Un probleme est survenu lors de la création du compte");
 						journal.displayText("1- Réessayer");
 						journal.displayText("0- Quitter");
 						retryOrQuit = entry.nextInt();
 						entry.nextLine();
+						
 						if(retryOrQuit == 0) {
+							
 							return 0; //fail
+							
 						}
 					}
+					
 				} else {
+					
 					journal.displayText("Les mots de passe ne correspondent pas, réessayez");
+					
 				}
 			}
 			
@@ -215,23 +228,32 @@ public class MainClient {
 		int retryOrQuit;
 		
 		while(isConnectionMenuRunning) {
+			
 			journal.displayText("____________ CONNEXION ____________");
 			journal.displayText("Pseudo => ");
 			pseudo = entry.nextLine();
 			journal.displayText("Mot de passe =>");
 			password = entry.nextLine();
 			clientToInstanciate.SetPseudo(pseudo);
-				if(serverObject.login(clientToInstanciate, password).equals("0")) {
-				journal.displayText("1- Réessayer");
-				journal.displayText("0- Quitter");
-				retryOrQuit = entry.nextInt();
-				entry.nextLine();
-				if(retryOrQuit == 0) {
-					return 0; //fail
+			
+				if(serverObject.login(clientToInstanciate, password).equals("0")) { //if server function login failed
+					journal.displayText("/!\\ ------ Le login a échoué ------ /!\\");
+					journal.displayText("1- Réessayer");
+					journal.displayText("0- Quitter");
+					retryOrQuit = entry.nextInt();
+					entry.nextLine();
+				
+					if(retryOrQuit == 0) {//user choosed to quit
+					
+						return 0; //fail
+					
+					}
+				
+				} else {
+				
+					isConnectionMenuRunning = false;//login succeed
+				
 				}
-			} else {
-				isConnectionMenuRunning = false;
-			}
 		}
 		return 1; //Success
 		
@@ -262,7 +284,7 @@ public class MainClient {
 		String gameManagerId = null;
 		
 		while(isDefyMenuRunning) {
-			journal.displayText("C'est l'heure du Du-Duel !");
+			journal.displayText("____________ C'EST L'HEURE DU DU-DUEL ! ____________");
 			journal.displayText("Voulez vous héberger une partie ou rejoindre un ami ?");
 			journal.displayText("1- Héberger");
 			journal.displayText("2- Rejoindre");
@@ -271,12 +293,14 @@ public class MainClient {
 			try {
 				menuChoice = entry.nextInt();
 				entry.nextLine();
+				
 				if((menuChoice >= 0) && (menuChoice <= 2)) {
+					
 					isDefyMenuRunning = false;
 				}
 			}catch (InputMismatchException e){
 				entry.nextLine();
-				journal.displayTextError("Erreur dans la saisie clavier");
+				journal.displayTextError("/!\\ ------Erreur dans la saisie clavier ------ /!\\");
 				
 			}
 		
@@ -289,17 +313,26 @@ public class MainClient {
 			
 		case 1: //Host
 			String opponentPseudo =null;
+			journal.displayText("____________ Vous avez choisi d'héberger une partie ____________");
 			isInvalidPlayer = true;
+			
 			while(isInvalidPlayer) {
+
 				journal.displayText("Entrer le pseudo du joueur à inviter");
-				journal.displayText("Ou quitter en entrant 0 ");
+				journal.displayText("Ou quitter en entrant 0 =>");
 				opponentPseudo = entry.nextLine();
-				if(opponentPseudo == "0") {
+				
+				if(opponentPseudo == "0") {//User decided to quit
+					
 					return;
+				
 				}
-				if(serverObject.checks_user(opponentPseudo) == 0) {
+				if(serverObject.checks_user(opponentPseudo) == 0) {//enemy user exists
+					
 					isInvalidPlayer = false;
+					
 				}else {
+					
 					journal.displayText("Ce joueur n'existe pas, réessayer");
 				}
 			}
@@ -309,8 +342,12 @@ public class MainClient {
 			
 		case 2://Challenger			
 			gameManagerId = serverObject.joinDuel(playingClient);
+			
+			journal.displayText("____________ Vous avez choisi de rejoindre une partie ____________");
+			
 			if(gameManagerId == null) {
-				journal.displayText("Vous n'avez reçue aucune invitation pour une partie");
+				
+				journal.displayText("/!\\ ------ Vous n'avez reçue aucune invitation pour une partie ------ /!\\");
 				return;
 			}
 			break;
@@ -322,6 +359,10 @@ public class MainClient {
 		
 	}
 
+	/**
+	 * Launch server function startMatchaMing and start the game 
+	 * @throws RemoteException
+	 */
 	private static void goMatchmaking() throws RemoteException {
 			String gameManagerId = serverObject.startMatchMaking(playingClient);
 			playAGame(gameManagerId);
@@ -350,7 +391,7 @@ public class MainClient {
 				try {
 					serverObject.sendMessage(gameManagerId, playingClient, msg, false);
 				} catch (NullPointerException e) {
-					journal.displayText("Votre adversaire à quitté la partie...");
+					journal.displayText("[INFO] : Votre adversaire à quitté la partie...");
 					isGameOver = -2; 
 				}
 				break;
@@ -359,13 +400,13 @@ public class MainClient {
 			case 1:
 				try {
 					if(!serverObject.minimumPlayersAreConnected(gameManagerId)) {
-						journal.displayText("[INFO] Veuillez attendre l'arrivée de votre adversaire avant de jouer.");
+						journal.displayText("[INFO] : Veuillez attendre l'arrivée de votre adversaire avant de jouer.");
 					} else {						
 						serverObject.save(gameManagerId, playingClient);
 						isGameOver = -2;
 					}
 				} catch (NullPointerException e) {
-					journal.displayText("Votre adversaire à quitté la partie...");
+					journal.displayText("[INFO] : Votre adversaire à quitté la partie...");
 					isGameOver = -2;
 				}
 				break;
@@ -376,9 +417,9 @@ public class MainClient {
 				
 				/* Loop verifying the validity of the player's input */
 				while( !correctInput) {					
-					origin = getMoveOptions("Selectionner une source pour votre personnage. Usage : ligneColonne (exemple: 43)", gameManagerId);
+					origin = getMoveOptions("Selectionner une source pour votre personnage. Usage : LigneColonne (exemple: 43)", gameManagerId);
 					if(origin >= 0) {							
-						destination = getMoveOptions("Selectionner une destination pour votre personnage. Usage : ligneColonne (exemple: 43)", gameManagerId);
+						destination = getMoveOptions("Selectionner une destination pour votre personnage. Usage : LigneColonne (exemple: 43)", gameManagerId);
 						if(destination >= 0) {							
 							switch (serverObject.isAGoodMove(origin,destination,gameManagerId,playingClient)) {
 							case 0:
@@ -404,10 +445,10 @@ public class MainClient {
 				if( !moveError) {
 					try {
 						serverObject.playMove(origin,destination,gameManagerId,playingClient);
-						journal.displayText("Mouvement validé");
+						journal.displayText("[INFO] : Mouvement validé");
 						isGameOver = 0;
 					} catch(NullPointerException e) {
-						journal.displayText("Votre adversaire à quitté la partie...");
+						journal.displayText("[INFO] : Votre adversaire à quitté la partie...");
 						isGameOver = -2;
 					}
 				}
@@ -436,7 +477,7 @@ public class MainClient {
 		} catch (NullPointerException e) {
 			
 		}
-		journal.displayText("Fin de la partie");
+		journal.displayText("[INFO] : Fin de la partie");
 		if(isGameOver == 0) {
 			journal.displayText("Félicitations " + playingClient.GetPseudo() + ", vous avez gagné !");
 		} else if(isGameOver > 0) {
@@ -459,7 +500,7 @@ public class MainClient {
 					correctAction = true;
 				}
 			} catch (InputMismatchException e) {
-				journal.displayTextError("Il faut rentrer une valeur numerique");
+				journal.displayTextError("/!\\ ------ Il faut rentrer une valeur numerique ------ /!\\");
 			}
 			entry.nextLine();
 		}
@@ -493,13 +534,13 @@ public class MainClient {
 				} else if(coordinates > -1 && coordinates < 78) {
 					correctOrigin = true;
 				} else {
-					journal.displayText("Rentrer un nombre entre 00 et 77");
+					journal.displayText("/!\\ ------ Rentrer un nombre entre 00 et 77 ------ /!\\");
 				}
 			} catch(InputMismatchException e){
-				journal.displayText("Rentrer un nombre entre 00 et 77");
+				journal.displayText("/!\\ ------ Rentrer un nombre entre 00 et 77 ------ /!\\");
 				entry.nextLine();
 			} catch(NullPointerException e) {
-				journal.displayText("Votre adversaire à quitté la partie...");
+				journal.displayText("[INFO] : Votre adversaire à quitté la partie...");
 				coordinates = -3;
 				correctOrigin = true;
 			}
