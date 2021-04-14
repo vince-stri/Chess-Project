@@ -268,7 +268,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println("The newly created GameManager id: " + gm_id);
 			gm.setUpBattle();
 			cwplayer.displayBoard(gm.getBoard());
-			cwplayer.displayInfo("Vous jouez l'equipe du cote obscur de la force");
+			cwplayer.displayInfo("____________ Vous jouez l'equipe du cote obscur de la force ____________");
 			return gm_id;
 			
 		} else {
@@ -280,7 +280,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println("The newly created GameManager id: " + gm.getIdGM());
 			gm.setPlayersToArmies();
 			cwplayer.displayBoard(gm.getBoard());
-			cwplayer.displayInfo("Vous jouez l'equipe du cote clair de la force");
+			cwplayer.displayInfo("____________ Vous jouez l'equipe du cote clair de la force ____________");
 			return gm.getIdGM();
 		}
 	}
@@ -291,7 +291,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	public int isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
-			client.PostInfo("It is not your turn to play");
+			client.PostInfo("/!\\ ------ Ce n'est pas à ton tour de jouer ------ /!\\");
 			return -1;
 		}
 		int srcX = source / 10; // get ordinate
@@ -307,7 +307,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 
 	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
-			client.PostInfo("It is not your turn to play");
+			client.PostInfo("/!\\ ------ Ce n'est pas à ton tour de jouer ------ /!\\");
 			return -1;
 		}
 		int srcX = source / 10; // get ordinate
@@ -339,7 +339,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	}
 	
 	public void save(String GMId, iClient client) throws RemoteException, NullPointerException {
-		sendMessage(GMId, client, "Votre adversaire a décidé de sauvegarder la partie", true);
+		sendMessage(GMId, client, "[INFO] : Votre adversaire a décidé de sauvegarder la partie", true);
 		GameManager gm = games.get(GMId);
 		gm.save();
 		ClientWrapper [] clients = gm.getPlayers();
@@ -393,7 +393,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	public void clientQuit(String GMId, iClient client) throws RemoteException, NullPointerException {
 		games.get(GMId);
-		sendMessage(GMId, client, "Votre adversaire a quitté la partie", true);
+		sendMessage(GMId, client, "[INFO] : Votre adversaire a quitté la partie", true);
 		removeGMFromList(GMId);
 		try {
 			disconnect(client);
