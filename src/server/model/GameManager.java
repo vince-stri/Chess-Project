@@ -197,10 +197,13 @@ public class GameManager {
     	Cell source = board.getACell(src);
     	Cell destination = board.getACell(dest);
     	Character playingCharacter = source.getCharacter();
-    	int infCode = playingCharacter.getArmy().moveCharacter(playingCharacter, destination);
+    	ClientWrapper [] players = this.getPlayers(); 
+    	int infCode = playingCharacter.getArmy().moveCharacter(playingCharacter, destination,players);
     	this.playingArmy = armies[(++round) % armiesNb];
-    	player.displayInfo(playingCharacter.getName() + " a été déplacé en (" + destX + ";" + destY +")" );
-    	return infCode;
+    	for(ClientWrapper p : players) {
+    		p.displayInfo(playingCharacter.getName() + " a été déplacé en (" + destX + ";" + destY +")" );
+    	}
+    		return infCode;
     }
     
     /**
