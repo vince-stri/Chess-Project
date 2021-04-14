@@ -53,7 +53,7 @@ public class Client extends UnicastRemoteObject implements iClient, Serializable
 	}
 	
 	public String getGMId() throws RemoteException {
-		return GMId;
+		return this.GMId;
 	}
 
 	public void SetIdAccount(int idAccount) throws RemoteException {

@@ -64,6 +64,11 @@ public class GameManager {
     private ClientWrapper players[];
     
     /**
+     * 
+     */
+    private String pseudos[];
+    
+    /**
      * The army which is supposed to play the current move
      */
     private Army playingArmy;
@@ -86,6 +91,7 @@ public class GameManager {
     	this.playersNb = playerNb;
     	this.connectedClientsNb = 0;
     	this.players = new ClientWrapper[2];
+    	this.pseudos = new String[2];
     }
 
     /**
@@ -101,6 +107,7 @@ public class GameManager {
     		for(int i = 0; i < connectedClientsNb; i++) {
     			players[i].displayInfo("Un joueur vient d'arriver");
     		}
+    		pseudos[connectedClientsNb] = client.getClient().GetPseudo();
     		players[connectedClientsNb++] = client;
     		System.out.println("The number of connected clients: " + connectedClientsNb);
     		return true;
@@ -274,4 +281,13 @@ public class GameManager {
 	public void setIdGM(String idGM) {
 		this.idGM = idGM;
 	}
+	
+	/**
+	 * Gets the recorded pseudos
+	 * @return the pseudos
+	 */
+	public String[] getPseudos() {
+		return this.pseudos;
+	}
+	
 }

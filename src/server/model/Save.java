@@ -144,7 +144,7 @@ public class Save {
     			return null;
     		}
     		switch (objectType) {
-				case "class model.board.BoardChess":
+				case "class server.model.board.BoardChess":
 					try {
 		    			listToLoad.add((BoardChess)inFile.readObject());
 		    		} catch (ClassNotFoundException e) {
@@ -155,7 +155,7 @@ public class Save {
 		    			return null;
 		    		}	
 				break;
-				case "class [Lmodel.Army;":
+				case "class [Lserver.model.Army;":
 					try {
 						listToLoad.add((Army[])inFile.readObject());
 		    		} catch (ClassNotFoundException e) {

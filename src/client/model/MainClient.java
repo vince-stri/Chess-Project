@@ -13,7 +13,6 @@ import client.view.CLI;
 import client.view.Journal;
 import shared.Client;
 import shared.Iserver;
-import shared.iClient;
 
 /**
  * The client launcher
@@ -202,7 +201,7 @@ public class MainClient {
 		return 1; //Success
 	}
 	/**
-	 * Function asking the client to connect with username and password calls remote function login()
+	 * Function asking the client to connect with user name and password calls remote function login()
 	 * Instantiate a client object with informations about the player
 	 * @param clientToInstanciate client object filled with player informations
 	 * @throws RemoteException raised during connection issue by RMI, 
@@ -237,10 +236,18 @@ public class MainClient {
 		return 1; //Success
 		
 	}
-	private static void loadGame() {
-		// TODO Auto-generated method stub
-		
+	
+	/**
+	 * Load a game
+	 * @throws RemoteException raised during connection issue by RMI
+	 */
+	private static void loadGame() throws RemoteException {
+		String GMId = serverObject.load(playingClient);
+		if(GMId != null) {
+			playAGame(GMId);
+		}
 	}
+	
 	/**
 	 * Duel Menu. Asks the player if hosting or joining game. calls startDuel or joinDuel in function
 	 * 
@@ -278,7 +285,7 @@ public class MainClient {
 		
 		switch(menuChoice) {
 		case 0:
-			return; //player choosed to quit
+			return; //player choose to quit
 			
 		case 1: //Host
 			String opponentPseudo =null;
@@ -408,7 +415,11 @@ public class MainClient {
 				
 			/* Quit the game */
 			default:
-				serverObject.clientQuit(gameManagerId, playingClient);
+				try {
+					serverObject.clientQuit(gameManagerId, playingClient);					
+				} catch (NullPointerException e) {
+					
+				}
 				isGameOver = -2;
 				break;
 			}

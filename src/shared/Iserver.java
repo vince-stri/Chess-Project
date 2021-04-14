@@ -10,7 +10,7 @@ import server.model.GameManager;
 /**
  * Interface of the ServerImpl object, used by RMI
  * @version 1.0
- * @author enzo moretto
+ * @author vincent acila
  */
 public interface Iserver extends Remote {
 	
@@ -110,4 +110,12 @@ public interface Iserver extends Remote {
 	 * @throws NullPointerException raised if the GameManager object doesn't exist. Can occurred if a player left the game.
 	 */
 	public void clientQuit(String GMId, iClient client) throws RemoteException, NullPointerException;
+	
+	/**
+	 * Load a game previously saved
+	 * @param client the client loading the game
+	 * @return true if the gale has been loaded correctly
+	 * @throws RemoteException raised during connection issue by RMI
+	 */
+	public String load(iClient client) throws RemoteException;
 }

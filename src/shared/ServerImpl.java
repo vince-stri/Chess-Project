@@ -27,9 +27,7 @@ import java.io.*;
 public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	private ArrayList<GameManager> queueGM = new ArrayList<>();
-	//private ArrayList<String> queueIdGM = new ArrayList<>();
 	private Map<String, GameManager> games = new HashMap<String, GameManager>();
-	//private ArrayList<GameManager> queueDuel= new ArrayList<>();
 	private Map<String, GameManager> queueDuel = new HashMap<String, GameManager>();
 	
 	
@@ -162,8 +160,6 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	public void disconnect(iClient client) throws RemoteException, SQLException {
 		del_token(client);
 	}
-
-	
 	
 	@Override
 	public String joinDuel(iClient player) throws RemoteException {
@@ -276,7 +272,6 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			GameManager gm = queueGM.get(idx_GM);
 			gm.addClient(cwplayer);
 			queueGM.remove(idx_GM);
-			//String gm_id = queueIdGM.remove(idx_GM);
 			System.out.println("The newly created GameManager id: " + gm.getIdGM());
 			gm.setPlayersToArmies();
 			cwplayer.displayBoard(gm.getBoard());
@@ -341,37 +336,53 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	public void save(String GMId, iClient client) throws RemoteException, NullPointerException {
 		sendMessage(GMId, client, "Your opponent decided to save the game. You can ask later for continue it", true);
 		GameManager gm = games.get(GMId);
-		gm.save();
 		ClientWrapper [] clients = gm.getPlayers();
 		for(ClientWrapper i : clients) {
 			i.getClient().setGMId(GMId);
 			// A ENREGISTRER DANS LA BDD
 		}
+		gm.save();
 		clientQuit(GMId, client);
 	}
 	
-	public void load(iClient client) throws RemoteException {
+	
+	
+	public String load(iClient client) throws RemoteException {
 		String GMId = client.getGMId();
 		if(isExists(GMId)) {
 			GameManager gm = new GameManager(BoardShape.CHESS, GMId, 2);
+			ClientWrapper cwplayer = new ClientWrapper(client); 
 			gm.setIdGM(GMId);
 			gm.load();
-			gm.addClient(new ClientWrapper(client));
-			client.PostBoard(gm.getBoard());
-			queueDuel.put(GMId, gm);
+			gm.addClient(cwplayer);
+			
+			String [] pseudos = gm.getPseudos();
+			if(client.GetPseudo() == pseudos[0]) {
+				queueDuel.put(pseudos[1], gm);
+			} else {
+				queueDuel.put(pseudos[0], gm);
+			}
+			
+			games.put(GMId, gm);
+			System.out.println("The newly created GameManager id: " + GMId);
+			gm.setUpBattle();
+			cwplayer.displayBoard(gm.getBoard());
+			cwplayer.displayInfo("Vous jouez l'equipe du cote obscure de la force");
+			return gm.getIdGM();
 		} else {
 			client.PostInfo("The game you want to load doesn't exist");
 			client.setGMId(null);
+			return null;
 		}
 	}
 	
 	/**
 	 * Tests if a specified game has been saved or not 
-	 * @param GMId the GMId indentifying the game
+	 * @param GMId the GMId identifying the game
 	 * @return true or false
 	 */
 	private boolean isExists(String GMId) {
-		File f = new File(GMId);
+		File f = new File("saves/" + GMId);
 		return f.exists() && f.isFile();
 	}
 	
