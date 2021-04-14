@@ -144,6 +144,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		if (res.next()) {
 			System.out.println(res.getInt("ida") + " user connected");
 			client.SetIdAccount(res.getInt("ida"));
+			
 			return gen_token(client);
 		}
 		
@@ -199,6 +200,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		gm.setUpBattle();
 		cwplayer.displayBoard(gm.getBoard());
 		cwplayer.displayInfo("____________ Vous jouez l'equipe du cote obscure de la force ____________");
+		cwplayer.displayInfo("En attente de " + opponentPlayer + "...");
 		return gm_id;
 	}
 
@@ -294,6 +296,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			gm.setUpBattle();
 			cwplayer.displayBoard(gm.getBoard());
 			cwplayer.displayInfo("____________ Vous jouez l'equipe du cote obscur de la force ____________");
+			cwplayer.displayInfo("En attente d'un autre joueur...");
 			return gm_id;
 			
 		} else {

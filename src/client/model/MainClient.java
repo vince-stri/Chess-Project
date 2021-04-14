@@ -40,7 +40,9 @@ public class MainClient {
 		playingClient = new Client(-1, null, null, journal);
 		
 		/*Menu de connexion*/
-		journal.displayText("/\\/\\ Bienvenue sur le Battle Chess Royale ! /\\/\\"); 
+		journal.displayText("----------------------------------------------------");
+		journal.displayText("|      Bienvenue sur le Battle Chess Royale !      |"); 
+		journal.displayText("----------------------------------------------------");
 		connectionSuccess = connectOrRegister(entry, serverObject, playingClient);
 		if(connectionSuccess == false) {
 			journal.displayText("Bye bye, à bientôt!");
@@ -52,7 +54,10 @@ public class MainClient {
 		boolean isMenuRunning = true;
 				
 		while (isMenuRunning){
-			journal.displayText("\n\n\n//_____________BATTLE CHESS ROYALE____________\\\\\n");
+			journal.displayText("\n\n\n");
+			journal.displayText("-------------------------------------------");
+			journal.displayText("|           BATTLE CHESS ROYALE           |");
+			journal.displayText("-------------------------------------------");
 			journal.displayText("1- Matchmaking - Joue une partie en ligne");
 			journal.displayText("2- Duel - Joue contre un de tes amis");
 			journal.displayText("3- Charger une partie - Reprend une partie déjà commencé");
