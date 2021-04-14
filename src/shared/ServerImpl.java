@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import server.model.Coordinates;
 import server.model.GameManager;
 import server.model.board.BoardShape;
 import server.main.ClientWrapper;
@@ -338,10 +339,12 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			client.PostInfo("/!\\ ------ Ce n'est pas à ton tour de jouer ------ /!\\");
 			return -1;
 		}
+		
 		int srcX = source / 10; // get ordinate
 		int srcY = source % 10; // get abscissa
 		int destX = destination / 10;
 		int destY = destination % 10;
+		
 		GameManager gm = games.get(GMId); 
 		int ret = gm.playMove(srcX, srcY, destX, destY, new ClientWrapper(client));
 		ClientWrapper [] players = gm.getPlayers();

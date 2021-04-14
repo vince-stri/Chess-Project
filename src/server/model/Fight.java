@@ -1,6 +1,7 @@
 package server.model;
 
 import client.view.Journal;
+import server.main.ClientWrapper;
 import server.model.character.Character;
 import server.model.treasure.Armor;
 import server.model.treasure.Spell;
@@ -69,27 +70,29 @@ public class Fight {
     	boolean challengerDead = false;
     	boolean challengedDead = false;
     	
+    	//player.displayInfo(challenger.getName() + " attaque " + challenged.getName() + " ! LET'S FIGHT !");
+    	
     	while(!challengerDead && !challengedDead) {
     		/*
     		 * The challenger has more chance to strike damages
     		 */
     		if(dice.roll() > 3) {
-    			//Journal.displayText(challenger.getName() + " deals " + challenged.getDamagePoints() + " damages to " + challenged.getName() );
+    			//player.displayInfo(challenger.getName() + " deals " + challenged.getDamagePoints() + " damages to " + challenged.getName() );
     			challengedDead = challenger.strike(challenged);
     		} else {
-    			//Journal.displayText(challenged.getName() + " deals " + challenger.getDamagePoints() + " damages to " + challenger.getName() );
+    			//player.displayInfo(challenged.getName() + " deals " + challenger.getDamagePoints() + " damages to " + challenger.getName() );
     			challengerDead = challenged.strike(challenger);
     		}
     	}
     	if(challengerDead) {
-    		//Journal.displayText(challenger.getName() + " has been killed by " + challenged.getName());
+    		//player.displayInfo(challenger.getName() + " has been killed by " + challenged.getName());
     		challenger.kill();
     		challenged.heal();
     		challenged.addTreasure(treasure);
     		challenged.equipTreasure(treasure);
     		return false;
     	} else {
-    		//Journal.displayText(challenged.getName() + " has been killed by " + challenger.getName() + "\n");
+    		//player.displayInfo(challenged.getName() + " has been killed by " + challenger.getName() + "\n");
     		challenged.kill();
     		challenger.heal();
     		challenger.addTreasure(treasure);

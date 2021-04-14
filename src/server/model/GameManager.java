@@ -146,34 +146,33 @@ public class GameManager {
 		Cell destination = board.getACell(dest);
 		if(source == null || destination == null) { // verify if the coordinates were correct
 
-			player.displayText("/!\\ ------ Les coordonnées entrées sont invalides ------ /!\\");
+			player.displayInfo("/!\\ ------ Les coordonnées entrées sont invalides ------ /!\\");
 
 			return false;
 		}
 		Character selectedChara = source.getCharacter();
 		if(selectedChara == null) {
 
-			player.displayText("/!\\ ------ Il n'y a pas de personnage dans la case séléctionnée ------ /!\\");
+			player.displayInfo("/!\\ ------ Il n'y a pas de personnage dans la case séléctionnée ------ /!\\");
 
 			return false;
 		}
 		if(! selectedChara.getArmy().getClientWrapper().equals(player)) { // verify if the selected character belongs to the player's army
 
-			player.displayText("/!\\ ------ Le personnage désigné n'appartient pas à votre armée ! ------ /!\\");
+			player.displayInfo("/!\\ ------ Le personnage désigné n'appartient pas à votre armée ! ------ /!\\");
 
 
 			return false;
 		}
 		if(selectedChara.isAPossibleMove(destination) == false) { // verify if the required move can be done
 
-			player.displayText("/!\\ ------ Ce mouvement est impossible pour un " + selectedChara.getName() + " ------ /!\\");
+			player.displayInfo("/!\\ ------ Ce mouvement est impossible pour un " + selectedChara.getName() + " ------ /!\\");
 
 			return false;
 		}
 		if(destination.getCharacter() != null) { // verify if there is a character on the destination cell
 			boolean tmp = ! destination.getCharacter().getArmy().getClientWrapper().equals(player);
 
-			player.displayText("/!\\ ------ Vous ne pouvez pas aller sur une case occupée par un de vos pions ------ /!\\");;
 
 			return tmp; // verify if this character is an ennemy 
 		} return true;
@@ -196,6 +195,7 @@ public class GameManager {
     	Character playingCharacter = source.getCharacter();
     	int infCode = playingCharacter.getArmy().moveCharacter(playingCharacter, destination);
     	this.playingArmy = armies[(++round) % armiesNb];
+    	player.displayInfo(playingCharacter.getName() + " a été déplacé en (" + destX + ";" + destY +")" );
     	return infCode;
     }
     

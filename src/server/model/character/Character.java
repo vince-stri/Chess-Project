@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import server.main.ClientWrapper;
 import server.model.Army;
 import server.model.Coordinates;
 import server.model.Fight;
