@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import server.main.ClientWrapper;
 import server.model.Army;
 import server.model.Coordinates;
 import server.model.Fight;
@@ -119,11 +120,11 @@ public abstract class Character implements Serializable{
      *  1 - A fight has started and the attacker won
      *  2 - A fight has started and the attacker loose
      */
-    public int goTo(Cell destination, boolean haveToFight) {
+    public int goTo(Cell destination, boolean haveToFight,ClientWrapper[] players) {
     	if(haveToFight) {
     		Character challenged = destination.getCharacter();
     		Fight fight = new Fight(this, challenged);
-    		if(fight.startFight()) {
+    		if(fight.startFight(players)) {
     			goToCell(destination);
     			return 1;
     		} else {

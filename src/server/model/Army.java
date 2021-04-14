@@ -100,14 +100,14 @@ public class Army implements Serializable {
      *  1 - The movement is not possible for such a character
      *  2 + goTo() - The return code of the goTo method
      */
-    public int moveCharacter(Character movingCharacter, Cell cell) {
+    public int moveCharacter(Character movingCharacter, Cell cell,ClientWrapper[] players) {
     	final int addRetValue = 2;
     	if(movingCharacter.isAPossibleMove(cell)) {
 	    	if(cell.isEmpty()) {
-	    		return movingCharacter.goTo(cell, false) + addRetValue;
+	    		return movingCharacter.goTo(cell, false,players) + addRetValue;
 	    	} else {
 	    		if(cell.getCharacter().getArmy() != movingCharacter.getArmy()) {
-	    			return movingCharacter.goTo(cell, true) + addRetValue;
+	    			return movingCharacter.goTo(cell, true,players) + addRetValue;
 	    		} else {
 	    			return 0;
 	    		}

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import server.model.Coordinates;
 import server.model.GameManager;
 import server.model.board.BoardShape;
 import server.main.ClientWrapper;
@@ -166,6 +167,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		ResultSet res = stmt.executeQuery(query);
 		if (res.next()) {
 			System.out.println(res.getInt("ida") + " user connected");
+			client.setGMId(load_Idgm(client.GetPseudo()));
 			client.SetIdAccount(res.getInt("ida"));
 			
 			return gen_token(client);
@@ -275,7 +277,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	 * @return
 	 * @throws SQLException
 	 */
-	public String load_Idgm(String pseudo) throws SQLException {
+	private String load_Idgm(String pseudo) throws SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
 		String query = "SELECT idgm_save FROM account WHERE pseudo='" + pseudo + "';";
@@ -290,7 +292,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return null;
 	}
 	
-	public void save_Idgm(String pseudo, String idgm) throws SQLException {
+	private void save_Idgm(String pseudo, String idgm) throws SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
 		String query = "UPDATE account SET idgm_save='"+ idgm +"' WHERE pseudo='" + pseudo + "';";
@@ -451,7 +453,11 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		ClientWrapper [] clients = gm.getPlayers();
 		for(ClientWrapper i : clients) {
 			i.getClient().setGMId(GMId);
-			// A ENREGISTRER DANS LA BDD
+			try {
+				save_Idgm(i.getClient().GetPseudo(), GMId);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		gm.save();
 		clientQuit(GMId, client);
@@ -472,6 +478,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			gm.setIdGM(GMId);
 			gm.load();
 			gm.addClient(cwplayer);
+			gm.setPlayingArmy();
 			
 			String [] pseudos = gm.getPseudos();
 			if(client.GetPseudo() == pseudos[0]) {
@@ -482,7 +489,6 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			
 			games.put(GMId, gm);
 			System.out.println("The newly created GameManager id: " + GMId);
-			gm.setUpBattle();
 			cwplayer.displayBoard(gm.getBoard());
 			cwplayer.displayInfo("Vous jouez l'equipe du cote obscure de la force");
 			return gm.getIdGM();

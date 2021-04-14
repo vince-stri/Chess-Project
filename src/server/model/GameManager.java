@@ -64,7 +64,7 @@ public class GameManager {
     private ClientWrapper players[];
     
     /**
-     * 
+     * The pseudos of the connected players
      */
     private String pseudos[];
     
@@ -117,7 +117,7 @@ public class GameManager {
     /**
      * Set up the game components according to the type of game wanted
      * Warning: This method must be called before all the others
-     * @throws RemoteException 
+     * @throws RemoteException raised during connection issue by RMI
      */
     public void setUpBattle() throws RemoteException {
     	round = 0;
@@ -128,6 +128,14 @@ public class GameManager {
 				playingArmy = armies[0];
 			break;
 		}
+    }
+    
+    /**
+     * Set the playing army
+     * @throws RemoteException raised during connection issue by RMI
+     */
+    public void setPlayingArmy() throws RemoteException {
+    	playingArmy = armies[0];
     }
     
     /**
@@ -146,34 +154,33 @@ public class GameManager {
 		Cell destination = board.getACell(dest);
 		if(source == null || destination == null) { // verify if the coordinates were correct
 
-			player.displayText("/!\\ ------ Les coordonnées entrées sont invalides ------ /!\\");
+			player.displayInfo("/!\\ ------ Les coordonnées entrées sont invalides ------ /!\\");
 
 			return false;
 		}
 		Character selectedChara = source.getCharacter();
 		if(selectedChara == null) {
 
-			player.displayText("/!\\ ------ Il n'y a pas de personnage dans la case séléctionnée ------ /!\\");
+			player.displayInfo("/!\\ ------ Il n'y a pas de personnage dans la case séléctionnée ------ /!\\");
 
 			return false;
 		}
 		if(! selectedChara.getArmy().getClientWrapper().equals(player)) { // verify if the selected character belongs to the player's army
 
-			player.displayText("/!\\ ------ Le personnage désigné n'appartient pas à votre armée ! ------ /!\\");
+			player.displayInfo("/!\\ ------ Le personnage désigné n'appartient pas à votre armée ! ------ /!\\");
 
 
 			return false;
 		}
 		if(selectedChara.isAPossibleMove(destination) == false) { // verify if the required move can be done
 
-			player.displayText("/!\\ ------ Ce mouvement est impossible pour un " + selectedChara.getName() + " ------ /!\\");
+			player.displayInfo("/!\\ ------ Ce mouvement est impossible pour un " + selectedChara.getName() + " ------ /!\\");
 
 			return false;
 		}
 		if(destination.getCharacter() != null) { // verify if there is a character on the destination cell
 			boolean tmp = ! destination.getCharacter().getArmy().getClientWrapper().equals(player);
 
-			player.displayText("/!\\ ------ Vous ne pouvez pas aller sur une case occupée par un de vos pions ------ /!\\");;
 
 			return tmp; // verify if this character is an ennemy 
 		} return true;
@@ -194,9 +201,13 @@ public class GameManager {
     	Cell source = board.getACell(src);
     	Cell destination = board.getACell(dest);
     	Character playingCharacter = source.getCharacter();
-    	int infCode = playingCharacter.getArmy().moveCharacter(playingCharacter, destination);
+    	ClientWrapper [] players = this.getPlayers(); 
+    	int infCode = playingCharacter.getArmy().moveCharacter(playingCharacter, destination,players);
     	this.playingArmy = armies[(++round) % armiesNb];
-    	return infCode;
+    	for(ClientWrapper p : players) {
+    		p.displayInfo(playingCharacter.getName() + " a été déplacé en (" + destX + ";" + destY +")" );
+    	}
+    		return infCode;
     }
     
     /**
@@ -246,6 +257,11 @@ public class GameManager {
     	}
     }
     
+    /**
+     * Tests if the given player has won the game.
+     * @param client the given player
+     * @return true if the client won, false otherwise
+     */
     public boolean isWinner(ClientWrapper client) {
     	if(armies[0].getClientWrapper().equals(client)) {
     		return armies[1].isEmpty();
@@ -254,6 +270,11 @@ public class GameManager {
     	}
     }
     
+    /**
+     * Tests if the given player has loose the game.
+     * @param client the given player
+     * @return true if the client loose, false otherwise
+     */
     public boolean isLoser(ClientWrapper client) {
     	if(armies[0].getClientWrapper().equals(client)) {
     		return armies[0].isEmpty();
@@ -262,14 +283,25 @@ public class GameManager {
     	}
     }
     
+    /**
+     * Tests if the minimum numbers of clients are connected
+     * @return true if the number is greater than 1
+     */
     public boolean isMinimumClientsConnected() {
     	return connectedClientsNb > 1;
     }
     
+    /**
+     * Get the board
+     * @return the board
+     */
     public Board getBoard() {
     	return this.board;
     }
     
+    /**
+     * Associates a client to an army
+     */
     public void setPlayersToArmies() {    	
     	for(int i = 0; i < playersNb; i++) {				
     		armies[i].setClientWrapper(players[i]);
@@ -279,18 +311,34 @@ public class GameManager {
     	}
     }
     
+    /**
+     * Gets the army which is supposed to play
+     * @return the army
+     */
     public Army getPlayingAmry() {
     	return playingArmy;
     }
     
+    /**
+     * Gets all the players connected to the game 
+     * @return
+     */
     public ClientWrapper[] getPlayers() {
     	return players;
     }
 
+    /**
+     * Gets the identification string associated with the GameManager
+     * @return
+     */
 	public String getIdGM() {
 		return idGM;
 	}
 
+	/**
+	 * Sets an identification string to the GameManager
+	 * @param idGM
+	 */
 	public void setIdGM(String idGM) {
 		this.idGM = idGM;
 	}

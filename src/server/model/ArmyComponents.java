@@ -26,7 +26,7 @@ public abstract class ArmyComponents {
 		
 		armies[0] = new Army(board, "DarkSight", null);
 		
-		/*character = new Pawn(100, "Stormtroopeer_1", new Coordinates(0, 1), armies[0], 10, 20, board, new Coordinates(0, 1), 'a');
+		character = new Pawn(100, "Stormtroopeer_1", new Coordinates(0, 1), armies[0], 10, 20, board, new Coordinates(0, 1), 'a');
 		armies[0].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		
@@ -88,16 +88,13 @@ public abstract class ArmyComponents {
 		
 		character = new King(200, "Emperor Palpatine", new Coordinates(4, 0), armies[0], 200, 35, board, 'p');
 		armies[0].addCharacter(character);
-		character.getCell(board).setCharacter(character);*/
-		character = new King(200, "Emperor Palpatine", new Coordinates(4, 4), armies[0], 200, 35, board, 'p');
-		armies[0].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		
 		/* --- */
 		
 		armies[1] = new Army(board, "LightSight", null);
 		
-		/*character = new Pawn(100, "Rebel_1", new Coordinates(0, 6), armies[1], 10,  20, board, new Coordinates(0, -1), 'A');
+		character = new Pawn(100, "Rebel_1", new Coordinates(0, 6), armies[1], 10,  20, board, new Coordinates(0, -1), 'A');
 		armies[1].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		
@@ -158,10 +155,6 @@ public abstract class ArmyComponents {
 		character.getCell(board).setCharacter(character);
 		
 		character = new King(200, "Master Yoda", new Coordinates(4, 7), armies[1], 200, 35, board, 'P');
-		armies[1].addCharacter(character);
-		character.getCell(board).setCharacter(character);*/
-		
-		character = new King(200, "Master Yoda", new Coordinates(4, 5), armies[1], 200, 35, board, 'P');
 		armies[1].addCharacter(character);
 		character.getCell(board).setCharacter(character);
 		

@@ -58,11 +58,11 @@ public class MainClient {
 			journal.displayText("-------------------------------------------");
 			journal.displayText("|           BATTLE CHESS ROYALE           |");
 			journal.displayText("-------------------------------------------");
+			journal.displayText("Joueur : " + playingClient.GetPseudo());
 			journal.displayText("1- Matchmaking - Joue une partie en ligne");
 			journal.displayText("2- Duel - Joue contre un de tes amis");
 			journal.displayText("3- Charger une partie - Reprend une partie déjà commencé");
 			journal.displayText("0- Quitter");
-			journal.displayText("\n\nJoueur : " + playingClient.GetPseudo());
 			
 			try {
 				int menuChoice = entry.nextInt();
