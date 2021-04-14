@@ -38,7 +38,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 
 	/**
 	 * Get database configuration from external config file
-	 * @return conf array
+	 * @return config array
 	 */
 	private String[] get_conf() {
 		BufferedReader file = null;
@@ -66,7 +66,11 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	    return conf;
 	  }
 	
-
+	/**
+	 * Connection to the database Postgresql
+	 * This function load the config file from the previous function : get_conf()
+	 * @return connection object
+	 */
 	private Connection connect_db() {
 		Connection con = null;
 		String[] conf;
@@ -98,6 +102,13 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return con;
 	}
 	
+	/**
+	 * Create a token when a client is connected and save it in the db.
+	 * @param client
+	 * @return Token generated
+	 * @throws SQLException
+	 * @throws RemoteException
+	 */
 	private String gen_token(iClient client) throws SQLException, RemoteException {
 		String token = UUID.randomUUID().toString();
 		token = token.replace("-", "");
@@ -118,7 +129,12 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return token;
 	}
 	
-	
+	/**
+	 * Delete a token when an user is disconnected
+	 * @param client
+	 * @throws SQLException
+	 * @throws RemoteException
+	 */
 	private void del_token(iClient client) throws SQLException, RemoteException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
@@ -133,7 +149,14 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		stmt.close();
 		db.close();
 	}
-
+	
+	/**
+	 * Client authentication in the database
+	 * @param client
+	 * @throws RemoteException
+	 * @throws SQLException
+	 */
+	@Override
 	public String login(iClient client, String password) throws RemoteException, SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
@@ -158,11 +181,23 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		
 	}
 	
+	/**
+	 * Disconnect a client : delete the token
+	 * @param client
+	 * @throws RemoteException
+	 * @throws SQLException
+	 */
 	@Override
 	public void disconnect(iClient client) throws RemoteException, SQLException {
 		del_token(client);
 	}
 	
+	/**
+	 * Allows to a player to join a duel create by an other player
+	 * @param player
+	 * @return GameManager ID or null if there is no game available
+	 * @throws RemoteException
+	 */
 	@Override
 	public String joinDuel(iClient player) throws RemoteException {
 		ClientWrapper cwplayer = new ClientWrapper(player);
@@ -179,6 +214,14 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return null;
 	}
 	
+	/**
+	 * Create a duel for a player, against the opponent player specified.
+	 * It's create a new game manager puts in a special queue, waiting for the opponent player.
+	 * @param player
+	 * @param opponentPlayer
+	 * @return GameManager ID
+	 * @throws RemoteException
+	 */
 	@Override
 	public String startDuel(iClient player, String opponentPlayer) throws RemoteException {
 		ClientWrapper cwplayer = new ClientWrapper(player);
@@ -204,7 +247,13 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return gm_id;
 	}
 
-	
+	/**
+	 * Checks if the user already exists in the database with the given pseudo
+	 * @param pseudo
+	 * @return 1 for true or 0 for false
+	 * @throws RemoteException
+	 * @throws SQLException
+	 */
 	public int checks_user(String pseudo) throws RemoteException, SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
@@ -220,6 +269,12 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return 1;
 	}
 	
+	/**
+	 * 
+	 * @param pseudo
+	 * @return
+	 * @throws SQLException
+	 */
 	public String load_Idgm(String pseudo) throws SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
@@ -238,7 +293,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	public void save_Idgm(String pseudo, String idgm) throws SQLException {
 		Connection db = connect_db();
 		Statement stmt = db.createStatement();
-		String query = "UPDATE TABLE account SET idgm_save='"+ idgm +"' WHERE pseudo='" + pseudo + "';";
+		String query = "UPDATE account SET idgm_save='"+ idgm +"' WHERE pseudo='" + pseudo + "';";
 		if (stmt.executeUpdate(query)==1) {
 			System.out.println("IDGM for " + pseudo + "has been saved");
 		}
@@ -248,6 +303,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		stmt.close();
 		db.close();
 	}
+	
 	
 	@Override
 	public int register(String pseudo, String password) throws RemoteException, SQLException {
@@ -312,10 +368,22 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		}
 	}
 	
+	/**
+	 * Check if it's the turn of a player
+	 * @param GMId the string identifying the GameManager
+	 * @param client
+	 * @return true or false
+	 * @throws RemoteException
+	 * @throws NullPointerException
+	 */
 	public boolean isItPlayerSTurn(String GMId, iClient client) throws RemoteException, NullPointerException {
 		return client.equals(games.get(GMId).getPlayingAmry().getClientWrapper().getClient());
 	}
 	
+	/**
+	 * Function which calls isAGoodMove from GameManager 
+	 */
+	@Override
 	public int isAGoodMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
 			client.PostInfo("/!\\ ------ Ce n'est pas à ton tour de jouer ------ /!\\");
@@ -332,6 +400,9 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		}
 	}
 
+	/**
+	 * Function which calls playMove from GameManager
+	 */
 	public int playMove(int source, int destination, String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(!this.isItPlayerSTurn(GMId, client)) {
 			client.PostInfo("/!\\ ------ Ce n'est pas à ton tour de jouer ------ /!\\");
@@ -350,6 +421,9 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return ret;
 	}
 	
+	/**
+	 * Function which calls isGameOver from GameManager
+	 */
 	public int isGameOver(String GMId, iClient client) throws RemoteException, NullPointerException {
 		if(games.get(GMId).isWinner(new ClientWrapper(client))) {
 			return 0;
@@ -359,12 +433,18 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			return -1;
 		}
 	}
-
+	
+	/**
+	 * Function which calls minimumPlayersAreConnected from GameManager
+	 */
 	public boolean minimumPlayersAreConnected(String GMId) throws RemoteException, NullPointerException {
 		GameManager gm = games.get(GMId);
 		return gm.isMinimumClientsConnected();
 	}
 	
+	/**
+	 * Function which calls save from GameManager
+	 */
 	public void save(String GMId, iClient client) throws RemoteException, NullPointerException {
 		sendMessage(GMId, client, "[INFO] : Votre adversaire a décidé de sauvegarder la partie", true);
 		GameManager gm = games.get(GMId);
@@ -378,7 +458,12 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	}
 	
 	
-	
+	/**
+	 * Load a saved game by a player.
+	 * @param client
+	 * @return GameManager Id or null if no game exists.
+	 *  @throws RemoteException
+	 */
 	public String load(iClient client) throws RemoteException {
 		String GMId = client.getGMId();
 		if(isExists(GMId)) {
@@ -410,7 +495,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	/**
 	 * Tests if a specified game has been saved or not 
-	 * @param GMId the GMId identifying the game
+	 * @param GMId the string identifying the GameManager
 	 * @return true or false
 	 */
 	private boolean isExists(String GMId) {
@@ -418,6 +503,15 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		return f.exists() && f.isFile();
 	}
 	
+	/**
+	 * Send a message from a player to an another player (his opponent in the game).
+	 * @param GMId the string identifying the GameManager
+	 * @param sender
+	 * @param msg
+	 * @boolean systemMsg
+	 * @throws RemoteException
+	 * @throws NullPointerException
+	 */
 	public void sendMessage(String GMId, iClient sender, String msg, boolean systemMsg) throws RemoteException, NullPointerException {
 		GameManager gm = games.get(GMId);
 		ClientWrapper [] players = gm.getPlayers();
@@ -434,6 +528,11 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		}
 	}
 	
+	/**
+	 * Send a notification when a player leave the game
+	 * @param GMId the string identifying the GameManager
+	 * @param client
+	 */
 	public void clientQuit(String GMId, iClient client) throws RemoteException, NullPointerException {
 		games.get(GMId);
 		sendMessage(GMId, client, "[INFO] : Votre adversaire a quitté la partie", true);
