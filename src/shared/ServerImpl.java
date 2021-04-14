@@ -268,7 +268,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println("The newly created GameManager id: " + gm_id);
 			gm.setUpBattle();
 			cwplayer.displayBoard(gm.getBoard());
-			cwplayer.displayInfo("Vous jouez l'equipe du cote obscure de la force");
+			cwplayer.displayInfo("Vous jouez l'equipe du cote obscur de la force");
 			return gm_id;
 			
 		} else {
@@ -339,7 +339,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	}
 	
 	public void save(String GMId, iClient client) throws RemoteException, NullPointerException {
-		sendMessage(GMId, client, "Your opponent decided to save the game. You can ask later for continue it", true);
+		sendMessage(GMId, client, "Votre adversaire a décidé de sauvegarder la partie", true);
 		GameManager gm = games.get(GMId);
 		gm.save();
 		ClientWrapper [] clients = gm.getPlayers();
@@ -360,7 +360,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			client.PostBoard(gm.getBoard());
 			queueDuel.put(GMId, gm);
 		} else {
-			client.PostInfo("The game you want to load doesn't exist");
+			client.PostInfo("La partie que vous essayez de charger n'existe pas");
 			client.setGMId(null);
 		}
 	}
@@ -393,7 +393,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	
 	public void clientQuit(String GMId, iClient client) throws RemoteException, NullPointerException {
 		games.get(GMId);
-		sendMessage(GMId, client, "Your opponent quitted the game. You must find another game", true);
+		sendMessage(GMId, client, "Votre adversaire a quitté la partie", true);
 		removeGMFromList(GMId);
 		try {
 			disconnect(client);
