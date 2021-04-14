@@ -68,6 +68,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 	    return conf;
 	  }
 	
+
 	private Connection connect_db() {
 		Connection con = null;
 		String[] conf;
@@ -174,7 +175,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 			System.out.println("The newly created GameManager id: " + gm.getIdGM());
 			gm.setPlayersToArmies();
 			cwplayer.displayBoard(gm.getBoard());
-			cwplayer.displayInfo("Vous jouez l'equipe du cote clair de la force");
+			cwplayer.displayInfo("____________ Vous jouez l'equipe du cote clair de la force ____________");
 			queueDuel.remove(player.GetPseudo(), gm);
 			return gm.getIdGM();
 		}
@@ -201,7 +202,7 @@ public class ServerImpl extends UnicastRemoteObject implements Iserver {
 		System.out.println("The newly created GameManager id: " + gm_id);
 		gm.setUpBattle();
 		cwplayer.displayBoard(gm.getBoard());
-		cwplayer.displayInfo("Vous jouez l'equipe du cote obscure de la force");
+		cwplayer.displayInfo("____________ Vous jouez l'equipe du cote obscure de la force ____________");
 		return gm_id;
 	}
 
